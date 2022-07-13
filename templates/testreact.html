@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block content %}
+<body class="ms-5 mt-5 bg-dark">
+<!--    <img class="w-auto" style="max-height: 500px" src="https://static.standard.co.uk/s3fs-public/thumbnails/image/2015/12/14/21/Flats1412b.jpg?width=1200">-->
+    <h1 class="ms-3 text-light display-5"> Locatari </h1>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const rootElement = document.getElementById('root')
+
+        class Locatar extends React.Component{
+
+            render() {
+                return(
+                    <div className="card m-3 bg-secondary pb-3">
+                        <div className="card-header fs-5 text-dark fw-bolder">Locatar</div>
+                        <ul className="list-group list-group-flush">
+                            <li className="list-group-item list-group-item-action bg-info" title="Apartament">Numar ap: {this.props.nrap}</li>
+                            <li className="list-group-item list-group-item-action bg-info" title="Nume">Nume: {this.props.nume}</li>
+                            <li className="list-group-item list-group-item-action bg-info" title="Suprafata">Suprafata: {this.props.suprafata}</li>
+                            <li className="list-group-item list-group-item-action bg-info" title="Tip">Tip: {this.props.tip}</li>
+                        </ul>
+                    </div>
+                );
+            }
+        }
+
+        class Locatari extends React.Component{
+
+            constructor(props) {
+                super(props);
+                this.state = {
+                    vLocatari: []
+                }
+            }
+            //<Locatar nrap={2} nume="Ion" suprafata={32} tip="ap"/>
+            render() {
+                return(
+                    <div className="container">
+                        <div className="row row-cols-auto">
+                            <Locatar nrap={2} nume="Ion" suprafata={32} tip="ap"/>
+                            <Locatar nrap={2} nume="Ion" suprafata={32} tip="ap"/>
+                            <Locatar nrap={2} nume="Ion" suprafata={32} tip="ap"/>
+                            <Locatar nrap={2} nume="Ion" suprafata={32} tip="ap"/>
+                            <Locatar nrap={2} nume="Ion" suprafata={32} tip="ap"/>
+                        </div>
+                    </div>
+                );
+            }
+        }
+
+        ReactDOM.render(
+            <Stack direction="horizontal" gap={2}>
+              <Button as="a" variant="primary">
+                Button as link
+              </Button>
+              <Button as="a" variant="success">
+                Button as link
+              </Button>
+            </Stack>,
+            rootElement
+        )
+    </script>
+
+</body>
+{% endblock %}

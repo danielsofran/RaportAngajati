@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% if isangajat %}
+        <div class="container-fluid m-5 fs-1">
+            <h1 style="font-size: 200%">Status:</h1><br>
+            <div class="d-flex flex-column">
+                <p> Ora intrarii: <input type="text" class="form-control" disabled value="{{ oraIn }}"></p>
+
+            </div>
+        </div>
+    {# BUTOANE #}
+    <div class="container-fluid my-5 p-5 g-5">
+        <div class="row row-cols-auto g-5 text-center overflow-hidden">
+            <div class="col ">
+                <button type="button" class="btn mx-auto p-3 border fs-1" style="background-color: aquamarine">Am ajuns la firma</button>
+            </div>
+            <div class="col ">
+                <button type="button" class="btn mx-auto p-3 border fs-1" style="background-color: #ff452c">Am plecat din firma</button>
+            </div>
+            <div class="col ">
+                <button type="button" class="btn mx-auto p-3 border fs-1" style="background-color: aqua">Am facut o piesa</button>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+
+</script>
+{% endblock %}

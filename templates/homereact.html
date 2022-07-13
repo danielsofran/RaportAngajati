@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block scripts %}
+
+<script type="text/babel">
+    const rootElement = document.getElementById('root');
+    console.log("aaa")
+
+    Alert.show()
+
+    class Buton extends React.Component {
+        constructor(props) {
+            super(props);
+            this.handleClick = this.handleClick.bind(this);
+        }
+
+        handleClick() {
+            console.log("ni")
+        }
+
+        render() {
+            return (
+                <div className="m-5 text-bg-primary">
+                    nmk
+                </div>
+            );
+        }
+    }
+
+    ReactDOM.render(
+        <div>eed</div>,
+        rootElement
+    )
+</script>
+
+<script type="text/babel">
+
+</script>
+
+{% endblock %}
