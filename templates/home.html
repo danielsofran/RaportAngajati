@@ -1,33 +1,115 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    {% if isangajat %}
-        <div class="container-fluid m-5 fs-1">
-            <h1 style="font-size: 200%">Status:</h1><br>
-            <div class="d-flex flex-column">
-                <p> Ora intrarii: <input type="text" class="form-control" disabled value="{{ oraIn }}"></p>
+    <div class="container-fluid m-5 fs-1">
+        <h1 class="my-5" style="font-size: 200%">Status:</h1>
+        <div class="d-flex flex-row me-5 my-3">
+            <p class="me-5 text-nowrap"> Ora intrarii:&nbsp; </p>
+            <button disabled class="btn btn-secondary me-5 font-weight-bold fs-1">{{ oraIn }}</button>
+        </div>
+        <div class="d-flex flex-row me-5 my-3">
+            <p class="me-5 text-nowrap"> Ora plecarii: </p>
+            <button disabled class="btn btn-secondary me-5 font-weight-bold fs-1">{{ oraOut }}</button>
+        </div>
+        <div class="d-flex flex-row me-5 my-3 align-items-left">
+            <p class="me-5 text-nowrap"> Locatia intrarii:&nbsp; </p>
+            <button class="btn btn-secondary me-5 font-weight-bold fs-3" title="Apasa pentru a deschide in Maps" onclick="loadMap('{{ locIn }}')">{{ locStrIn }}</button>
+        </div>
+        <div class="d-flex flex-row me-5 my-3">
+            <p class="me-5 text-nowrap"> Locatia plecarii: </p>
+            <button class="btn btn-secondary me-5 font-weight-bold fs-3" title="Apasa pentru a deschide in Maps" onclick="loadMap('{{ locOut }}')">{{ locStrOut }}</button>
+        </div>
+    </div>
+    {# BUTOANE #}
 
+    <div class="d-inline-flex flex-column text-center overflow-hidden align-start">
+        <div class="my-3 ms-5">
+            <div class="d-flex flex-row">
+                <button type="button" class="btn mx-auto p-3 border fs-1 me-5" style="background-color: aquamarine" onclick="ajuns()">Am ajuns la firma</button>
+                <div class="d-flex flex-row"><button class="btn btn-danger btn-square-md font-weight-bold fs-1 align-self-center my-0"> x </button></div>
             </div>
         </div>
-    {# BUTOANE #}
-    <div class="container-fluid my-5 p-5 g-5">
-        <div class="row row-cols-auto g-5 text-center overflow-hidden">
-            <div class="col ">
-                <button type="button" class="btn mx-auto p-3 border fs-1" style="background-color: aquamarine">Am ajuns la firma</button>
+        <div class="my-3 ms-5">
+            <div class="d-flex flex-row">
+                <button type="button" class="btn mx-auto p-3 border fs-1 me-5" style="background-color: #ff452c">Am plecat din firma</button>
+                <div class="d-flex flex-row"><button class="btn btn-danger btn-square-md font-weight-bold fs-1 align-self-center my-0"> x </button></div>
             </div>
-            <div class="col ">
-                <button type="button" class="btn mx-auto p-3 border fs-1" style="background-color: #ff452c">Am plecat din firma</button>
-            </div>
-            <div class="col ">
-                <button type="button" class="btn mx-auto p-3 border fs-1" style="background-color: aqua">Am facut o piesa</button>
+        </div>
+        <div class="my-3 ms-5">
+            <div class="d-flex flex-row">
+                <button type="button" class="btn mx-auto p-3 border fs-1 me-5" style="background-color: aqua">Am terminat o comamda</button>
+                <div class="d-flex flex-row"><button class="btn btn-danger btn-square-md font-weight-bold fs-1 align-self-center my-0"> x </button></div>
             </div>
         </div>
     </div>
-    {% endif %}
 {% endblock %}
 
 {% block scripts %}
 <script>
+function loadMap(loc){
+    if(loc.trim().length === 0)
+        alert("Locatie invalida!")
+    else {
+        let adress = "https://www.google.com/maps/dir/" + loc + "//@" + loc + "47.1796062,24.1704734,21z";
+        //alert(adress)
+        window.open(adress, '_blank');
+    }
+}
+
+function createHttpRequest(adress, method='GET') {
+    httpRequest = new XMLHttpRequest()
+    httpRequest.open(method, adress)
+    httpRequest.send()
+    httpRequest.onreadystatechange = function(){
+        // Process the server response here.
+        if (httpRequest.readyState === XMLHttpRequest.DONE) {
+          if (httpRequest.status === 200) {
+              location.reload()
+          }
+        }
+    }
+}
+
+function displayError(error) {
+  var errors = {
+    1: 'Permisiune refuzata',
+    2: 'Pozitie invalida',
+    3: 'Timpul a expirat',
+    default: "Eroare",
+  };
+  alert("Error: " + errors[error.code]);
+}
+
+function getLocation(callback){
+    if (navigator.geolocation) {
+      let timeoutVal = 10 * 1000 * 1000;
+      navigator.geolocation.getCurrentPosition(
+        callback,
+        displayError,
+        { enableHighAccuracy: true, timeout: timeoutVal, maximumAge: 0 }
+      );
+    }
+    else {
+      alert("Nu este disponibila locatia pe acest browser!");
+    }
+}
+
+
+function ajuns(){
+    getLocation((position) => {
+        adress = window.location.href + `/come?lat=${position.coords.latitude}&long=${position.coords.longitude}`;
+        alert(adress);
+        window.location.href = adress;
+    });
+}
+
+function plecat(){
+    getLocation((position) => {
+        adress = window.location.href + `/left?lat=${position.coords.latitude}&long=${position.coords.longitude}`;
+        alert(adress);
+        window.location.href = adress;
+    });
+}
 
 </script>
 {% endblock %}

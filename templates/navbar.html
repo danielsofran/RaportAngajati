@@ -1,0 +1,40 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light fs-1">
+  <div class="container-fluid">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item mx-5">
+          <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Acasa</a>
+        </li>
+        <li class="nav-item dropdown me-5">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Activitate
+          </a>
+          <ul class="dropdown-menu fs-5" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" href="#">Azi</a></li>
+                <li><a class="dropdown-item" href="#">Ieri</a></li>
+                <li><a class="dropdown-item" href="#">Ultimele 3 zile</a></li>
+                <li><a class="dropdown-item" href="#">Ultima saptamana</a></li>
+          </ul>
+        </li>
+        <li class="nav-item dropdown me-5">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Cont
+          </a>
+          <ul class="dropdown-menu fs-5" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" href="#">Detalii</a></li>
+                {% load mytags %}
+                {% if request.user|has_group:"Manager" %}
+                <li><a class="dropdown-item" href="#">Vezi Angajatii</a></li>
+                <li><a class="dropdown-item" href="#">Setari</a></li>
+                {% endif %}
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{% url 'mylogout' %}">Log out</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
