@@ -1,4 +1,5 @@
 import datetime
+import pytz
 
 from django.db import models
 
@@ -6,6 +7,9 @@ from django.db import models
 
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+
+from siteReport import settings
+
 
 class User(AbstractUser):
     nume = models.CharField(blank=False, max_length=50, default="Angajat")
@@ -19,12 +23,19 @@ class User(AbstractUser):
 class Info(models.Model):
     user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
     latitude = models.DecimalField(max_digits=11, decimal_places=8)
-    lognitude = models.DecimalField(max_digits=11, decimal_places=8)
+    longitude = models.DecimalField(max_digits=11, decimal_places=8)
+    nrcalcloc = models.IntegerField(blank=True, default=0)
     datetime = models.DateTimeField(blank=True, default=datetime.datetime.strptime("01.01.2022 00:00:00", "%d.%m.%Y %H:%M:%S"))
     text = models.TextField(blank=True, max_length=300)
 
+    def getStrTime(self):
+        now = self.datetime
+        settings_time_zone = pytz.timezone(settings.TIME_ZONE)
+        now = now.astimezone(settings_time_zone)
+        return now.strftime("%H:%M")
+
     def __str__(self):
-        return f"{self.user.nume} {self.datetime.hour}:{self.datetime.minute}"
+        return f"{self.user.username}-> {self.user.nume} {self.getStrTime()}"
 
     @property
     def day(self): return self.datetime.day

@@ -108,8 +108,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
-
 USE_I18N = True
 
 USE_TZ = True
@@ -128,3 +126,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'main.User'
 
 TIME_ZONE = 'Europe/Bucharest'
+
+NR_RECALC_POZ = 3
+
+SEC_RECALC_AFTER = 60
+
+FIRMA_SHAPE = [[],[],[]]

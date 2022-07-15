@@ -1,6 +1,112 @@
 {% extends 'base.html' %}
 
+{% block css %}
+<style>
+    .modal-dialog{
+        position: absolute;
+        top: 10%;
+        left: 10%;
+     }
+</style>
+{% endblock %}
+
 {% block content %}
+    <div class="w-100 h-100 mb-5">
+
+    {# MODALS #}
+    <div class="modal fade" id="modalCancelCome" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel1" aria-hidden="true">
+      <div class="modal-dialog me-auto">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title fs-2" id="staticBackdropLabel1">Atentie!</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body fs-4">
+            Timpul si locatia intrarii va fi stearsa!<br>
+            Sigur doriti sa o anulati?
+          </div>
+          <div class="modal-footer justify-content-between">
+            <button type="button" class="btn btn-danger fs-3" data-bs-dismiss="modal">Anuleaza</button>
+            <button type="button" class="btn btn-warning fs-3" onclick="window.location.href = '{% url 'cancel_come' %}'">Continua</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="modalCancelLeft" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel2" aria-hidden="true">
+      <div class="modal-dialog me-auto">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title fs-2" id="staticBackdropLabel2">Atentie!</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body fs-4">
+            Timpul si locatia iesirii va fi stearsa!<br>
+            Sigur doriti sa o anulati?
+          </div>
+          <div class="modal-footer justify-content-between">
+            <button type="button" class="btn btn-danger fs-3" data-bs-dismiss="modal">Anuleaza</button>
+            <button type="button" class="btn btn-warning fs-3" onclick="window.location.href = '{% url 'cancel_left' %}'">Continua</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="modalInvalidComand" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel3" aria-hidden="true">
+      <div class="modal-dialog me-auto">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title fs-2" id="staticBackdropLabel3">Atentie!</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body fs-4">
+            Denumirea sau numarul comenzii sunt invalide!
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger fs-3" data-bs-dismiss="modal">Reincearca</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="modalInvalidLoc" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel4" aria-hidden="true">
+      <div class="modal-dialog me-auto">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title fs-2" id="staticBackdropLabel4">Atentie!</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body fs-4">
+            Locatie invalida!
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary fs-3" data-bs-dismiss="modal">Ok</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="modalUnsupportedLoc" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel5" aria-hidden="true">
+      <div class="modal-dialog me-auto">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title fs-2" id="staticBackdropLabel5">Atentie!</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body fs-4">
+            Locatie invalida!<br>
+            Va rugam sa schimbati browser-ul.
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary fs-3" data-bs-dismiss="modal">Ok</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {# STATS #}
+    {% load mytags %}
+    {% if request.user|role_at_least:"Angajat" %}
     <div class="container-fluid m-5 fs-1">
         <h1 class="my-5" style="font-size: 200%">Status:</h1>
         <div class="d-flex flex-row me-5 my-3">
@@ -13,58 +119,184 @@
         </div>
         <div class="d-flex flex-row me-5 my-3 align-items-left">
             <p class="me-5 text-nowrap"> Locatia intrarii:&nbsp; </p>
-            <button class="btn btn-secondary me-5 font-weight-bold fs-3" title="Apasa pentru a deschide in Maps" onclick="loadMap('{{ locIn }}')">{{ locStrIn }}</button>
+            <button disabled class="btn btn-secondary me-5 font-weight-bold fs-3" title="Apasa pentru a deschide in Maps" >{{ locStrIn }}</button>
+            <div class="fs-1"> <button class="btn btn-light btn-lg" onclick="loadMap('{{ locIn }}')"><i class="fa-solid fa-location-crosshairs"></i></button> </div>
+            {% if request.user|is_recent:"In" %}<div class="fs-1 ms-2"> <button onclick="processposition('{% url 'come_recalc' %}')" class="btn btn-light btn-lg" >Relocare</button> </div>{% endif %}
         </div>
         <div class="d-flex flex-row me-5 my-3">
             <p class="me-5 text-nowrap"> Locatia plecarii: </p>
-            <button class="btn btn-secondary me-5 font-weight-bold fs-3" title="Apasa pentru a deschide in Maps" onclick="loadMap('{{ locOut }}')">{{ locStrOut }}</button>
+            <button disabled class="btn btn-secondary me-5 font-weight-bold fs-3" title="Apasa pentru a deschide in Maps">{{ locStrOut }}</button>
+            <div class="fs-1"> <button class="btn btn-light btn-lg" onclick="loadMap('{{ locOut }}')"><i class="fa-solid fa-location-crosshairs"></i></button> </div>
+            {% if request.user|is_recent:"Out" %}<div class="fs-1 ms-2"> <button onclick="processposition('{% url 'left_recalc' %}')" class="btn btn-light btn-lg" >Relocare</button> </div>{% endif %}
         </div>
+    {% if obsIn != "" %}
+        <div class="my-3 w-50">
+            <p class="me-5 text-nowrap"> Observatie la intrare: </p>
+            <div class="form-floating">
+              <textarea disabled class="form-control fs-4" id="floatingTextarea2" style="height: 100px">{{ obsIn }}</textarea>
+            </div>
+        </div>
+    {% endif %}
+    {% if obsOut != "" %}
+        <div class="my-3 w-50">
+            <p class="me-5 text-nowrap"> Observatie la iesire: </p>
+            <div class="form-floating">
+              <textarea disabled class="form-control fs-4" id="floatingTextarea2" style="height: 100px">{{ obsOut }}</textarea>
+            </div>
+        </div>
+    {% endif %}
+    {% if comenzi|length > 0 %}
+        <div class="my-3 mt-5 w-50">
+        <div class="d-flex flex-row">
+            <p class="me-5 text-nowrap"> Comenzi finalizate: </p>
+            <button onclick="toogleView('comenziShowDiv')" class="btn btn-danger btn-square-md font-weight-bold fs-2 align-self-center my-0 px-4" > x </button>
+        </div>
+            <div id="comenziShowDiv">
+            {% for comanda in comenzi %}
+                <div class="card fs-3 w-auto">
+                  <div class="card-header">
+                    Denumire: {{ comanda.denumire }}
+                  </div>
+                    <div class="card-body">
+                      <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Numar comanda: {{ comanda.numar_comanda }}</li>
+                        <li class="list-group-item">Ora: {{ comanda.getStrTime }}</li>
+                        <li class="list-group-item">Observatie: {{ comanda.text }}</li>
+                      </ul>
+                      <button class="btn btn-danger btn-square-md font-weight-bold fs-2 align-self-center my-0 float-right"> Anuleaza </button>
+                    </div>
+                </div>
+            {% endfor %}
+            </div>
+        </div>
+    {% endif %}
     </div>
-    {# BUTOANE #}
 
+    {# BUTOANE #}
     <div class="d-inline-flex flex-column text-center overflow-hidden align-start">
         <div class="my-3 ms-5">
-            <div class="d-flex flex-row">
-                <button type="button" class="btn mx-auto p-3 border fs-1 me-5" style="background-color: aquamarine" onclick="ajuns()">Am ajuns la firma</button>
-                <div class="d-flex flex-row"><button class="btn btn-danger btn-square-md font-weight-bold fs-1 align-self-center my-0"> x </button></div>
+            <div class="d-flex flex-row justify-content-start">
+                <button type="button" class="btn mx-auto p-3 border fs-1 pe-5" style="background-color: aquamarine" onclick="ajuns()">Am ajuns la firma</button>
+                <div class="d-flex flex-row"><button id="inputModalCancelCome" type="button" data-bs-toggle="modal" data-bs-target="#modalCancelCome" class="btn btn-danger btn-square-md font-weight-bold fs-1 align-self-center my-0 px-4" > x </button></div>
             </div>
         </div>
+
         <div class="my-3 ms-5">
             <div class="d-flex flex-row">
-                <button type="button" class="btn mx-auto p-3 border fs-1 me-5" style="background-color: #ff452c">Am plecat din firma</button>
-                <div class="d-flex flex-row"><button class="btn btn-danger btn-square-md font-weight-bold fs-1 align-self-center my-0"> x </button></div>
+                <button type="button" class="btn btn-warning mx-auto p-3 border fs-1 me-5" onclick="toogleView('comeObsDiv')">Am ajuns, fac o observatie </button>
+            </div>
+            <div class="d-none form-floating fs-4 mt-3" id="comeObsDiv">
+              <textarea class="form-control fs-4" placeholder="Scrieti observatia/motivarea aici" id="comeObs" style="height: 100px" required></textarea>
+              <label for="comeObs">Observatie</label>
+              <div class="d-flex flex-row justify-content-end mt-1 fs-5">
+                  <button onclick="ajuns('cutext')" class="btn btn-primary font-weight-bold fs-3 align-self-center my-0 me-3">Trimite si confirma venirea</button>
+                  <button onclick="toogleView('comeObsDiv')" class="btn btn-danger btn-square-md font-weight-bold fs-2 align-self-center my-0" > Anuleaza </button>
+              </div>
+
             </div>
         </div>
+
         <div class="my-3 ms-5">
             <div class="d-flex flex-row">
-                <button type="button" class="btn mx-auto p-3 border fs-1 me-5" style="background-color: aqua">Am terminat o comamda</button>
-                <div class="d-flex flex-row"><button class="btn btn-danger btn-square-md font-weight-bold fs-1 align-self-center my-0"> x </button></div>
+                <button type="button" class="btn mx-auto p-3 border fs-1 me-5" style="background-color: #ff452c" onclick="plecat()">Am plecat din firma</button>
+                <div class="d-flex flex-row"><button id="inputModalCancelLeft" type="button" data-bs-toggle="modal" data-bs-target="#modalCancelLeft" class="btn btn-danger btn-square-md font-weight-bold fs-1 align-self-center my-0 px-4"> x </button></div>
             </div>
         </div>
+
+        <div class="my-3 ms-5">
+            <div class="d-flex flex-row">
+                <button type="button" class="btn btn-warning mx-auto p-3 border fs-1 me-5" onclick="toogleView('leftObsDiv')">Am plecat, fac o observatie </button>
+            </div>
+            <div class="d-none form-floating fs-4 mt-3" id="leftObsDiv">
+              <textarea class="form-control fs-4" placeholder="Scrieti observatia/motivarea aici" id="leftObs" style="height: 100px" required></textarea>
+              <label for="leftObs">Observatie</label>
+              <div class="d-flex flex-row justify-content-end mt-1 fs-5">
+                  <button onclick="plecat('cutext')" class="btn btn-primary font-weight-bold fs-3 align-self-center my-0 me-3">Trimite si confirma venirea</button>
+                  <button onclick="toogleView('leftObsDiv')" class="btn btn-danger btn-square-md font-weight-bold fs-2 align-self-center my-0" > Anuleaza </button>
+              </div>
+
+            </div>
+        </div>
+
+        <div class="my-3 ms-5">
+            <div class="d-flex flex-row">
+                <button type="button" class="btn mx-auto p-3 border fs-1 me-5" style="background-color: aqua" onclick="toogleView('comandDiv')">Am terminat o comamda</button>
+{#                <div class="d-flex flex-row"><button onclick="toogleView('comandDiv')" class="btn btn-danger btn-square-md font-weight-bold fs-1 align-self-center my-0"> x </button></div>#}
+            </div>
+            <div class="d-none fs-2 pt-3" id="comandDiv">
+                <div class="row mb-3 fs-3">
+                    <label for="comandaDen" class="form-label fs-2" style="text-align: left !important;">Denumire</label>
+                    <input class="form-control fs-3" list="datalistOptions" id="comandaDen" placeholder="Alege/Scrie denumirea produsului" required>
+                    <datalist id="datalistOptions">
+                      <option value="Panou de gard">
+                      <option value="Poarta">
+                      <option value="Portita">
+                </datalist>
+                </div>
+                <div class="row mb-3 fs-3">
+                    <label for="inputNrComanda" class="col-form-label fs-3 text-start">Numar comanda</label>
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control fs-3" id="inputNrComanda" required>
+                    </div>
+                </div>
+                <div class="form-floating fs-4 mt-3">
+                  <textarea class="form-control fs-4" placeholder="Scrieti observatia/motivarea aici" id="comandObs" style="height: 100px"></textarea>
+                  <label for="comandObs">Observatie</label>
+                  <div class="d-flex flex-row justify-content-end mt-1 fs-5">
+                      <button onclick="comanda()" class="btn btn-primary font-weight-bold fs-3 align-self-center my-0 me-3">Trimite si confirma venirea</button>
+                      <button onclick="toogleView('comandDiv')" class="btn btn-danger btn-square-md font-weight-bold fs-2 align-self-center my-0" > Anuleaza </button>
+                  </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    </div>
+    {% endif %}
     </div>
 {% endblock %}
 
 {% block scripts %}
 <script>
+
+idsmodals = ['modalCancelCome', 'modalCancelLeft']
+idsinputs = ['inputModalCancelCome', 'inputModalCancelLeft']
+
+for(let i=0;i<idsmodals.length;++i) {
+    myModal = document.getElementById(idsmodals[i])
+    myInput = document.getElementById(idsinputs[i])
+    myModal.addEventListener('shown.bs.modal', function () {
+        myInput.focus()
+    })
+}
+
+function toogleView(domname){
+    elem = document.getElementById(domname);
+    if(elem.classList.contains("d-none"))
+        elem.classList.remove("d-none");
+    else elem.classList.add("d-none");
+}
+
 function loadMap(loc){
-    if(loc.trim().length === 0)
-        alert("Locatie invalida!")
+    if(loc.trim().length === 0 || loc === "-") {
+        invComModal = new bootstrap.Modal(document.getElementById("modalInvalidLoc"), {});
+        invComModal.show();
+    }
     else {
         let adress = "https://www.google.com/maps/dir/" + loc + "//@" + loc + "47.1796062,24.1704734,21z";
-        //alert(adress)
         window.open(adress, '_blank');
     }
 }
 
 function createHttpRequest(adress, method='GET') {
-    httpRequest = new XMLHttpRequest()
-    httpRequest.open(method, adress)
-    httpRequest.send()
+    httpRequest = new XMLHttpRequest();
+    httpRequest.open(method, adress);
+    httpRequest.send();
     httpRequest.onreadystatechange = function(){
         // Process the server response here.
         if (httpRequest.readyState === XMLHttpRequest.DONE) {
           if (httpRequest.status === 200) {
-              location.reload()
+              location.reload();
           }
         }
     }
@@ -90,23 +322,58 @@ function getLocation(callback){
       );
     }
     else {
-      alert("Nu este disponibila locatia pe acest browser!");
+      invComModal = new bootstrap.Modal(document.getElementById("modalUnsupportedLoc"), {});
+      invComModal.show();
     }
 }
 
 
-function ajuns(){
+function ajuns(text = "") {
+    if(text === "cutext"){
+        text = document.getElementById("comeObs").value
+    }
+    processposition("{% url 'come' %}", text)
+}
+
+function recalc_ajuns(){
+    processposition("{% url 'come_recalc' %}")
+}
+
+function plecat(text = ""){
+    if(text === "cutext"){
+        text = document.getElementById("leftObs").value
+    }
+    processposition("{% url 'left' %}", text)
+}
+
+function recalc_plecat(){
+    processposition("{% url 'left_recalc' %}")
+}
+
+function processposition(url, text=""){
     getLocation((position) => {
-        adress = window.location.href + `/come?lat=${position.coords.latitude}&long=${position.coords.longitude}`;
-        alert(adress);
+        adress = url + `?lat=${position.coords.latitude}&long=${position.coords.longitude}&obs=${text}`;
         window.location.href = adress;
     });
 }
 
-function plecat(){
+function comanda(){
+    den = document.getElementById("comandaDen").value
+    nrcom = document.getElementById("inputNrComanda").value
+    text = document.getElementById("comandObs").value
+
+    if(den.trim().length === 0) {
+        invComModal = new bootstrap.Modal(document.getElementById("modalInvalidComand"), {});
+        invComModal.show();
+        return;
+    }
+    if(nrcom.trim().length === 0) {
+        invComModal = new bootstrap.Modal(document.getElementById("modalInvalidComand"), {});
+        invComModal.show();
+        return;
+    }
     getLocation((position) => {
-        adress = window.location.href + `/left?lat=${position.coords.latitude}&long=${position.coords.longitude}`;
-        alert(adress);
+        adress = "{% url 'comanda_finish' %}" + `?lat=${position.coords.latitude}&long=${position.coords.longitude}&obs=${text}&den=${den}&nrcom=${nrcom}`;
         window.location.href = adress;
     });
 }
