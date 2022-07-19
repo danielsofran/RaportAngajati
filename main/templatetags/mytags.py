@@ -15,6 +15,8 @@ def role_at_least(user, name):
         "Manager": 3,
         "Admin": 4,
     }
+    if not user.is_authenticated:
+        return False
     if name in priorit.keys():
         return priorit[user.role] >= priorit[name]
     return False

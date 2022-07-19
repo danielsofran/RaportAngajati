@@ -1,0 +1,288 @@
+{% extends 'base.html' %}
+
+{% block css %}
+<style>
+    .modal-dialog{
+        position: absolute;
+        top: 10%;
+        left: 10%;
+     }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="w-100 h-100 mb-5">
+
+    {# MODALS #}
+    <div class="modal fade" id="modalInvalidLoc" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel4" aria-hidden="true">
+      <div class="modal-dialog me-auto">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title fs-2" id="staticBackdropLabel4">Atentie!</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body fs-4">
+            Locatie invalida!
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary fs-3" data-bs-dismiss="modal">Ok</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="modalUnsupportedLoc" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel5" aria-hidden="true">
+      <div class="modal-dialog me-auto">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title fs-2" id="staticBackdropLabel5">Atentie!</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body fs-4">
+            Locatie invalida!<br>
+            Va rugam sa schimbati browser-ul.
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary fs-3" data-bs-dismiss="modal">Ok</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="modalCancelComand" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel6" aria-hidden="true">
+      <div class="modal-dialog me-auto">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title fs-2" id="staticBackdropLabel6">Atentie!</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body fs-4">
+            Ternimarea comenzii va fi stearsa!<br>
+            Sigur doriti sa o anulati?
+          </div>
+          <div class="modal-footer justify-content-around">
+            <button type="button" class="btn btn-danger fs-3" data-bs-dismiss="modal">Anuleaza</button>
+            <button type="button" class="btn btn-warning fs-3" id="btnCancelComand">Continua</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="modalEditComand" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel7" aria-hidden="true">
+      <div class="modal-dialog me-auto">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title fs-2" id="staticBackdropLabel6">Atentie!</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body fs-4">
+            Sigur doriti sa editati comanda?
+          </div>
+          <div class="modal-footer justify-content-around">
+            <button type="button" class="btn btn-danger fs-3" data-bs-dismiss="modal">Anuleaza</button>
+            <button type="button" class="btn btn-success fs-3" id="btnEditComand">Salveaza</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {# STATS #}
+    {% load mytags %}
+    <div class="container-fluid m-5 fs-1">
+        <h1 class="my-5" style="font-size: 200%">Status:</h1>
+        <div class="d-flex flex-row me-5 my-3">
+            <p class="me-5 text-nowrap"> Ora intrarii:&nbsp; </p>
+            <button disabled class="btn btn-secondary me-5 font-weight-bold fs-1">{{ oraIn }}</button>
+        </div>
+        <div class="d-flex flex-row me-5 my-3">
+            <p class="me-5 text-nowrap"> Ora plecarii: </p>
+            <button disabled class="btn btn-secondary me-5 font-weight-bold fs-1">{{ oraOut }}</button>
+        </div>
+        <div class="d-flex flex-row me-5 my-3 align-items-left">
+            <p class="me-5 text-nowrap"> Locatia intrarii:&nbsp; </p>
+            <button disabled class="btn btn-secondary me-5 font-weight-bold fs-3" title="Apasa pentru a deschide in Maps" >{{ locStrIn }}</button>
+            <div class="fs-1"> <button class="btn btn-light btn-lg" onclick="loadMap('{{ locIn }}')"><i class="fa-solid fa-location-crosshairs"></i></button> </div>
+            {% if request.user|is_recent:"In" %}<div class="fs-1 ms-2"> <button onclick="processposition('{% url 'come_recalc' %}')" class="btn btn-light btn-lg" >Relocare</button> </div>{% endif %}
+        </div>
+        <div class="d-flex flex-row me-5 my-3">
+            <p class="me-5 text-nowrap"> Locatia plecarii: </p>
+            <button disabled class="btn btn-secondary me-5 font-weight-bold fs-3" title="Apasa pentru a deschide in Maps">{{ locStrOut }}</button>
+            <div class="fs-1"> <button class="btn btn-light btn-lg" onclick="loadMap('{{ locOut }}')"><i class="fa-solid fa-location-crosshairs"></i></button> </div>
+            {% if request.user|is_recent:"Out" %}<div class="fs-1 ms-2"> <button onclick="processposition('{% url 'left_recalc' %}')" class="btn btn-light btn-lg" >Relocare</button> </div>{% endif %}
+        </div>
+    {% if obsIn != "" %}
+        <div class="my-3 w-50">
+            <p class="me-5 text-nowrap"> Observatie la intrare: </p>
+            <div class="form-floating">
+              <textarea disabled class="form-control fs-4" id="floatingTextarea2" style="height: 100px">{{ obsIn|safe }}</textarea>
+            </div>
+        </div>
+    {% endif %}
+    {% if obsOut != "" %}
+        <div class="my-3 w-50">
+            <p class="me-5 text-nowrap"> Observatie la iesire: </p>
+            <div class="form-floating">
+              <textarea disabled class="form-control fs-4" id="floatingTextarea2" style="height: 100px">{{ obsOut|safe }}</textarea>
+            </div>
+        </div>
+    {% endif %}
+    {% if comenzi|length > 0 %}
+        <div class="my-3 mt-5 w-50">
+        <div class="d-flex flex-row">
+            <p class="me-5 text-nowrap"> Comenzi finalizate: </p>
+            <button onclick="arataascunde()" id="btnShowHide" class="btn btn-primary btn-square-md font-weight-bold fs-3 align-self-center my-0 px-4" > Ascunde </button>
+        </div>
+            <div id="comenziShowDiv">
+            {% for comanda in comenzi %}
+                <div class="card fs-3 my-3">
+                  <div class="card-header fw-bold">
+                    {{ comanda.denumire }}
+                  </div>
+                    <div class="card-body">
+                      <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Numar comanda: {{ comanda.numar_comanda }}</li>
+                        <li class="list-group-item">Ora: {{ comanda.getStrTime }}</li>
+                        <li class="list-group-item">Observatie: {{ comanda.text }} </li>
+                      </ul>
+                        <div class="d-flex justify-content-around">
+                          <button type="button" data-bs-toggle="modal" data-bs-target="#modalCancelComand" data-bs-nr="{{ comanda.numar_comanda }}" class="btn btn-danger btn-square-md font-weight-bold fs-2 my-0"> Anuleaza </button>
+                          <button type="button" class="btn btn-primary btn-square-md font-weight-bold fs-2 my-0"
+                                  onclick="showEdit('{{ comanda.denumire }}','{{ comanda.numar_comanda }}', '{{ comanda.text }}')">Editeaza</button>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            </div>
+        </div>
+
+        <div class="d-none fs-2 pt-3 w-50" id="comandDiv">
+            <div class="row mb-3 fs-3">
+                <label for="comandaDen" class="form-label fs-2" style="text-align: left !important;">Denumire</label>
+                <input class="form-control fs-3" list="datalistOptions" id="comandaDen" placeholder="Alege/Scrie denumirea produsului" required>
+                <datalist id="datalistOptions">
+                  <option value="Panou de gard">
+                  <option value="Poarta">
+                  <option value="Portita">
+            </datalist>
+            </div>
+            <div class="row mb-3 fs-3">
+                <label for="inputNrComanda" class="col-form-label fs-3 text-start">Numar comanda</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control fs-3" id="inputNrComanda" required>
+                </div>
+            </div>
+            <div class="form-floating fs-4 mt-3">
+              <textarea class="form-control fs-4" placeholder="Scrieti observatia/motivarea aici" id="comandObs" style="height: 100px"></textarea>
+              <label for="comandObs">Observatie</label>
+              <div class="d-flex flex-row justify-content-start mt-1 fs-5">
+                  <button id="btnEditShowModal" type="button" data-bs-toggle="modal" data-bs-target="#modalEditComand" class="btn btn-primary font-weight-bold fs-2 align-self-center my-0 me-3">Salveaza</button>
+                  <button onclick="toogleView('comandDiv')" class="btn btn-danger font-weight-bold fs-2 align-self-center my-0" > Anuleaza </button>
+              </div>
+            </div>
+        </div>
+    {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+
+var modalCancelComand = document.getElementById('modalCancelComand')
+modalCancelComand.addEventListener('show.bs.modal', function (event) {
+  var button = event.relatedTarget
+  var recipient = button.getAttribute('data-bs-nr')
+  var butonContinua = document.getElementById('btnCancelComand')
+  butonContinua.onclick = () => {window.location.href = "{% url 'comanda_cancel' %}?nr="+recipient};
+})
+
+var modalEditComand = document.getElementById('modalEditComand')
+modalEditComand.addEventListener('show.bs.modal', function (event) {
+  // Button that triggered the modal
+  var button = event.relatedTarget
+  // Extract info from data-bs-* attributes
+  var recipient = button.getAttribute('data-bs-oldnr')
+  // If necessary, you could initiate an AJAX request here
+  // and then do the updating in a callback.
+  //
+  // Update the modal's content.
+  var butonSave = document.getElementById('btnEditComand')
+  den = document.getElementById("comandaDen").value
+  nr = document.getElementById("inputNrComanda").value
+  obs = document.getElementById("comandObs").value
+
+  butonSave.onclick = () => {window.location.href = `{% url 'comanda_edit' %}?oldnr=${recipient}&nr=${nr}&den=${den}&obs=${obs}`};
+})
+
+function toogleView(domname){
+    elem = document.getElementById(domname);
+    if(elem.classList.contains("d-none"))
+        elem.classList.remove("d-none");
+    else elem.classList.add("d-none");
+}
+
+function arataascunde(){
+    let domname = "comenziShowDiv"
+    elem = document.getElementById(domname);
+    btn = document.getElementById('btnShowHide');
+    if(elem.classList.contains("d-none")) {
+        elem.classList.remove("d-none");
+        btn.innerText = "Ascunde";
+    }
+    else {
+        elem.classList.add("d-none");
+        btn.innerText = "Arata";
+    }
+}
+
+function loadMap(loc){
+    if(loc.trim().length === 0 || loc === "-") {
+        invComModal = new bootstrap.Modal(document.getElementById("modalInvalidLoc"), {});
+        invComModal.show();
+    }
+    else {
+        let adress = "https://www.google.com/maps/dir/" + loc + "//@" + loc + "47.1796062,24.1704734,21z";
+        window.open(adress, '_blank');
+    }
+}
+
+function displayError(error) {
+  var errors = {
+    1: 'Permisiune refuzata',
+    2: 'Pozitie invalida',
+    3: 'Timpul a expirat',
+    default: "Eroare",
+  };
+  alert("Error: " + errors[error.code]);
+}
+
+function getLocation(callback){
+    if (navigator.geolocation) {
+      let timeoutVal = 10 * 1000 * 1000;
+      navigator.geolocation.getCurrentPosition(
+        callback,
+        displayError,
+        { enableHighAccuracy: true, timeout: timeoutVal, maximumAge: 0 }
+      );
+    }
+    else {
+      invComModal = new bootstrap.Modal(document.getElementById("modalUnsupportedLoc"), {});
+      invComModal.show();
+    }
+}
+
+function processposition(url, text=""){
+    getLocation((position) => {
+        adress = url + `?lat=${position.coords.latitude}&long=${position.coords.longitude}&obs=${text}`;
+        window.location.href = adress;
+    });
+}
+
+function showEdit(den, nr, text){
+    toogleView('comandDiv');
+    document.getElementById('comandaDen').value = den;
+    document.getElementById('inputNrComanda').value = nr;
+    document.getElementById('comandObs').value = text.replace('; ', '\n');
+    window.location.href = window.location.href.replace(/#.*/g, "") + "#comandDiv";
+    document.getElementById('btnEditShowModal').setAttribute("data-bs-oldnr", nr);
+}
+
+</script>
+{% endblock %}

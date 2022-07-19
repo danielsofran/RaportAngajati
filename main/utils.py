@@ -12,3 +12,6 @@ def getTime(info: main.models.Info = None):
     settings_time_zone = pytz.timezone(settings.TIME_ZONE)
     now = now.astimezone(settings_time_zone)
     return now
+
+def secureStr(text) -> str:
+    return str(text).replace("script", "")

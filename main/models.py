@@ -54,5 +54,5 @@ class Comanda(Info):
     denumire = models.CharField(blank=False, max_length=20, default="")
 
     def __str__(self):
-        return super().__str__() + " " + self.denumire
+        return super().__str__() + " " + self.numar_comanda + " " + self.denumire
 

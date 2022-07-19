@@ -16,5 +16,10 @@ urlpatterns = [
     path("home/left_recalc", login_required(views.recalc_left), name="left_recalc"),
 
     path("comanda/finish", login_required(views.comandaFinish), name="comanda_finish"),
-    path("detalii", login_required(views.HomeView.as_view()), name="detalii"),
+    path("comanda/cancel", login_required(views.comandaCancel), name="comanda_cancel"),
+    path("comanda/edit", login_required(views.comandaEdit), name="comanda_edit"),
+
+    path("activity/today", login_required(views.ActTodayView.as_view()), name="actToday"),
+
+    path("detalii", login_required(views.detalii), name="detalii"),
 ]

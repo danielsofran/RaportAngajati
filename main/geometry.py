@@ -10,9 +10,9 @@ class Shape(ABC):
 
 class Triunghi(Shape):
     def __init__(self, point1: list, point2: list, point3: list):
-        self.__point1 = point1[:]
-        self.__point2 = point2[:]
-        self.__point3 = point3[:]
+        self.__point1 = point1
+        self.__point2 = point2
+        self.__point3 = point3
 
     @staticmethod
     def __list_without(l1: list, l2: list) -> list:
@@ -273,7 +273,7 @@ class Triunghi(Shape):
         return self.__pointTriangleDistance(array(TRI), point + [1])[0]
 
 class Patrulater(Shape):
-    def __int__(self, point1: list, point2: list, point3: list, point4: list):
+    def __init__(self, point1: list, point2: list, point3: list, point4: list):
         self.__point1 = point1
         self.__point2 = point2
         self.__point3 = point3
@@ -311,3 +311,17 @@ class Patrulater(Shape):
         t1 = Triunghi(*diag, rest[0])
         t2 = Triunghi(*diag, rest[1])
         return min(t1.distance(point), t2.distance(point))
+
+class Cerc(Shape):
+    @staticmethod
+    def __dist(point1: list, point2: list):
+        return sqrt((point1[1]-point2[1])**2 + (point1[0]-point2[0])**2)
+
+    def __init__(self, center: list, point: list):
+        self.__center = center
+        self.__raza = Cerc.__dist(center, point)
+
+    def distance(self, point: list) -> float:
+        dst = Cerc.__dist(self.__center, point) - self.__raza
+        if dst < 0: return 0
+        return dst

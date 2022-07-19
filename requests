@@ -17,7 +17,15 @@ Informatii:
     mesaje
 
     pauze?
-    defecte?
+    defecte - la observatii
 
 Manager:
     reset nr reloc
+
+Cont
+Editable:
+    username
+    nume
+    email
+    telefon
+    parola

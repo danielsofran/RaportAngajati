@@ -13,7 +13,7 @@
             Activitate
           </a>
           <ul class="dropdown-menu fs-5" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" href="#">Azi</a></li>
+                <li><a class="dropdown-item" href="{% url 'actToday' %}">Azi</a></li>
                 <li><a class="dropdown-item" href="#">Ieri</a></li>
                 <li><a class="dropdown-item" href="#">Ultimele 3 zile</a></li>
                 <li><a class="dropdown-item" href="#">Ultima saptamana</a></li>
@@ -24,9 +24,9 @@
             Cont
           </a>
           <ul class="dropdown-menu fs-5" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" href="#">Detalii</a></li>
+                <li><a class="dropdown-item" href="{% url 'detalii' %}">Detalii</a></li>
                 {% load mytags %}
-                {% if request.user|has_group:"Manager" %}
+                {% if user.is_authenticated and request.user|role_at_least:"Manager" %}
                 <li><a class="dropdown-item" href="#">Vezi Angajatii</a></li>
                 <li><a class="dropdown-item" href="#">Setari</a></li>
                 {% endif %}

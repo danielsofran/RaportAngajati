@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container-fluid m-5 fs-1 w-auto">
+    <h1 class="my-5" style="font-size: 200%">Detalii cont</h1>
+    <table class="table table-striped table-hover w-50">
+      <tr>
+          <th> <span class="fw-normal"> Nume de utilizator:</span><br> {{ user.username }}</th>
+      </tr>
+        <tr>
+          <th> <span class="fw-normal">Nume:</span><br>{{ user.nume }} </th>
+      </tr>
+        <tr>
+          <th> <span class="fw-normal">Email:</span><br>{{ user.email }} </th>
+      </tr>
+        <tr>
+          <th> <span class="fw-normal">Telefon:</span><br>{{ user.telefon }} </th>
+      </tr>
+        <tr>
+          <th> <span class="fw-normal">Statut:</span><br>{{ user.role }} </th>
+      </tr>
+        <tr>
+          <th>
+              <span class="fw-normal">Parola:</span><br>
+              <div class="d-flex flex-row">
+                <input type="password" id='inputPwd' class="form-control fs-1 me-5" value="{{ user.password }}" disabled>
+                <button onclick="toogleViewPwd()" class="fs-3 border-0" style="background-color: transparent" id="btnPwd"> <i class="fa-solid fa-eye"></i> </button>
+              </div>
+          </th>
+      </tr>
+    </table>
+    <button class="btn btn-primary fs-1 mt-5" onclick="toogleView('divDetalii')"> Modifica cont </button>
+
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+
+function toogleView(domname){
+    elem = document.getElementById(domname);
+    if(elem.classList.contains("d-none"))
+        elem.classList.remove("d-none");
+    else elem.classList.add("d-none");
+}
+
+function toogleViewPwd(){
+    var x = document.getElementById("inputPwd");
+    var btn = document.getElementById("btnPwd");
+    if (x.type === "password") {
+      x.type = "text";
+      btn.innerHTML = "<i class='fa-solid fa-eye-slash'></i>";
+    } else {
+      x.type = "password";
+      btn.innerHTML = "<i class='fa-solid fa-eye'></i>";
+    }
+}
+
+</script>
+{% endblock %}
