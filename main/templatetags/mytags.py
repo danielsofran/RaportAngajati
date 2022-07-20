@@ -28,11 +28,20 @@ def is_recent(user, tip):
     if tip == 'In': model = models.Intrare
     elif tip == 'Out': model = models.Iesire
 
+    SEC_RECALC_AFTER = 60
+    NR_RECALC_POZ = 3
+    try:
+        setare = models.OwnSettings.objects.all()[0]
+        SEC_RECALC_AFTER = setare.secafterrecalc
+        NR_RECALC_POZ = setare.nrrecalcpoz
+    except:
+        print("Nu exista setari")
+
     if model is not None:
         now = utils.getTime()
         try: info = model.objects.get(user=user, datetime__day=now.day)
         except: return False
         dtime = now - info.datetime
-        if dtime.seconds <= settings.SEC_RECALC_AFTER:
+        if dtime.seconds <= SEC_RECALC_AFTER:
             return True
     return False

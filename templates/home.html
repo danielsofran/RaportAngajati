@@ -282,6 +282,7 @@ function recalc_plecat(){
 
 function processposition(url, text=""){
     getLocation((position) => {
+        text = text.replace(/\n\r?/g, '; ');
         adress = url + `?lat=${position.coords.latitude}&long=${position.coords.longitude}&obs=${text}`;
         window.location.href = adress;
     });

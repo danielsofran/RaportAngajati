@@ -60,6 +60,14 @@ def logout_user(request):
 def come(request):
     if request.method == 'GET':
         now = utils.getTime()
+        SEC_RECALC_AFTER = 60
+        NR_RECALC_POZ = 3
+        try:
+            setare = models.OwnSettings.objects.all()[0]
+            SEC_RECALC_AFTER = setare.secafterrecalc
+            NR_RECALC_POZ = setare.nrrecalcpoz
+        except:
+            print("Nu exista setari")
         try:
             data = models.Iesire.objects.get(user=request.user, datetime__day=now.day)
             messages.success(request, ("Nu puteti inregistra intrarea din moment ce iesirea este salvata!"))
@@ -72,7 +80,7 @@ def come(request):
         except:
             models.Intrare.objects.create(user=request.user, latitude=request.GET['lat'], longitude=request.GET['long'], datetime=now, nrcalcloc=1, text=utils.secureStr(request.GET['obs']))
             messages.success(request, ("Succes!"))
-            messages.success(request, (f"Daca considerati ca locatia nu este precisa(erori de peste 10-20m), puteti sa folositi butonul relocare de maxim {settings.NR_RECALC_POZ} ori.\nTimpul limita pentru o relocare este de un minut dupa ultima relocare."))
+            messages.success(request, (f"Daca considerati ca locatia nu este precisa(erori de peste 10-20m), puteti sa folositi butonul relocare de maxim {NR_RECALC_POZ} ori.\nTimpul limita pentru o relocare este de un minut dupa ultima relocare."))
     else: print("POST in come")
     return redirect('home')
 
@@ -92,24 +100,39 @@ def cancel_come(request):
     return redirect('home')
 
 def recalc_come(request):
+    SEC_RECALC_AFTER = 60
+    NR_RECALC_POZ = 3
+    try:
+        setare = models.OwnSettings.objects.all()[0]
+        SEC_RECALC_AFTER = setare.secafterrecalc
+        NR_RECALC_POZ = setare.nrrecalcpoz
+    except: print("Nu exista setari")
     try:
         now = utils.getTime()
         data = models.Intrare.objects.get(user=request.user, datetime__day=now.day)
-        if (now-utils.getTime(data)).seconds > settings.SEC_RECALC_AFTER:
+        if (now-utils.getTime(data)).seconds > SEC_RECALC_AFTER:
             raise ValueError("Timpul pentru relocare a expirat!")
         nr = data.nrcalcloc
-        if nr <= settings.NR_RECALC_POZ:
+        if nr <= NR_RECALC_POZ:
             data.nrcalcloc = data.nrcalcloc + 1
             data.latitude = request.GET['lat']
             data.longitude = request.GET['long']
             data.save(update_fields=['latitude', 'longitude', 'nrcalcloc'])
-            messages.success(request, (f"Locatie actualizata! Mai aveti {settings.NR_RECALC_POZ +1 - data.nrcalcloc} relocari."))
+            messages.success(request, (f"Locatie actualizata! Mai aveti {NR_RECALC_POZ +1 - data.nrcalcloc} relocari."))
         else: messages.success(request, (f"Nu mai aveti relocari disponibile."))
     except: messages.success(request, ("Timpul pentru relocare a expirat!"))
     return redirect('actToday')
 
 def left(request):
     now = utils.getTime()
+    SEC_RECALC_AFTER = 60
+    NR_RECALC_POZ = 3
+    try:
+        setare = models.OwnSettings.objects.all()[0]
+        SEC_RECALC_AFTER = setare.secafterrecalc
+        NR_RECALC_POZ = setare.nrrecalcpoz
+    except:
+        print("Nu exista setari")
     if models.Intrare.objects.filter(user=request.user, datetime__day=now.day).__len__() <= 0:
         messages.success(request, (f"Nu puteti parasi inainte sa intrati!"))
         return redirect('home')
@@ -120,7 +143,7 @@ def left(request):
     except:
         models.Iesire.objects.create(user=request.user, latitude=request.GET['lat'], longitude=request.GET['long'], datetime=now, nrcalcloc=1, text=utils.secureStr(request.GET['obs']))
         messages.success(request, ("Succes!"))
-        messages.success(request, (f"Daca considerati ca locatia nu este precisa(erori de peste 10-20m), puteti sa folositi butonul relocare de maxim {settings.NR_RECALC_POZ} ori.\nTimpul limita pentru o relocare este de un minut dupa ultima relocare."))
+        messages.success(request, (f"Daca considerati ca locatia nu este precisa(erori de peste 10-20m), puteti sa folositi butonul relocare de maxim {NR_RECALC_POZ} ori.\nTimpul limita pentru o relocare este de un minut dupa ultima relocare."))
     return redirect('home')
 
 def cancel_left(request):
@@ -140,6 +163,14 @@ def cancel_left(request):
 
 def recalc_left(request):
     now = utils.getTime()
+    SEC_RECALC_AFTER = 60
+    NR_RECALC_POZ = 3
+    try:
+        setare = models.OwnSettings.objects.all()[0]
+        SEC_RECALC_AFTER = setare.secafterrecalc
+        NR_RECALC_POZ = setare.nrrecalcpoz
+    except:
+        print("Nu exista setari")
     try:
         models.Intrare.objects.get(user=request.user, datetime__day=now.day)
     except:
@@ -147,15 +178,15 @@ def recalc_left(request):
         return redirect('actToday')
     try:
         data = models.Iesire.objects.get(user=request.user, datetime__day=now.day)
-        if (now-utils.getTime(data)).seconds > settings.SEC_RECALC_AFTER:
+        if (now-utils.getTime(data)).seconds > SEC_RECALC_AFTER:
             raise ValueError("Timpul pentru relocare a expirat!")
         nr = data.nrcalcloc
-        if nr <= settings.NR_RECALC_POZ:
+        if nr <= NR_RECALC_POZ:
             data.nrcalcloc = data.nrcalcloc + 1
             data.latitude = request.GET['lat']
             data.longitude = request.GET['long']
             data.save(update_fields=['latitude', 'longitude', 'nrcalcloc'])
-            messages.success(request, (f"Locatie actualizata! Mai aveti {settings.NR_RECALC_POZ +1 - data.nrcalcloc} relocari."))
+            messages.success(request, (f"Locatie actualizata! Mai aveti {NR_RECALC_POZ +1 - data.nrcalcloc} relocari."))
         else: messages.success(request, (f"Nu mai aveti relocari disponibile."))
     except: messages.success(request, ("Nu exista o locatie initiala ce poate fi actualizata"))
     return redirect('actToday')
@@ -223,48 +254,24 @@ def comandaCancel(request):
 #endregion
 
 def detalii(request):
+    if request.method == 'POST':
+        user = request.user
+        if not utils.isEqual(user, request):
+            if utils.validAccountModif(request):
+                user.username = request.POST['user']
+                user.email = request.POST['email']
+                user.telefon = request.POST['tel']
+                user.password = request.POST['pwd']
+                user.save(force_update=True)
+                login(request, user)
+                messages.success(request, ("Modificarile au fost efectuate!"))
+        else:
+            messages.success(request, ("Nu exista nici o modificare!"))
     return render(request, 'detalii.html', {})
 
 @method_decorator(login_required, name='dispatch')
 class HomeView(TemplateView):
     template_name = 'home.html'
-
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     context2 = {}
-    #     now = utils.getTime()
-    #     user = self.request.user
-    #
-    #     # In
-    #     try:
-    #         gasit = models.Intrare.objects.get(user=user, datetime__day=now.day)
-    #         context2['oraIn'] = utils.getTime(gasit).strftime("%H:%M")
-    #         context2['locIn'] = f"{gasit.latitude},{gasit.longitude}"
-    #         context2['obsIn'] = gasit.text
-    #     except:
-    #         context2['oraIn'] = "-"
-    #         context2['locIn'] = "-"
-    #         context2['obsIn'] = ""
-    #
-    #     # Out
-    #     try:
-    #         gasit = models.Iesire.objects.get(user=user, datetime__day=now.day)
-    #         context2['oraOut'] = utils.getTime(gasit).strftime("%H:%M")
-    #         context2['locOut'] = f"{gasit.latitude},{gasit.longitude}"
-    #         context2['obsOut'] = gasit.text
-    #     except:
-    #         context2['oraOut'] = "-"
-    #         context2['locOut'] = "-"
-    #         context2['obsOut'] = ""
-    #
-    #     #Comenzi
-    #     try:
-    #         comenzi = models.Comanda.objects.filter(user=user, datetime__day=now.day)
-    #         context2['comenzi'] = comenzi
-    #     except:
-    #         context2['comenzi'] = []
-    #     context.update(context2)
-    #     return context
 
 @method_decorator(login_required, name='dispatch')
 class ActTodayView(TemplateView):
@@ -281,10 +288,12 @@ class ActTodayView(TemplateView):
             gasit = models.Intrare.objects.get(user=user, datetime__day=now.day)
             context2['oraIn'] = utils.getTime(gasit).strftime("%H:%M")
             context2['locIn'] = f"{gasit.latitude},{gasit.longitude}"
+            context2['locStrIn'] = utils.locStr(gasit)
             context2['obsIn'] = gasit.text
         except:
             context2['oraIn'] = "-"
             context2['locIn'] = "-"
+            context2['locStrIn'] = "-"
             context2['obsIn'] = ""
 
         # Out
@@ -292,10 +301,12 @@ class ActTodayView(TemplateView):
             gasit = models.Iesire.objects.get(user=user, datetime__day=now.day)
             context2['oraOut'] = utils.getTime(gasit).strftime("%H:%M")
             context2['locOut'] = f"{gasit.latitude},{gasit.longitude}"
+            context2['locStrOut'] = utils.locStr(gasit)
             context2['obsOut'] = gasit.text
         except:
             context2['oraOut'] = "-"
             context2['locOut'] = "-"
+            context2['locStrOut'] = "-"
             context2['obsOut'] = ""
 
         #Comenzi

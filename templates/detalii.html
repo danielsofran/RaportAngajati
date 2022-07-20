@@ -30,8 +30,42 @@
           </th>
       </tr>
     </table>
-    <button class="btn btn-primary fs-1 mt-5" onclick="toogleView('divDetalii')"> Modifica cont </button>
-
+    <button class="btn btn-primary fs-1 mt-5" onclick="toogleViewModif()"> Modifica cont </button>
+    <div id="divDetalii" class="d-none mt-5 fs-2 w-50">
+        <form method="POST">
+            {% csrf_token %}
+            <div class="mb-3 row">
+              <label for="inUsername" class="col-sm-2 col-form-label pe-3">User</label>
+              <div class="col-sm-10 pt-2">
+                <input type="text" class="form-control fs-2" id="inUsername" value="{{ user.username }}" name="user">
+              </div>
+            </div>
+            <div class="mb-3 row">
+              <label for="inEmail" class="col-sm-2 col-form-label">Email</label>
+              <div class="col-sm-10 pt-2">
+                <input type="email" class="form-control fs-2" id="inEmail" value="{{ user.email }}" name="email">
+              </div>
+            </div>
+            <div class="mb-3 row">
+              <label for="inTelefon" class="col-sm-2 col-form-label">Telefon</label>
+              <div class="col-sm-10 pt-2">
+                <input type="text" class="form-control fs-2" id="inTelefon" value="{{ user.telefon }}" name="tel">
+              </div>
+            </div>
+            <div class="mb-3 row">
+              <label for="inPassword" class="col-sm-2 col-form-label">Parola</label>
+              <div class="col-sm-10 pt-2">
+                <input type="text" class="form-control fs-2" id="inPassword" value="{{ user.password }}" name="pwd">
+              </div>
+            </div>
+            <div class="mb-3 row">
+                <div class="d-flex flex-row justify-content-around">
+                    <button type="reset" onclick="toogleViewModif()" class="btn btn-danger fs-3" >Anuleaza</button>
+                    <button type="submit" class="btn btn-success fs-3" >Salveaza</button>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
 
 {% endblock %}
@@ -56,6 +90,14 @@ function toogleViewPwd(){
       x.type = "password";
       btn.innerHTML = "<i class='fa-solid fa-eye'></i>";
     }
+}
+
+function toogleViewModif(){
+    toogleView('divDetalii')
+    document.getElementById('inUsername').value = '{{ user.username }}'
+    document.getElementById('inEmail').value = '{{ user.email }}'
+    document.getElementById('inTelefon').value = '{{ user.telefon }}'
+    document.getElementById('inPassword').value = '{{ user.password }}'
 }
 
 </script>

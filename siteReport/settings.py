@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'dynamic_preferences',
+    'dynamic_preferences.users.apps.UserPreferencesConfig',
     'main.apps.MainConfig',
     'login.apps.LoginConfig',
 ]
@@ -65,6 +67,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'dynamic_preferences.processors.global_preferences',
             ],
         },
     },
@@ -127,8 +130,8 @@ AUTH_USER_MODEL = 'main.User'
 
 TIME_ZONE = 'Europe/Bucharest'
 
-NR_RECALC_POZ = 3
-
-SEC_RECALC_AFTER = 60
-
-FIRMA_SHAPE = [[],[],[]]
+# NR_RECALC_POZ = 3
+#
+# SEC_RECALC_AFTER = 60
+#
+# FIRMA_SHAPE = [[],[],[]]
