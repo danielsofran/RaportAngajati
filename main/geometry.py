@@ -1,3 +1,4 @@
+import decimal
 import math
 from abc import ABC, abstractmethod
 
@@ -274,14 +275,35 @@ class Triunghi(Shape):
         PP0 = B + s * E0 + t * E1
         return dist, PP0
 
+    def __factor(self, point=None):
+        lst = [*self.__point1, *self.__point2, *self.__point3]
+        if point is not None:
+            lst += [point[0], point[1]]
+        mx = 0
+        for nr in lst:
+            d = str(nr).split('.')
+            if len(d) < 2: continue
+            exp = len(d[1])
+            mx = max(mx, exp)
+        return 10**mx
+
     def closestPoint(self, point: list) -> list:
-        TRI = [self.__point1 + [1], self.__point2 + [1], self.__point3 + [1]]
-        P0 = self.__pointTriangleDistance(array(TRI), point + [1])[1]
-        return [P0[0], P0[1]]
+        factor = self.__factor(point)
+        TRI = [[self.__point1[0]*factor] + [self.__point1[1]*factor] + [1],
+               [self.__point2[0]*factor] + [self.__point2[1]*factor] + [1],
+               [self.__point3[0]*factor] + [self.__point3[1]*factor] + [1]]
+        P = [point[0]*factor] + [point[1]*factor] + [1]
+        P0 = self.__pointTriangleDistance(array(TRI), P)[1]
+        return [P0[0]/factor, P0[1]/factor]
 
     def distance(self, point: list) -> float:
-        TRI = [self.__point1 + [1], self.__point2 + [1], self.__point3 + [1]]
-        return self.__pointTriangleDistance(array(TRI), point + [1])[0]
+        #TRI = [self.__point1 + [1], self.__point2 + [1], self.__point3 + [1]]
+        factor = self.__factor(point)
+        TRI = [[self.__point1[0] * factor] + [self.__point1[1] * factor] + [1],
+               [self.__point2[0] * factor] + [self.__point2[1] * factor] + [1],
+               [self.__point3[0] * factor] + [self.__point3[1] * factor] + [1]]
+        P = [point[0] * factor] + [point[1] * factor] + [1]
+        return self.__pointTriangleDistance(array(TRI), P)[0]/factor
 
 class Patrulater(Shape):
     def __init__(self, point1: list, point2: list, point3: list, point4: list):
@@ -377,7 +399,20 @@ class Cerc(Shape):
 
     def __init__(self, center: list, point: list):
         self.__center = center
+        self.__point = point
         self.__raza = Cerc.__dist(center, point)
+
+    @property
+    def center(self):
+        return (self.__center[0], self.__center[1])
+
+    @property
+    def point(self):
+        return (self.__point[0], self.__point[1])
+
+    @property
+    def raza(self):
+        return self.__raza
 
     def distance(self, point: list) -> float:
         dst = Cerc.__dist(self.__center, point) - self.__raza

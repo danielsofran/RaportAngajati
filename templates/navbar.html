@@ -6,11 +6,11 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item ms-5">
-          <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Acasa</a>
+          <a class="nav-link active" aria-current="page" href="{% url 'home' %}"><i class="fa-solid fa-house me-3"></i>Acasa</a>
         </li>
         <li class="nav-item dropdown ms-5">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Activitate
+            <i class="fa-solid fa-list-check me-3"></i> Activitate
           </a>
           <ul class="dropdown-menu fs-5" aria-labelledby="navbarDropdown">
                 <li><a class="dropdown-item" href="{% url 'actToday' %}">Azi</a></li>
@@ -21,7 +21,7 @@
         </li>
         <li class="nav-item dropdown ms-5">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Cont
+            <i class="fa-solid fa-circle-user me-3"></i>Cont
           </a>
           <ul class="dropdown-menu fs-5" aria-labelledby="navbarDropdown">
                 <li><a class="dropdown-item" href="{% url 'detalii' %}">Detalii</a></li>

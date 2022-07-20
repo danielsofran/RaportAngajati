@@ -18,6 +18,7 @@ class GeometryTestCase(TestCase):
         self.t = Triunghi([0, 0], [0, 5], [1.5, 0])
         pt = self.t.closestPoint([2, 0])
         self.assertEqual(pt, [1.5, 0])
+        self.assertEqual(self.p.closestPoint([2, 0]), [1, 0])
         cerc = self.c
         self.assertEqual(cerc.closestPoint([-2, 0]), [-1, 0])
         self.assertEqual(cerc.closestPoint([2, 0]), [1, 0])
@@ -72,3 +73,6 @@ class UtilsTestCase(TestCase):
         self.assertEqual(now.day, 20)
         now = datetime.date(year=2022, month=7, day=22)
         self.assertEqual(utils.getNextDay(now).day, 25)
+
+    def test_location_formula(self):
+        pass

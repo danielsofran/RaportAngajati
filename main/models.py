@@ -22,7 +22,7 @@ class Forma(models.Model):
             strpcts.remove("")
         pcts = []
         for pctstr in strpcts:
-            s = str(pctstr).split(' ')
+            s = str(pctstr).replace('\r', '').split(' ')
             pcts.append([float(s[0]), float(s[1])])
         return model(*pcts)
     def __str__(self): return self.nume

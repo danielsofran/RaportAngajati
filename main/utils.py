@@ -3,6 +3,8 @@ import math
 
 from django import utils
 import pytz
+import haversine as hs
+from haversine import Unit
 from django.utils.timezone import activate, localtime
 from django.contrib import messages
 
@@ -59,17 +61,19 @@ def getPrevDay(curent: datetime.datetime) -> datetime.datetime:
     return curent
 
 def getMinDistance(info: models.Info) -> float:
-    def get_min_distance(position: list) -> float:
+    def get_min_distance(position: tuple) -> float:
         # returneaza distanta in metrii pana la cea mai apropiata unitate
         forme = models.Forma.objects.all()
         minim = 2**32
         for forma in forme:
-            pct = forma.getShape().closestPoint(position)
-            dst = degToMeters(pct[0], pct[1], position[0], position[1])
-            if dst < minim:
-                minim = dst
+            shape = forma.getShape()
+            dc = hs.haversine(shape.center, position, unit=Unit.METERS)
+            raza = hs.haversine(shape.center, shape.point, unit=Unit.METERS)
+            diff = dc - raza
+            if diff < 0: diff = 0
+            minim = min(minim, diff)
         return minim
-    return get_min_distance([info.latitude, info.longitude])
+    return get_min_distance((info.latitude, info.longitude))
 
 def locStr(info: models.Info) -> str:
     error = models.OwnSettings.objects.all()[0].disterror
