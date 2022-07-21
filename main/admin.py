@@ -34,6 +34,7 @@ ADMIN_REORDER = (
 },
 )
 admin.site.register(models.Forma)
+admin.site.register(models.Harta)
 admin.site.register(models.OwnSettings)
 
 admin.site.register(models.User)

@@ -85,8 +85,13 @@
 
     {# STATS #}
     {% load mytags %}
+    {% if user.role == "Angajat" %}
     <div class="container-fluid m-5 fs-1">
         <h1 class="my-5" style="font-size: 200%">Status:</h1>
+        <div class="d-flex flex-row me-5 my-3">
+            <p class="me-5 text-nowrap"> Data: </p>
+            <p class="me-5 text-nowrap text-decoration-underline"> {{ data }} </p>
+        </div>
         <div class="d-flex flex-row me-5 my-3">
             <p class="me-5 text-nowrap"> Ora intrarii:&nbsp; </p>
             <button disabled class="btn btn-secondary me-5 font-weight-bold fs-1">{{ oraIn }}</button>
@@ -177,10 +182,17 @@
               </div>
             </div>
         </div>
-    {% endif %}
     </div>
+{% endif %}
+    {% elif user|role_at_least:"Manager" %} <!-- MANAGER -->
+        <div class="mt-5">
+            {% include 'tableActivity.html' with tabledata=tabledata %}
+        </div>
+    {% endif %}
 </div>
 {% endblock %}
+
+{#{% if %}#}
 
 {% block scripts %}
 <script>
@@ -238,7 +250,10 @@ function loadMap(loc){
         invComModal.show();
     }
     else {
-        let adress = "https://www.google.com/maps/dir/" + loc + "//@" + loc + "47.1796062,24.1704734,21z";
+        //let adress = "https://www.google.com/maps/dir/" + loc + "//@" + loc + ",21z";
+        let adress = "{{ harta|safe }}";
+        let pos = loc.trim().split(',')
+        adress = adress.replace('^^lat^^', pos[0]).replace('^^long^^', pos[1])
         window.open(adress, '_blank');
     }
 }

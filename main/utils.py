@@ -11,9 +11,11 @@ from django.contrib import messages
 from . import models
 from siteReport import settings
 
-def getTime(info: models.Info = None):
+def getTime(info = None):
+    now = None
     if info is None: now = utils.timezone.now()
-    else: now = info.datetime
+    elif isinstance(info, models.Info): now = info.datetime
+    elif isinstance(info, datetime.datetime): now = info
     settings_time_zone = pytz.timezone(settings.TIME_ZONE)
     now = now.astimezone(settings_time_zone)
     return now
@@ -60,6 +62,14 @@ def getPrevDay(curent: datetime.datetime) -> datetime.datetime:
         curent = curent - datetime.timedelta(days=1)
     return curent
 
+def rangeDays(datatimein: datetime.datetime, datetimeout: datetime.datetime):
+    rez = []
+    while datatimein <= datetimeout:
+        print(datatimein)
+        rez.append(datatimein)
+        datatimein = getNextDay(datatimein)
+    return rez
+
 def getMinDistance(info: models.Info) -> float:
     def get_min_distance(position: tuple) -> float:
         # returneaza distanta in metrii pana la cea mai apropiata unitate
@@ -77,7 +87,8 @@ def getMinDistance(info: models.Info) -> float:
 
 def locStr(info: models.Info) -> str:
     error = models.OwnSettings.objects.all()[0].disterror
-    dst = getMinDistance(info)
+    try: dst = getMinDistance(info)
+    except: return "-"
     diff = dst - error
     if diff <= 0:
         return "In firma"
@@ -89,10 +100,15 @@ def secureStr(text) -> str:
     return str(text).replace("script", "")
 
 def isEqual(user, request) -> bool:
-    return user.username == request.POST['user'] and \
+    c1=    user.username == request.POST['user'] and \
            user.email == request.POST['email'] and \
            user.telefon == request.POST['tel'] and \
            user.password == request.POST['pwd']
+    c2 = True
+    if request.user.role == "Manager" or request.user.role == "Admin":
+        c2 = user.nume == request.POST['nume'] and \
+             user.role == request.POST['role']
+    return c1 and c2
 
 def degToMeters(lat1, lon1, lat2, lon2) -> float:
     R = 6387.137 # Radius of earth in km
@@ -105,7 +121,17 @@ def degToMeters(lat1, lon1, lat2, lon2) -> float:
     d = R * c
     return d * 1000
 
-def validAccountModif(request) -> bool:
+def validAccountModif(user, request) -> bool:
+    if len(str(request.POST['user'])) < 5:
+        messages.success(request, ("Numele de utilizator ar trebui sa aiba cel putin 5 caractere."))
+        return False
+    if user.username != request.POST['user']:
+        try:
+            anotherusername = models.User.objects.get(username=request.POST['user'])
+            messages.success(request, ("Acest nume de utilizator exista deja!\nIncercati altul."))
+            return False
+        except: pass
+
     tel = str(request.POST['tel'])
     tel.replace(' ', '')
     if tel.__len__() < 10:
@@ -122,4 +148,12 @@ def validAccountModif(request) -> bool:
     if len(parola) < 8:
         messages.success(request, ("Parola trebuie sa contina minim 8 caractere!"))
         return False
+
+    if user.role == "Manager" or user.role == "Admin":
+        if request.POST['role'] not in ('Angajat', 'Vizualizator', 'Manager', 'Admin'):
+            messages.success(request, ("Statut invalid!"))
+            return False
+        if len(request.POST['nume']) < 3:
+            messages.success(request, ("Nume prea scurt!"))
+            return False
     return True

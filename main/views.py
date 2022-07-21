@@ -1,3 +1,6 @@
+import datetime
+
+import pytz
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib import messages
@@ -6,9 +9,11 @@ from django.contrib.auth.decorators import user_passes_test, login_required
 from django.utils.decorators import method_decorator
 from django.views.generic import View, TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
 
+import main.templatetags.mytags
 from . import models
 from . import utils
 from siteReport import settings
+from .viewmodels import *
 
 # Create your views here.
 
@@ -253,39 +258,79 @@ def comandaCancel(request):
 
 #endregion
 
-def detalii(request):
+def detalii(request, username=None):
+    user = request.user
+    if username is not None and (user.role == "Manager" or user.role == "Admin"):
+        user = models.User.objects.get(username=username)
+    elif username is not None:
+        return redirect('detalii')
     if request.method == 'POST':
-        user = request.user
         if not utils.isEqual(user, request):
-            if utils.validAccountModif(request):
+            if utils.validAccountModif(user, request):
                 user.username = request.POST['user']
                 user.email = request.POST['email']
                 user.telefon = request.POST['tel']
                 user.password = request.POST['pwd']
+                if username is not None and (user.role == "Manager" or user.role == "Admin"):
+                    user.nume = request.POST['nume']
+                    user.role = request.POST['role']
                 user.save(force_update=True)
                 login(request, user)
                 messages.success(request, ("Modificarile au fost efectuate!"))
         else:
             messages.success(request, ("Nu exista nici o modificare!"))
-    return render(request, 'detalii.html', {})
+    return render(request, 'detalii.html', {"userdata": user})
 
 @method_decorator(login_required, name='dispatch')
 class HomeView(TemplateView):
     template_name = 'home.html'
 
+#region Activity
+
 @method_decorator(login_required, name='dispatch')
-class ActTodayView(TemplateView):
+class ActView(TemplateView):
     template_name = 'activityToday.html'
+
+    def _getPeriod(self, **kwargs) -> tuple:
+        pass
+
+    def get(self, request, *args, **kwargs):
+        if request.user.role == "Angajat":
+            if 'datein' in kwargs and 'dateout' in kwargs:
+                if kwargs['datein'] != kwargs["dateout"]:
+                    return redirect('actToday')
+            context = self.get_context_data(**kwargs)
+            datain = self._getPeriod(**context)[0].strftime("%d.%m.%Y")
+            dataout = self._getPeriod(**context)[1].strftime("%d.%m.%Y")
+            if datain == dataout: context.update(data=datain)
+            else: context.update(datain=datain, dataout=dataout)
+            return render(request, self.template_name, context)
+        else: # Manager, Admin
+            datetimein, datetimeout = self._getPeriod(**kwargs)
+            harta = models.OwnSettings.objects.all()[0].harta.adresa
+            roluri_listate = ["Angajat", "Viewer"]
+            if request.user.role == "Admin":
+                roluri_listate.append("Manager")
+            tabledata = []
+            for user in models.User.objects.filter(role__in=roluri_listate):
+                for datetime in utils.rangeDays(datetimein, datetimeout):
+                    row = RowDataActiviy(user, datetime)
+                    tabledata.append(row)
+            tabledata.sort()
+            return render(request, self.template_name, {"tabledata": tabledata, "harta": harta})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context2 = {}
-        now = utils.getTime()
+
+        datain, dataout = self._getPeriod(**context)
         user = self.request.user
+        harta = models.OwnSettings.objects.all()[0].harta.adresa
+        context2['harta'] = harta
 
         # In
         try:
-            gasit = models.Intrare.objects.get(user=user, datetime__day=now.day)
+            gasit = models.Intrare.objects.get(user=user, datetime__gte=datain, datetime__lte=dataout)
             context2['oraIn'] = utils.getTime(gasit).strftime("%H:%M")
             context2['locIn'] = f"{gasit.latitude},{gasit.longitude}"
             context2['locStrIn'] = utils.locStr(gasit)
@@ -298,7 +343,7 @@ class ActTodayView(TemplateView):
 
         # Out
         try:
-            gasit = models.Iesire.objects.get(user=user, datetime__day=now.day)
+            gasit = models.Iesire.objects.get(user=user, datetime__gte=datain, datetime__lte=dataout)
             context2['oraOut'] = utils.getTime(gasit).strftime("%H:%M")
             context2['locOut'] = f"{gasit.latitude},{gasit.longitude}"
             context2['locStrOut'] = utils.locStr(gasit)
@@ -311,11 +356,44 @@ class ActTodayView(TemplateView):
 
         #Comenzi
         try:
-            comenzi = models.Comanda.objects.filter(user=user, datetime__day=now.day)
+            comenzi = models.Comanda.objects.filter(user=user, datetime__gte=datain, datetime__lte=dataout)
             context2['comenzi'] = comenzi
         except:
             context2['comenzi'] = []
         context.update(context2)
         return context
 
+@method_decorator(login_required, name='dispatch')
+class ActTodayView(ActView):
+
+    def _getPeriod(self, **kwargs) -> tuple:
+        date = utils.getTime().date()
+        datetimein = datetime.datetime.combine(date, utils.datetime.datetime.strptime("00:00:00", "%H:%M:%S").time(), tzinfo=pytz.timezone(settings.TIME_ZONE))
+        datetimeout = datetime.datetime.combine(date, datetime.datetime.strptime("23:59:59", "%H:%M:%S").time(), tzinfo=pytz.timezone(settings.TIME_ZONE))
+        return datetimein, datetimeout
+
+@method_decorator(login_required, name='dispatch')
+class ActYesterdayView(ActView):
+
+    def _getPeriod(self, **kwargs) -> tuple:
+        date = utils.getTime().date()
+        date = utils.getPrevDay(date)
+        datetimein = datetime.datetime.combine(date, datetime.datetime.strptime("00:00:00", "%H:%M:%S").time(), tzinfo=pytz.timezone(settings.TIME_ZONE))
+        datetimeout = datetime.datetime.combine(date, datetime.datetime.strptime("23:59:59", "%H:%M:%S").time(), tzinfo=pytz.timezone(settings.TIME_ZONE))
+        return datetimein, datetimeout
+
+@method_decorator(login_required, name='dispatch')
+class ActFromPathView(ActView):
+
+    def _getPeriod(self, **kwargs) -> tuple:
+        datein = datetime.datetime.strptime(kwargs['datein'], "%d.%m.%Y")
+        dateout = datetime.datetime.strptime(kwargs['dateout'], "%d.%m.%Y")
+        datetimein = datetime.datetime.combine(datein, datetime.datetime.strptime("00:00:00", "%H:%M:%S").time(), tzinfo=pytz.timezone(settings.TIME_ZONE))
+        datetimeout = datetime.datetime.combine(dateout, datetime.datetime.strptime("23:59:59", "%H:%M:%S").time(), tzinfo=pytz.timezone(settings.TIME_ZONE))
+        # datetimein = utils.getTime(datetimein)
+        # datetimeout = utils.getTime(datetimeout)
+        # print(datetimein, datetimeout)
+        return datetimein, datetimeout
+
+#endregion
 #endregion

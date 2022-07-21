@@ -1,3 +1,5 @@
+import datetime
+
 from django import template
 from main import utils, models
 from siteReport import settings
@@ -45,3 +47,15 @@ def is_recent(user, tip):
         if dtime.seconds <= SEC_RECALC_AFTER:
             return True
     return False
+
+@register.filter(name='ftime')
+def ftime(datetime: datetime.datetime, tip: str) -> str:
+    if datetime is None or str(datetime).__len__() == 0: return "-"
+    datetime = utils.getTime(datetime)
+    if tip == "time": return datetime.strftime("%H:%M")
+    if tip == "date": return datetime.strftime("%d.%m.%Y")
+    return "-"
+
+@register.filter(name='strloc')
+def strloc(info: models.Info) -> str:
+    return utils.locStr(info)

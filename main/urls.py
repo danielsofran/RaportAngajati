@@ -20,6 +20,9 @@ urlpatterns = [
     path("comanda/edit", login_required(views.comandaEdit), name="comanda_edit"),
 
     path("activity/today", login_required(views.ActTodayView.as_view()), name="actToday"),
+    path("activity/yesterday", login_required(views.ActYesterdayView.as_view()), name="actYesterday"),
+    path("activity/<str:datein>,<str:dateout>", login_required(views.ActFromPathView.as_view()), name="actFromPath"),
 
     path("detalii", login_required(views.detalii), name="detalii"),
+    path("detalii/<str:username>", login_required(views.detalii), name="detaliiuser"),
 ]

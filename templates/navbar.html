@@ -4,7 +4,7 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+      <ul class="navbar-nav w-100 me-auto mb-2 mb-lg-0">
         <li class="nav-item ms-5">
           <a class="nav-link active" aria-current="page" href="{% url 'home' %}"><i class="fa-solid fa-house me-3"></i>Acasa</a>
         </li>
@@ -14,7 +14,7 @@
           </a>
           <ul class="dropdown-menu fs-5" aria-labelledby="navbarDropdown">
                 <li><a class="dropdown-item" href="{% url 'actToday' %}">Azi</a></li>
-                <li><a class="dropdown-item" href="#">Ieri</a></li>
+                <li><a class="dropdown-item" href="{% url 'actYesterday' %}">Ieri</a></li>
                 <li><a class="dropdown-item" href="#">Ultimele 3 zile</a></li>
                 <li><a class="dropdown-item" href="#">Ultima saptamana</a></li>
           </ul>

@@ -1,0 +1,51 @@
+{% load mytags %}
+<table class="table table-striped table-hover fs-5">
+    <thead class="text-nowrap">
+        <tr>
+            <th> Nume </th>
+            <th> Data </th>
+            <th> Ora intrarii </th>
+            <th> Locatia intrarii </th>
+            <th> Observatie la intrare </th>
+            <th> Ora plecarii </th>
+            <th> Locatia plecarii </th>
+            <th> Observatie la plecare </th>
+            <th class="text-wrap"> Numar comenzi </th>
+            <th> Nume comenzi </th>
+            <th> Link comenzi </th>
+            {% if request.user|role_at_least:"Manager" %}
+            <th> Editare </th>
+            <th> Stergere </th>
+            {% endif %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for rowdata in tabledata %}
+        <tr>
+            <th> <a target="_blank" href="{% url 'detaliiuser' username=rowdata.user.username %}">{{ rowdata.user.nume }}</a></th>
+            <th> {{ rowdata.datetime|ftime:"date" }} </th>
+            {% if rowdata.absent %}
+                <th colspan="9" class="text-center"> Absent </th>
+            {% else %}
+                <th> {{ rowdata.intrare.datetime|ftime:"time" }} </th>
+                <th> {{ rowdata.intrare|strloc }}
+                {% if rowdata.intrare|strloc != "-" %}<button class="btn btn-light" onclick="loadMap('{{ rowdata.intrare.getCoords|safe }}')"><i class="fa-solid fa-location-crosshairs"></i></button>{% endif %}
+                </th>
+                <th> {{ rowdata.intrare.text }} </th>
+                <th> {{ rowdata.iesire.datetime|ftime:"time" }} </th>
+                <th> {{ rowdata.iesire|strloc }}
+                {% if rowdata.iesire|strloc != "-" %}<button class="btn btn-light" onclick="loadMap('{{ rowdata.iesire.getCoords|safe }}')"><i class="fa-solid fa-location-crosshairs"></i></button>{% endif %}
+                </th>
+                <th> {{ rowdata.iesire.text }} </th>
+                <th> {{ rowdata.nrcomenzi }} </th>
+                <th> {{ rowdata.numecomenzi|safe }} </th>
+                <th> Link comenzi </th>
+            {% if request.user|role_at_least:"Manager" %}
+                <th>Edit</th> <!-- with modal-->
+                <th>Delete</th>
+            {% endif %}
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

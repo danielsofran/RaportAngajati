@@ -213,7 +213,10 @@ function loadMap(loc){
         invComModal.show();
     }
     else {
-        let adress = "https://www.google.com/maps/dir/" + loc + "//@" + loc + "47.1796062,24.1704734,21z";
+        //let adress = "https://www.google.com/maps/dir/" + loc + "//@" + loc + "47.1796062,24.1704734,21z";
+        let adress = "{{ harta|safe }}";
+        let pos = loc.trim().split(',')
+        adress = adress.replace('^^lat^^', pos[0]).replace('^^long^^', pos[1])
         window.open(adress, '_blank');
     }
 }
