@@ -91,23 +91,34 @@
             <p class="me-5 text-nowrap"> Data: </p>
             <p class="me-5 text-nowrap text-decoration-underline"> {{ data }} </p>
         </div>
-        <div class="d-flex flex-row me-5 my-3">
-            <p class="me-5 text-nowrap"> Ora intrarii:&nbsp; </p>
-            <button disabled class="btn btn-secondary me-5 font-weight-bold fs-1">{{ oraIn }}</button>
-        </div>
-        <div class="d-flex flex-row me-5 my-3">
-            <p class="me-5 text-nowrap"> Ora plecarii: </p>
-            <button disabled class="btn btn-secondary me-5 font-weight-bold fs-1">{{ oraOut }}</button>
-        </div>
-        <div class="d-flex flex-row me-5 my-3 align-items-left">
-            <p class="me-5 text-nowrap"> Locatia intrarii:&nbsp; </p>
-            <button disabled class="btn btn-secondary me-5 font-weight-bold fs-3" title="Apasa pentru a deschide in Maps" >{{ locStrIn }}</button>
-            <div class="fs-1"> <button class="btn btn-light btn-lg" onclick="loadMap('{{ locIn }}')"><i class="fa-solid fa-location-crosshairs"></i></button> </div>
-        </div>
-        <div class="d-flex flex-row me-5 my-3">
-            <p class="me-5 text-nowrap"> Locatia plecarii: </p>
-            <button disabled class="btn btn-secondary me-5 font-weight-bold fs-3" title="Apasa pentru a deschide in Maps">{{ locStrOut }}</button>
-            <div class="fs-1"> <button class="btn btn-light btn-lg" onclick="loadMap('{{ locOut }}')"><i class="fa-solid fa-location-crosshairs"></i></button> </div>
+        <div class="fs-2 pt-3 w-50">
+            <div class="row mb-3 fs-3">
+                <label for="inputOraIn" class="col-form-label fs-3 text-start">Data si ora</label>
+                <div class="col-sm-10">
+                  <input type="datetime-local" class="form-control fs-3" id="inputOraIn" required pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}">
+                </div>
+            </div>
+            <div class="row mb-3 fs-3">
+                <label for="inputNrComanda" class="col-form-label fs-3 text-start">Numar comanda</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control fs-3" id="inputNrComanda" required>
+                </div>
+            </div>
+            <div class="row mb-3 fs-3">
+                <label for="inputLoc" class="col-form-label fs-3 text-start">Locatie (lat, long)</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control fs-3" id="inputLoc" required>
+                </div>
+            </div>
+
+            <div class="form-floating fs-4 mt-3">
+              <textarea class="form-control fs-4" placeholder="Scrieti observatia/motivarea aici" id="comandObs" style="height: 100px"></textarea>
+              <label for="comandObs">Observatie</label>
+              <div class="d-flex flex-row justify-content-around mt-1 fs-5">
+                  <button onclick="toogleView('comandDiv')" class="btn btn-danger font-weight-bold fs-2 align-self-center my-0" > Anuleaza </button>
+                  <button id="btnEditShowModal" type="button" data-bs-toggle="modal" data-bs-target="#modalEditComand" class="btn btn-primary font-weight-bold fs-2 align-self-center my-0 me-3">Salveaza</button>
+              </div>
+            </div>
         </div>
     {% if obsIn != "" %}
         <div class="my-3 w-50">
@@ -199,8 +210,8 @@
               </div>
             </div>
         </div>
+    {% endif %}
     </div>
-{% endif %}
 </div>
 {% endblock %}
 
