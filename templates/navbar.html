@@ -9,14 +9,15 @@
           <a class="nav-link active" aria-current="page" href="{% url 'home' %}"><i class="fa-solid fa-house me-3"></i>Acasa</a>
         </li>
         <li class="nav-item dropdown ms-5">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="fa-solid fa-list-check me-3"></i> Activitate
           </a>
           <ul class="dropdown-menu fs-5" aria-labelledby="navbarDropdown">
                 <li><a class="dropdown-item" href="{% url 'actToday' %}">Azi</a></li>
                 <li><a class="dropdown-item" href="{% url 'actYesterday' %}">Ieri</a></li>
-                <li><a class="dropdown-item" href="#">Ultimele 3 zile</a></li>
-                <li><a class="dropdown-item" href="#">Ultima saptamana</a></li>
+                <li><a class="dropdown-item" href="{% url 'act2daysAgo' %}">Alaltaieri</a></li>
+                <li><a class="dropdown-item" href="{% url 'actLast3' %}">Ultimele 3 zile</a></li>
+                <li><a class="dropdown-item" href="{% url 'actLast7' %}">Ultima saptamana</a></li>
           </ul>
         </li>
         <li class="nav-item dropdown ms-5">

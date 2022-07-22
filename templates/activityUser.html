@@ -85,7 +85,6 @@
 
     {# STATS #}
     {% load mytags %}
-    {% if data != None %}
     <div class="container-fluid m-5 fs-1">
         <h1 class="my-5" style="font-size: 200%">Status:</h1>
         <div class="d-flex flex-row me-5 my-3">
@@ -104,13 +103,11 @@
             <p class="me-5 text-nowrap"> Locatia intrarii:&nbsp; </p>
             <button disabled class="btn btn-secondary me-5 font-weight-bold fs-3" title="Apasa pentru a deschide in Maps" >{{ locStrIn }}</button>
             <div class="fs-1"> <button class="btn btn-light btn-lg" onclick="loadMap('{{ locIn }}')"><i class="fa-solid fa-location-crosshairs"></i></button> </div>
-            {% if request.user|is_recent:"In" %}<div class="fs-1 ms-2"> <button onclick="processposition('{% url 'come_recalc' %}')" class="btn btn-light btn-lg" >Relocare</button> </div>{% endif %}
         </div>
         <div class="d-flex flex-row me-5 my-3">
             <p class="me-5 text-nowrap"> Locatia plecarii: </p>
             <button disabled class="btn btn-secondary me-5 font-weight-bold fs-3" title="Apasa pentru a deschide in Maps">{{ locStrOut }}</button>
             <div class="fs-1"> <button class="btn btn-light btn-lg" onclick="loadMap('{{ locOut }}')"><i class="fa-solid fa-location-crosshairs"></i></button> </div>
-            {% if request.user|is_recent:"Out" %}<div class="fs-1 ms-2"> <button onclick="processposition('{% url 'left_recalc' %}')" class="btn btn-light btn-lg" >Relocare</button> </div>{% endif %}
         </div>
     {% if obsIn != "" %}
         <div class="my-3 w-50">
@@ -130,10 +127,10 @@
     {% endif %}
     {% if comenzi|length > 0 %}
         <div class="my-3 mt-5 w-50">
-        <div class="d-flex flex-row">
-            <p class="me-5 text-nowrap"> Comenzi finalizate: </p>
-            <button onclick="arataascunde()" id="btnShowHide" class="btn btn-primary btn-square-md font-weight-bold fs-3 align-self-center my-0 px-4" > Ascunde </button>
-        </div>
+            <div class="d-flex flex-row">
+                <p class="me-5 text-nowrap"> Comenzi finalizate: </p>
+                <button onclick="arataascunde()" id="btnShowHide" class="btn btn-primary btn-square-md font-weight-bold fs-3 align-self-center my-0 px-4" > Ascunde </button>
+            </div>
             <div id="comenziShowDiv">
             {% for comanda in comenzi %}
                 <div class="my-3">
@@ -156,7 +153,7 @@
                     <div class="d-flex justify-content-around">
                       <button type="button" data-bs-toggle="modal" data-bs-target="#modalCancelComand" data-bs-nr="{{ comanda.numar_comanda }}" class="btn btn-danger btn-square-md font-weight-bold fs-2 my-0"> Anuleaza </button>
                       <button type="button" class="btn btn-primary btn-square-md font-weight-bold fs-2 my-0"
-                              onclick="showEdit('{{ comanda.denumire }}','{{ comanda.numar_comanda }}', '{{ comanda.text }}')">Editeaza</button>
+                              onclick="showEdit('{{ comanda.denumire }}','{{ comanda.numar_comanda }}','{{ comanda.text }}', '{{ comanda.getCoords }}', '{{ comanda.datetime|ftime:"time" }}')">Editeaza</button>
                     </div>
                   </div>
                 </div>
@@ -181,6 +178,18 @@
                   <input type="text" class="form-control fs-3" id="inputNrComanda" required>
                 </div>
             </div>
+            <div class="row mb-3 fs-3">
+                <label for="inputLoc" class="col-form-label fs-3 text-start">Locatie (lat, long)</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control fs-3" id="inputLoc" required>
+                </div>
+            </div>
+            <div class="row mb-3 fs-3">
+                <label for="inputMom" class="col-form-label fs-3 text-start">Data si ora</label>
+                <div class="col-sm-10">
+                  <input type="datetime-local" class="form-control fs-3" id="inputMom" required pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}">
+                </div>
+            </div>
             <div class="form-floating fs-4 mt-3">
               <textarea class="form-control fs-4" placeholder="Scrieti observatia/motivarea aici" id="comandObs" style="height: 100px"></textarea>
               <label for="comandObs">Observatie</label>
@@ -192,14 +201,6 @@
         </div>
     </div>
 {% endif %}
-    {% if show_edit %}
-        <div
-    {% endif %}
-    {% else %} <!-- Table View -->
-        <div class="mt-5">
-            {% include 'tableActivity.html' with tabledata=tabledata %}
-        </div>
-    {% endif %}
 </div>
 {% endblock %}
 
@@ -213,7 +214,7 @@ modalCancelComand.addEventListener('show.bs.modal', function (event) {
   var button = event.relatedTarget
   var recipient = button.getAttribute('data-bs-nr')
   var butonContinua = document.getElementById('btnCancelComand')
-  butonContinua.onclick = () => {window.location.href = "{% url 'comanda_cancel' %}?nr="+recipient};
+  butonContinua.onclick = () => {window.location.href = "{% url 'comanda_cancel'%}?nr="+recipient};
 })
 
 var modalEditComand = document.getElementById('modalEditComand')
@@ -230,8 +231,12 @@ modalEditComand.addEventListener('show.bs.modal', function (event) {
   den = document.getElementById("comandaDen").value
   nr = document.getElementById("inputNrComanda").value
   obs = document.getElementById("comandObs").value
+  datetime = document.getElementById("inputMom").value
+    alert(datetime)
+  strcoord = document.getElementById("inputLoc").value.split(',')
+  coord = strcoord[0].trim() + "," + strcoord[1].trim()
 
-  butonSave.onclick = () => {window.location.href = `{% url 'comanda_edit' %}?oldnr=${recipient}&nr=${nr}&den=${den}&obs=${obs}`};
+  butonSave.onclick = () => {window.location.href = `{% url 'comanda_edit' %}?oldnr=${recipient}&nr=${nr}&den=${den}&obs=${obs}&datetime=${datetime}&loc=${coord}`};
 })
 
 function toogleView(domname){
@@ -301,11 +306,27 @@ function processposition(url, text=""){
     });
 }
 
-function showEdit(den, nr, text){
+function showEdit(den, nr, text, coords, time){
     toogleView('comandDiv');
     document.getElementById('comandaDen').value = den;
     document.getElementById('inputNrComanda').value = nr;
+    document.getElementById('inputLoc').value = coords;
     document.getElementById('comandObs').value = text.replace('; ', '\n');
+
+    const now = new Date();
+    tokens = time.split(":");
+    now.setHours(parseInt(tokens[0]))
+    now.setMinutes(parseInt(tokens[1]));
+    now.setDate({{ datetime.day }});
+
+    now.setMonth({{ datetime.month }});
+    now.setFullYear({{ datetime.year }});
+    now.setMinutes(now.getMinutes() );
+    //alert(now.toJSON())
+    //alert(now.toISOString())
+    //2022-08-22T04:40:00.553Z
+    document.getElementById('inputMom').value = createDateTime(now);
+
     window.location.href = window.location.href.replace(/#.*/g, "") + "#comandDiv";
     document.getElementById('btnEditShowModal').setAttribute("data-bs-oldnr", nr);
 }
@@ -343,6 +364,19 @@ function copyTextToClipboard(text) {
   }, function(err) {
     console.error('Async: Could not copy text: ', err);
   });
+}
+
+function createDateTime(now){
+    rez = ""
+    rez += pad(now.getFullYear(), 4) + "-" + pad(now.getMonth(), 2) + "-" + pad(now.getDate(), 2);
+    rez += "T" + pad(now.getHours(), 2) + ":" + pad(now.getMinutes(), 2);
+    return rez;
+}
+
+function pad(num, size) {
+    num = num.toString();
+    while (num.length < size) num = "0" + num;
+    return num;
 }
 
 </script>

@@ -65,7 +65,7 @@ def getPrevDay(curent: datetime.datetime) -> datetime.datetime:
 def rangeDays(datatimein: datetime.datetime, datetimeout: datetime.datetime):
     rez = []
     while datatimein <= datetimeout:
-        print(datatimein)
+        #print(datatimein)
         rez.append(datatimein)
         datatimein = getNextDay(datatimein)
     return rez

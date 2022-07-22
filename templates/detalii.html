@@ -68,9 +68,16 @@
             </div>
              <div class="mb-3 row">
               <label for="inRole" class="col-sm-2 col-form-label">Statut</label>
-              <div class="col-sm-10 pt-2">
-                <input type="text" class="form-control fs-2" id="inRole" value="{{ userdata.role }}" name="role">
-              </div>
+{#              <div class="col-sm-10 pt-2">#}
+{#                <input type="text" class="form-control fs-2" id="inRole" value="{{ userdata.role }}" name="role">#}
+{#              </div>#}
+             <div class="col-sm-10 pt-2">
+                 <select id="inRole" class="form-select fs-2" aria-label="Select statut" name="role">
+                  <option {% if userdata.role == "Angajat" %}selected{% endif %} value="Angajat">Angajat</option>
+                  <option {% if userdata.role == "Manager" %}selected{% endif %} value="Manager">Manager</option>
+                  <option {% if userdata.role == "Admin" %}selected{% endif %} value="Admin">Admin</option>
+                 </select>
+             </div>
             </div>
             {% endif %}
             <div class="mb-3 row">

@@ -1,6 +1,7 @@
 import datetime
 
 import pytz
+from django.contrib.auth.models import Group
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib import messages
@@ -223,63 +224,63 @@ def comandaFinish(request):
             messages.success(request, ("Succes! Finalizarea a fost inregistrata!"))
     else:
         raise ValueError("POST in comand finish")
-    return redirect('home')
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
 def comandaEdit(request):
     if request.method == "GET":
-        now = utils.getTime()
-        oldnr = request.GET['oldnr']
-        try:
-            old = models.Comanda.objects.get(user=request.user, datetime__day=now.day, numar_comanda=oldnr)
-        except:
-            messages.success(request, ("Comanda veche nu a fost gasita!"))
-            return redirect('actToday')
-        old.numar_comanda = request.GET['nr']
-        old.denumire = request.GET['den']
-        old.text = request.GET['obs']
-        old.datetime = now
-        old.save(force_update=True, update_fields=['numar_comanda', 'denumire', 'text', 'datetime'])
+        if not 'datetime' in request.GET:
+            now = utils.getTime()
+            oldnr = request.GET['oldnr']
+            try: old = models.Comanda.objects.get(user=request.user, datetime__day=now.day, datetime__year=now.year, numar_comanda=oldnr)
+            except:
+                messages.success(request, ("Comanda veche nu a fost gasita!"))
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+            old.numar_comanda = request.GET['nr']
+            old.denumire = request.GET['den']
+            old.text = request.GET['obs']
+            old.datetime = now
+            old.save(force_update=True, update_fields=['numar_comanda', 'denumire', 'text', 'datetime'])
+        else:
+            now = datetime.datetime.fromisoformat(request.GET['datetime'])
+            oldnr = request.GET['oldnr']
+
+            try: old = models.Comanda.objects.get(datetime__day=now.day, datetime__year=now.year, numar_comanda=oldnr)
+            except:
+                messages.success(request, ("Comanda veche nu a fost gasita!"))
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+            old.numar_comanda = request.GET['nr']
+            old.denumire = request.GET['den']
+            old.text = request.GET['obs']
+            old.datetime = now
+            old.latitude = str(request.GET['loc']).split(',')[0]
+            old.longitude = str(request.GET['loc']).split(',')[1]
+            old.save(force_update=True, update_fields=['numar_comanda', 'denumire', 'text', 'datetime', 'latitude', 'longitude'])
     else: raise ValueError("POST in comand edit")
     messages.success(request, ("Comanda a fost actualizata!"))
-    return redirect('actToday')
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
 def comandaCancel(request):
     if request.method == 'GET':
         now = utils.getTime()
-        try:
-            data = models.Comanda.objects.get(user=request.user, datetime__year=now.year, numar_comanda=request.GET['nr'])
-            data.delete()
-        except:
-            messages.success(request, ("Comanda nu a fost gasita!"))
-            return redirect('actToday')
+        if not request.user.role in ("Manager", "Admin"):
+            try:
+                data = models.Comanda.objects.get(user=request.user, datetime__year=now.year, numar_comanda=request.GET['nr'])
+                data.delete()
+            except:
+                messages.success(request, ("Comanda nu a fost gasita!"))
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+        else:
+            try:
+                data = models.Comanda.objects.get(datetime__year=now.year, numar_comanda=request.GET['nr'])
+                data.delete()
+            except:
+                messages.success(request, ("Comanda nu a fost gasita!"))
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
     else: raise ValueError("POST in cancel comanda")
     messages.success(request, ("Terminarea comenzii a fost anulata!"))
-    return redirect('actToday')
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
 #endregion
-
-def detalii(request, username=None):
-    user = request.user
-    if username is not None and (user.role == "Manager" or user.role == "Admin"):
-        user = models.User.objects.get(username=username)
-    elif username is not None:
-        return redirect('detalii')
-    if request.method == 'POST':
-        if not utils.isEqual(user, request):
-            if utils.validAccountModif(user, request):
-                user.username = request.POST['user']
-                user.email = request.POST['email']
-                user.telefon = request.POST['tel']
-                user.password = request.POST['pwd']
-                if username is not None and (user.role == "Manager" or user.role == "Admin"):
-                    user.nume = request.POST['nume']
-                    user.role = request.POST['role']
-                user.save(force_update=True)
-                login(request, user)
-                messages.success(request, ("Modificarile au fost efectuate!"))
-        else:
-            messages.success(request, ("Nu exista nici o modificare!"))
-    return render(request, 'detalii.html', {"userdata": user})
 
 @method_decorator(login_required, name='dispatch')
 class HomeView(TemplateView):
@@ -303,7 +304,7 @@ class ActView(TemplateView):
             datain = self._getPeriod(**context)[0].strftime("%d.%m.%Y")
             dataout = self._getPeriod(**context)[1].strftime("%d.%m.%Y")
             if datain == dataout: context.update(data=datain)
-            else: context.update(datain=datain, dataout=dataout)
+            else: context.update(datain=datain, dataout=dataout, data=None)
             return render(request, self.template_name, context)
         else: # Manager, Admin
             datetimein, datetimeout = self._getPeriod(**kwargs)
@@ -325,41 +326,50 @@ class ActView(TemplateView):
 
         datain, dataout = self._getPeriod(**context)
         user = self.request.user
+        if 'ownuser' in kwargs: user = kwargs['ownuser']
         harta = models.OwnSettings.objects.all()[0].harta.adresa
         context2['harta'] = harta
 
-        # In
-        try:
-            gasit = models.Intrare.objects.get(user=user, datetime__gte=datain, datetime__lte=dataout)
-            context2['oraIn'] = utils.getTime(gasit).strftime("%H:%M")
-            context2['locIn'] = f"{gasit.latitude},{gasit.longitude}"
-            context2['locStrIn'] = utils.locStr(gasit)
-            context2['obsIn'] = gasit.text
-        except:
-            context2['oraIn'] = "-"
-            context2['locIn'] = "-"
-            context2['locStrIn'] = "-"
-            context2['obsIn'] = ""
+        if datain.date() == dataout.date():
+            # In
+            try:
+                gasit = models.Intrare.objects.get(user=user, datetime__gte=datain, datetime__lte=dataout)
+                context2['oraIn'] = utils.getTime(gasit).strftime("%H:%M")
+                context2['locIn'] = f"{gasit.latitude},{gasit.longitude}"
+                context2['locStrIn'] = utils.locStr(gasit)
+                context2['obsIn'] = gasit.text
+            except:
+                context2['oraIn'] = "-"
+                context2['locIn'] = "-"
+                context2['locStrIn'] = "-"
+                context2['obsIn'] = ""
 
-        # Out
-        try:
-            gasit = models.Iesire.objects.get(user=user, datetime__gte=datain, datetime__lte=dataout)
-            context2['oraOut'] = utils.getTime(gasit).strftime("%H:%M")
-            context2['locOut'] = f"{gasit.latitude},{gasit.longitude}"
-            context2['locStrOut'] = utils.locStr(gasit)
-            context2['obsOut'] = gasit.text
-        except:
-            context2['oraOut'] = "-"
-            context2['locOut'] = "-"
-            context2['locStrOut'] = "-"
-            context2['obsOut'] = ""
+            # Out
+            try:
+                gasit = models.Iesire.objects.get(user=user, datetime__gte=datain, datetime__lte=dataout)
+                context2['oraOut'] = utils.getTime(gasit).strftime("%H:%M")
+                context2['locOut'] = f"{gasit.latitude},{gasit.longitude}"
+                context2['locStrOut'] = utils.locStr(gasit)
+                context2['obsOut'] = gasit.text
+            except:
+                context2['oraOut'] = "-"
+                context2['locOut'] = "-"
+                context2['locStrOut'] = "-"
+                context2['obsOut'] = ""
 
-        #Comenzi
-        try:
-            comenzi = models.Comanda.objects.filter(user=user, datetime__gte=datain, datetime__lte=dataout)
-            context2['comenzi'] = comenzi
-        except:
-            context2['comenzi'] = []
+            #Comenzi
+            try:
+                comenzi = models.Comanda.objects.filter(user=user, datetime__gte=datain, datetime__lte=dataout)
+                context2['comenzi'] = comenzi
+            except:
+                context2['comenzi'] = []
+        else:
+            tabledata = []
+            for datetime in utils.rangeDays(datain, dataout):
+                row = RowDataActiviy(user, datetime)
+                tabledata.append(row)
+            tabledata.sort()
+            context2['tabledata'] = tabledata
         context.update(context2)
         return context
 
@@ -383,6 +393,39 @@ class ActYesterdayView(ActView):
         return datetimein, datetimeout
 
 @method_decorator(login_required, name='dispatch')
+class Act2DaysAgoView(ActView):
+
+    def _getPeriod(self, **kwargs) -> tuple:
+        date = utils.getTime().date()
+        date = utils.getPrevDay(date)
+        date = utils.getPrevDay(date)
+        datetimein = datetime.datetime.combine(date, datetime.datetime.strptime("00:00:00", "%H:%M:%S").time(), tzinfo=pytz.timezone(settings.TIME_ZONE))
+        datetimeout = datetime.datetime.combine(date, datetime.datetime.strptime("23:59:59", "%H:%M:%S").time(), tzinfo=pytz.timezone(settings.TIME_ZONE))
+        return datetimein, datetimeout
+
+@method_decorator(login_required, name='dispatch')
+class ActLast3View(ActView):
+
+    def _getPeriod(self, **kwargs) -> tuple:
+        dateout = utils.getTime().date()
+        datein = dateout
+        for k in range(2): datein = utils.getPrevDay(datein)
+        datetimein = datetime.datetime.combine(datein, datetime.datetime.strptime("00:00:00", "%H:%M:%S").time(), tzinfo=pytz.timezone(settings.TIME_ZONE))
+        datetimeout = datetime.datetime.combine(dateout, datetime.datetime.strptime("23:59:59", "%H:%M:%S").time(), tzinfo=pytz.timezone(settings.TIME_ZONE))
+        return datetimein, datetimeout
+
+@method_decorator(login_required, name='dispatch')
+class ActLast7View(ActView):
+
+    def _getPeriod(self, **kwargs) -> tuple:
+        dateout = utils.getTime().date()
+        datein = dateout
+        while datein.strftime("%A") != "Monday": datein = utils.getPrevDay(datein)
+        datetimein = datetime.datetime.combine(datein, datetime.datetime.strptime("00:00:00", "%H:%M:%S").time(), tzinfo=pytz.timezone(settings.TIME_ZONE))
+        datetimeout = datetime.datetime.combine(dateout, datetime.datetime.strptime("23:59:59", "%H:%M:%S").time(), tzinfo=pytz.timezone(settings.TIME_ZONE))
+        return datetimein, datetimeout
+
+@method_decorator(login_required, name='dispatch')
 class ActFromPathView(ActView):
 
     def _getPeriod(self, **kwargs) -> tuple:
@@ -395,5 +438,70 @@ class ActFromPathView(ActView):
         # print(datetimein, datetimeout)
         return datetimein, datetimeout
 
+@method_decorator(login_required, name='dispatch')
+class ActUserFromPathView(ActFromPathView):
+    template_name = 'activityUser.html'
+
+    def get(self, request, *args, **kwargs):
+        if request.user.role in ("Manager", "Admin"):
+            user = models.User.objects.get(username=kwargs['username'])
+            kwargs['ownuser'] = user
+            kwargs['user'] = user
+            context = self.get_context_data(**kwargs)
+            datetime = self._getPeriod(**context)[0]
+            data = datetime.strftime("%d.%m.%Y")
+            context.update(data=data, user=user, datetime=datetime)
+            return render(request, self.template_name, context)
+        else:
+            messages.success(request, ("Nu aveti acces la activitatile acestui cont!"))
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(show_edit=True)
+        return context
+
+#region Come Left
+
+def user_come(request, datein, dateout, username):
+    pass
+
+#endregion
+
 #endregion
 #endregion
+
+def detalii(request, username=None):
+    user = request.user
+    if username is not None and (user.role == "Manager" or user.role == "Admin"):
+        newuser = models.User.objects.get(username=username)
+        if user.role == "Manager" and newuser.role == "Admin":
+            messages.success(request, ("Nu aveti acces la contul de administrator de pe un cont de manager!"))
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+        if user.role == "Manager" and request.method == 'POST' and request.POST['role'] == "Admin":
+            messages.success(request, ("Nu puteti creea un administrator de pe un cont de manager!"))
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+        user = newuser
+    elif username is not None:
+        messages.success(request, ("Nu puteti vizualiza un alt cont daca nu sunteti cel putin manager!"))
+        return redirect('detalii')
+    if request.method == 'POST':
+        if not utils.isEqual(user, request):
+            if utils.validAccountModif(user, request):
+                user.username = request.POST['user']
+                user.email = request.POST['email']
+                user.telefon = request.POST['tel']
+                user.password = request.POST['pwd']
+                if username is not None and (request.user.role == "Manager" or request.user.role == "Admin"):
+                    user.nume = request.POST['nume']
+                    user.role = request.POST['role']
+                    user.groups.all().delete()
+                    group = Group.objects.get(name=user.role)
+                    user.groups.add(group)
+                    user.save(force_update=True)
+                else:
+                    user.save(force_update=True)
+                    login(request, user)
+                messages.success(request, ("Modificarile au fost efectuate!"))
+        else: messages.success(request, ("Nu exista nici o modificare!"))
+    return render(request, 'detalii.html', {"userdata": user})

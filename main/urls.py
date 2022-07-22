@@ -15,14 +15,23 @@ urlpatterns = [
     path("home/come_recalc", login_required(views.recalc_come), name="come_recalc"),
     path("home/left_recalc", login_required(views.recalc_left), name="left_recalc"),
 
-    path("comanda/finish", login_required(views.comandaFinish), name="comanda_finish"),
-    path("comanda/cancel", login_required(views.comandaCancel), name="comanda_cancel"),
-    path("comanda/edit", login_required(views.comandaEdit), name="comanda_edit"),
+    path("home/comanda/finish", login_required(views.comandaFinish), name="comanda_finish"),
+    path("home/comanda/cancel", login_required(views.comandaCancel), name="comanda_cancel"),
+    path("home/comanda/edit", login_required(views.comandaEdit), name="comanda_edit"),
 
     path("activity/today", login_required(views.ActTodayView.as_view()), name="actToday"),
     path("activity/yesterday", login_required(views.ActYesterdayView.as_view()), name="actYesterday"),
+    path("activity/2daysago", login_required(views.Act2DaysAgoView.as_view()), name="act2daysAgo"),
+    path("activity/last3", login_required(views.ActLast3View.as_view()), name="actLast3"),
+    path("activity/last7", login_required(views.ActLast7View.as_view()), name="actLast7"),
     path("activity/<str:datein>,<str:dateout>", login_required(views.ActFromPathView.as_view()), name="actFromPath"),
 
-    path("detalii", login_required(views.detalii), name="detalii"),
-    path("detalii/<str:username>", login_required(views.detalii), name="detaliiuser"),
+    path("activity/<str:datein>,<str:dateout>/<str:username>", login_required(views.ActUserFromPathView.as_view()), name="actUserFromPath"),
+    path("activity/<str:datein>,<str:dateout>/<str:username>/come", login_required(views.ActUserFromPathView.as_view()), name="actUserCome"),
+    path("activity/<str:datein>,<str:dateout>/<str:username>/cancel_come", login_required(views.ActUserFromPathView.as_view()), name="actUserCancelCome"),
+    path("activity/<str:datein>,<str:dateout>/<str:username>/left", login_required(views.ActUserFromPathView.as_view()), name="actUserLeft"),
+    path("activity/<str:datein>,<str:dateout>/<str:username>/cancel_left", login_required(views.ActUserFromPathView.as_view()), name="actUserCancelLeft"),
+
+    path("cont/detalii", login_required(views.detalii), name="detalii"),
+    path("cont/detalii/<str:username>", login_required(views.detalii), name="detaliiuser"),
 ]

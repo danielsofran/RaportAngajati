@@ -1,9 +1,13 @@
 {% load mytags %}
 <table class="table table-striped table-hover fs-5">
-    <thead class="text-nowrap">
+    <thead class="">
         <tr>
-            <th> Nume </th>
-            <th> Data </th>
+            {% if request.user|role_at_least:"Manager" %}
+                <th> Nume </th>
+                <th> Data </th>
+            {% else %}
+                <th> Ziua </th>
+            {% endif %}
             <th> Ora intrarii </th>
             <th> Locatia intrarii </th>
             <th> Observatie la intrare </th>
@@ -11,21 +15,24 @@
             <th> Locatia plecarii </th>
             <th> Observatie la plecare </th>
             <th class="text-wrap"> Numar comenzi </th>
-            <th> Nume comenzi </th>
+            <th class="text-wrap"> Nume comenzi </th>
             <th> Link comenzi </th>
-            {% if request.user|role_at_least:"Manager" %}
-            <th> Editare </th>
-            <th> Stergere </th>
-            {% endif %}
+            {% if request.user|role_at_least:"Manager" %}<th> Modificare </th>{% endif %}
         </tr>
     </thead>
     <tbody>
         {% for rowdata in tabledata %}
+        {% if not rowdata.absent %}
         <tr>
-            <th> <a target="_blank" href="{% url 'detaliiuser' username=rowdata.user.username %}">{{ rowdata.user.nume }}</a></th>
-            <th> {{ rowdata.datetime|ftime:"date" }} </th>
+            {% if request.user|role_at_least:"Manager" %}
+                <th> <a target="_blank" href="{% url 'detaliiuser' username=rowdata.user.username %}">{{ rowdata.user.nume }}</a></th>
+                <th> {{ rowdata.datetime|ftime:"date" }} </th>
+            {% else %}
+                <th> {{ rowdata.datetime|name_of_day }}</th>
+            {% endif %}
+
             {% if rowdata.absent %}
-                <th colspan="9" class="text-center"> Absent </th>
+                <th colspan="10" class="text-center"> Absent </th>
             {% else %}
                 <th> {{ rowdata.intrare.datetime|ftime:"time" }} </th>
                 <th> {{ rowdata.intrare|strloc }}
@@ -41,11 +48,11 @@
                 <th> {{ rowdata.numecomenzi|safe }} </th>
                 <th> Link comenzi </th>
             {% if request.user|role_at_least:"Manager" %}
-                <th>Edit</th> <!-- with modal-->
-                <th>Delete</th>
+                <th> <a href="{% url 'home' %}" class="btn btn-primary">Modificare</a> </th>
             {% endif %}
             {% endif %}
         </tr>
+        {% endif %}
         {% endfor %}
     </tbody>
 </table>

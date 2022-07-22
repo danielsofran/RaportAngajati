@@ -56,6 +56,19 @@ def ftime(datetime: datetime.datetime, tip: str) -> str:
     if tip == "date": return datetime.strftime("%d.%m.%Y")
     return "-"
 
+@register.filter(name='name_of_day')
+def name_of_day(datetime: datetime.datetime) -> str:
+    asocs = {
+        "Monday": "Luni",
+        "Tuesday": "Marti",
+        "Wednesday": "Miercuri",
+        "Thursday": "Joi",
+        "Friday": "Vineri",
+        "Saturday": "Sambata",
+        "Sunday": "Duminica",
+    }
+    return asocs[datetime.strftime("%A")]
+
 @register.filter(name='strloc')
 def strloc(info: models.Info) -> str:
     return utils.locStr(info)
