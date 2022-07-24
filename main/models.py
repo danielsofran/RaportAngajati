@@ -76,8 +76,8 @@ class User(AbstractUser):
 
 class Info(models.Model):
     user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
-    latitude = models.DecimalField(max_digits=11, decimal_places=8)
-    longitude = models.DecimalField(max_digits=11, decimal_places=8)
+    latitude = models.DecimalField(blank=True, max_digits=11, decimal_places=8)
+    longitude = models.DecimalField(blank=True, max_digits=11, decimal_places=8)
     nrcalcloc = models.IntegerField(blank=True, default=1, verbose_name="Numarul de relocari")
     datetime = models.DateTimeField(blank=True, default=datetime.datetime.strptime("01.01.2022 00:00:00", "%d.%m.%Y %H:%M:%S"))
     text = models.TextField(blank=True, max_length=300, verbose_name="observatie")

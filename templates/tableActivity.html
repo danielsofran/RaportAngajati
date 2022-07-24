@@ -48,7 +48,7 @@
                 <th> {{ rowdata.numecomenzi|safe }} </th>
                 <th> Link comenzi </th>
             {% if request.user|role_at_least:"Manager" %}
-                <th> <a href="{% url 'home' %}" class="btn btn-primary">Modificare</a> </th>
+                <th> <a href="{% url 'actUserFromPath' datein=rowdata.datetime|ftime:"date" dateout=rowdata.datetime|ftime:"date" username=rowdata.user.username%}" class="btn btn-primary">Modificare</a> </th>
             {% endif %}
             {% endif %}
         </tr>

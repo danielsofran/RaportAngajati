@@ -286,6 +286,8 @@ def comandaCancel(request):
 class HomeView(TemplateView):
     template_name = 'home.html'
 
+#endregion
+
 #region Activity
 
 @method_decorator(login_required, name='dispatch')
@@ -331,6 +333,7 @@ class ActView(TemplateView):
         context2['harta'] = harta
 
         if datain.date() == dataout.date():
+            context['datetime'] = datain
             # In
             try:
                 gasit = models.Intrare.objects.get(user=user, datetime__gte=datain, datetime__lte=dataout)
@@ -425,6 +428,16 @@ class ActLast7View(ActView):
         datetimeout = datetime.datetime.combine(dateout, datetime.datetime.strptime("23:59:59", "%H:%M:%S").time(), tzinfo=pytz.timezone(settings.TIME_ZONE))
         return datetimein, datetimeout
 
+def getperiod(request):
+    if request.method == "POST":
+        date1 = datetime.datetime.fromisoformat(request.POST['date1'])
+        date2 = datetime.datetime.fromisoformat(request.POST['date2'])
+        if not date1 < date2:
+            messages.success(request, ("Data inceputului este dupa data sfarsitului perioadei!"))
+            return render(request, "getPeriod.html", {})
+        return redirect('actFromPath', datein=date1.strftime("%d.%m.%Y"), dateout=date2.strftime("%d.%m.%Y"))
+    return render(request, "getPeriod.html", {})
+
 @method_decorator(login_required, name='dispatch')
 class ActFromPathView(ActView):
 
@@ -456,19 +469,18 @@ class ActUserFromPathView(ActFromPathView):
             messages.success(request, ("Nu aveti acces la activitatile acestui cont!"))
             return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
+    def post(self, request, *args, **kwargs):
+        print(request.POST)
+        return HttpResponseRedirect(self.request.path_info)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context.update(show_edit=True)
+        setare = models.OwnSettings.objects.all()[0]
+        context.update(show_edit=True, nrrecalcpoz=setare.nrrecalcpoz+1)
         return context
 
-#region Come Left
 
-def user_come(request, datein, dateout, username):
-    pass
 
-#endregion
-
-#endregion
 #endregion
 
 def detalii(request, username=None):

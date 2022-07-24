@@ -54,6 +54,7 @@ def ftime(datetime: datetime.datetime, tip: str) -> str:
     datetime = utils.getTime(datetime)
     if tip == "time": return datetime.strftime("%H:%M")
     if tip == "date": return datetime.strftime("%d.%m.%Y")
+    if tip == "datetime": return datetime.strftime("%d.%m.%Y-%H:%M")
     return "-"
 
 @register.filter(name='name_of_day')

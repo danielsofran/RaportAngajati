@@ -69,7 +69,7 @@
       <div class="modal-dialog me-auto">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title fs-2" id="staticBackdropLabel6">Atentie!</h5>
+            <h5 class="modal-title fs-2" id="staticBackdropLabel7">Atentie!</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body fs-4">
@@ -82,60 +82,103 @@
         </div>
       </div>
     </div>
+    <div class="modal fade" id="modalSaveEdit" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel8" aria-hidden="true">
+      <div class="modal-dialog me-auto">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title fs-2" id="staticBackdropLabel8">Atentie!</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body fs-4">
+            Sigur doriti sa salvati modificarile?<br>
+            Recomandam aceasta actiune doar in situatii strict necesare.
+          </div>
+          <div class="modal-footer justify-content-around">
+            <button type="button" class="btn btn-danger fs-3" data-bs-dismiss="modal">Anuleaza</button>
+            <button type="button" class="btn btn-success fs-3" id="btnSaveEdit">Salveaza</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     {# STATS #}
     {% load mytags %}
     <div class="container-fluid m-5 fs-1">
         <h1 class="my-5" style="font-size: 200%">Status:</h1>
         <div class="d-flex flex-row me-5 my-3">
-            <p class="me-5 text-nowrap"> Data: </p>
-            <p class="me-5 text-nowrap text-decoration-underline"> {{ data }} </p>
+            <p class="me-5 text-nowrap"> User: </p>
+            <a target="_blank" href="{% url 'detaliiuser' username=user.username %}">{{ user.nume }}</a>
         </div>
+        <div class="d-flex flex-row me-5 my-3">
+            <p class="me-5 text-nowrap"> Data: </p>
+            <p class="me-5 text-nowrap"> {{ datetime|name_of_day }}, {{ data }} </p>
+        </div>
+        <div class="d-flex flex-row me-5 my-3">
+            <button class="btn btn-outline-danger fs-2 me-5" onclick="clearFields('In')"> Sterge intrarea </button>
+            <button class="btn btn-outline-danger fs-2 me-5" onclick="clearFields('Out')"> Sterge iesirea </button>
+            <button class="btn btn-outline-info fs-2 me-5" onclick="location.reload()"> Anuleaza </button>
+        </div>
+    <form name="myform" method="post">
+        {% csrf_token %}
         <div class="fs-2 pt-3 w-50">
             <div class="row mb-3 fs-3">
-                <label for="inputOraIn" class="col-form-label fs-3 text-start">Data si ora</label>
+                <label for="inputOraIn" class="col-form-label fs-3 text-start">Ora intrarii</label>
                 <div class="col-sm-10">
-                  <input type="datetime-local" class="form-control fs-3" id="inputOraIn" required pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}">
+                  <input type="text" class="form-control fs-3" id="inputOraIn" value="{{ oraIn }}" name="orain">
                 </div>
             </div>
             <div class="row mb-3 fs-3">
-                <label for="inputNrComanda" class="col-form-label fs-3 text-start">Numar comanda</label>
+                <label for="inputOraOut" class="col-form-label fs-3 text-start">Ora plecarii</label>
                 <div class="col-sm-10">
-                  <input type="text" class="form-control fs-3" id="inputNrComanda" required>
-                </div>
-            </div>
-            <div class="row mb-3 fs-3">
-                <label for="inputLoc" class="col-form-label fs-3 text-start">Locatie (lat, long)</label>
-                <div class="col-sm-10">
-                  <input type="text" class="form-control fs-3" id="inputLoc" required>
+                  <input type="text" class="form-control fs-3" id="inputOraOut" value="{{ oraOut }}" name="oraout">
                 </div>
             </div>
 
-            <div class="form-floating fs-4 mt-3">
-              <textarea class="form-control fs-4" placeholder="Scrieti observatia/motivarea aici" id="comandObs" style="height: 100px"></textarea>
-              <label for="comandObs">Observatie</label>
-              <div class="d-flex flex-row justify-content-around mt-1 fs-5">
-                  <button onclick="toogleView('comandDiv')" class="btn btn-danger font-weight-bold fs-2 align-self-center my-0" > Anuleaza </button>
-                  <button id="btnEditShowModal" type="button" data-bs-toggle="modal" data-bs-target="#modalEditComand" class="btn btn-primary font-weight-bold fs-2 align-self-center my-0 me-3">Salveaza</button>
-              </div>
+            <div class="row mb-3 fs-3">
+                <label for="inputLocIn" class="col-form-label fs-3 text-start">Locatie intrare (lat, long): {{ locStrIn }}</label>
+                <div class="d-flex flex-row col-sm-10">
+                  <input type="text" class="form-control fs-3 me-5" id="inputLocIn" value="{{ locIn }}" name="locin">
+                  <button class="btn btn-light btn-lg" onclick="loadMap('{{ locIn }}')"><i class="fa-solid fa-location-crosshairs"></i></button>
+                </div>
+            </div>
+            <div class="row mb-3 fs-3">
+                <label for="inputLocOut" class="col-form-label fs-3 text-start">Locatie plecare (lat, long): {{ locStrOut }}</label>
+                <div class="d-flex flex-row col-sm-10">
+                  <input type="text" class="form-control fs-3 me-5" id="inputLocOut" required value="{{ locOut }}" name="locout">
+                  <button class="btn btn-light btn-lg" onclick="loadMap('{{ locOut }}')"><i class="fa-solid fa-location-crosshairs"></i></button>
+                </div>
+            </div>
+            {% if show_nrReloc %}
+            <div class="row mb-3 fs-3">
+                <label for="inputNrRelocIn" class="col-form-label fs-3 text-start">Numar de relocari la intrare</label>
+                <div class="col-sm-10">
+                  <input type="number" class="form-control fs-3" id="inputNrRelocIn" required min="1" max="{{ nrrecalcpoz }}" value="{{ 1 }}">
+                </div>
+            </div>
+            <div class="row mb-3 fs-3">
+                <label for="inputNrRelocOut" class="col-form-label fs-3 text-start">Numar de relocari la iesire</label>
+                <div class="col-sm-10">
+                  <input type="number" class="form-control fs-3" id="inputNrRelocOut" required min="1" max="{{ nrrecalcpoz }}" value="{{ 1 }}">
+                </div>
+            </div>
+            {% endif %}
+            <p class="mt-3 mb-1">Observatie la intrare</p>
+            <div class="form-floating fs-4 me-5">
+
+              <textarea class="form-control fs-4" placeholder="Scrieti observatia/motivarea aici" id="inputObsIn" style="height: 100px" name="obsin">{{ obsIn }}</textarea>
+{#              <label for="inputObsIn">Observatie la intrare</label>#}
+            </div>
+            <p class="mt-3 mb-1">Observatie la iesire</p>
+            <div class="form-floating fs-4 me-5">
+              <textarea class="form-control fs-4" placeholder="Scrieti observatia/motivarea aici" id="inputObsOut" style="height: 100px" name="obsout">{{ obsOut }}</textarea>
+{#              <label for="inputObsOut">Observatie la plecare</label>#}
+            </div>
+            <div class="d-flex flex-row justify-content-around mt-2 fs-5">
+              <button onclick="location.reload()" class="btn btn-danger font-weight-bold fs-2 align-self-center my-0" > Anuleaza </button>
+              <button id="" type="button" data-bs-toggle="modal" data-bs-target="#modalSaveEdit" class="btn btn-primary font-weight-bold fs-2 align-self-center my-0 me-3">Salveaza modificarile</button>
             </div>
         </div>
-    {% if obsIn != "" %}
-        <div class="my-3 w-50">
-            <p class="me-5 text-nowrap"> Observatie la intrare: </p>
-            <div class="form-floating">
-              <textarea disabled class="form-control fs-4" id="floatingTextarea2" style="height: 100px">{{ obsIn|safe }}</textarea>
-            </div>
-        </div>
-    {% endif %}
-    {% if obsOut != "" %}
-        <div class="my-3 w-50">
-            <p class="me-5 text-nowrap"> Observatie la iesire: </p>
-            <div class="form-floating">
-              <textarea disabled class="form-control fs-4" id="floatingTextarea2" style="height: 100px">{{ obsOut|safe }}</textarea>
-            </div>
-        </div>
-    {% endif %}
+    </form>
     {% if comenzi|length > 0 %}
         <div class="my-3 mt-5 w-50">
             <div class="d-flex flex-row">
@@ -164,7 +207,7 @@
                     <div class="d-flex justify-content-around">
                       <button type="button" data-bs-toggle="modal" data-bs-target="#modalCancelComand" data-bs-nr="{{ comanda.numar_comanda }}" class="btn btn-danger btn-square-md font-weight-bold fs-2 my-0"> Anuleaza </button>
                       <button type="button" class="btn btn-primary btn-square-md font-weight-bold fs-2 my-0"
-                              onclick="showEdit('{{ comanda.denumire }}','{{ comanda.numar_comanda }}','{{ comanda.text }}', '{{ comanda.getCoords }}', '{{ comanda.datetime|ftime:"time" }}')">Editeaza</button>
+                              onclick="showEdit('{{ comanda.denumire }}','{{ comanda.numar_comanda }}','{{ comanda.text }}', '{{ comanda.getCoords }}', '{{ comanda.datetime|ftime:"datetime" }}')">Editeaza</button>
                     </div>
                   </div>
                 </div>
@@ -186,13 +229,13 @@
             <div class="row mb-3 fs-3">
                 <label for="inputNrComanda" class="col-form-label fs-3 text-start">Numar comanda</label>
                 <div class="col-sm-10">
-                  <input type="text" class="form-control fs-3" id="inputNrComanda" required>
+                  <input type="text" class="form-control fs-3" id="inputNrComanda" required pattern="C[0-9]{1,}.[0-9]{1,}">
                 </div>
             </div>
             <div class="row mb-3 fs-3">
                 <label for="inputLoc" class="col-form-label fs-3 text-start">Locatie (lat, long)</label>
                 <div class="col-sm-10">
-                  <input type="text" class="form-control fs-3" id="inputLoc" required>
+                  <input type="text" class="form-control fs-3" id="inputLoc" required pattern="[0-9]{1,2}.[0-9]{2,},[\s ][0-9]{1,2}.[0-9]{2,}">
                 </div>
             </div>
             <div class="row mb-3 fs-3">
@@ -218,18 +261,20 @@
 {#{% if %}#}
 
 {% block scripts %}
-<script>
+<script type="text/javascript">
 
-var modalCancelComand = document.getElementById('modalCancelComand')
-modalCancelComand.addEventListener('show.bs.modal', function (event) {
+document.getElementById('btnSaveEdit').addEventListener("click", function(){
+    document.forms['myform'].submit()
+})
+
+document.getElementById('modalCancelComand').addEventListener('show.bs.modal', function (event) {
   var button = event.relatedTarget
   var recipient = button.getAttribute('data-bs-nr')
   var butonContinua = document.getElementById('btnCancelComand')
   butonContinua.onclick = () => {window.location.href = "{% url 'comanda_cancel'%}?nr="+recipient};
 })
 
-var modalEditComand = document.getElementById('modalEditComand')
-modalEditComand.addEventListener('show.bs.modal', function (event) {
+document.getElementById('modalEditComand').addEventListener('show.bs.modal', function (event) {
   // Button that triggered the modal
   var button = event.relatedTarget
   // Extract info from data-bs-* attributes
@@ -317,67 +362,32 @@ function processposition(url, text=""){
     });
 }
 
-function showEdit(den, nr, text, coords, time){
+function showEdit(den, nr, text, coords, datetime){
     toogleView('comandDiv');
     document.getElementById('comandaDen').value = den;
     document.getElementById('inputNrComanda').value = nr;
     document.getElementById('inputLoc').value = coords;
     document.getElementById('comandObs').value = text.replace('; ', '\n');
-
-    const now = new Date();
-    tokens = time.split(":");
-    now.setHours(parseInt(tokens[0]))
-    now.setMinutes(parseInt(tokens[1]));
-    now.setDate({{ datetime.day }});
-
-    now.setMonth({{ datetime.month }});
-    now.setFullYear({{ datetime.year }});
-    now.setMinutes(now.getMinutes() );
-    //alert(now.toJSON())
-    //alert(now.toISOString())
-    //2022-08-22T04:40:00.553Z
-    document.getElementById('inputMom').value = createDateTime(now);
+    document.getElementById('inputMom').value = createDateTime(datetime);
 
     window.location.href = window.location.href.replace(/#.*/g, "") + "#comandDiv";
     document.getElementById('btnEditShowModal').setAttribute("data-bs-oldnr", nr);
 }
 
-function fallbackCopyTextToClipboard(text) {
-  var textArea = document.createElement("textarea");
-  textArea.value = text;
+function createDateTime(datestr){
+    const now = new Date();
+    let elems = datestr.split("-");
+    let toktime = elems[1].split(":");
+    let tokdate = elems[0].split(".");
+    now.setHours(parseInt(toktime[0]));
+    now.setMinutes(parseInt(toktime[1]));
+    now.setDate(parseInt(tokdate[0]));
 
-  // Avoid scrolling to bottom
-  textArea.style.top = "0";
-  textArea.style.left = "0";
-  textArea.style.position = "fixed";
-
-  document.body.appendChild(textArea);
-  textArea.focus();
-  textArea.select();
-
-  try {
-    var successful = document.execCommand('copy');
-    var msg = successful ? 'successful' : 'unsuccessful';
-    console.log('Fallback: Copying text command was ' + msg);
-  } catch (err) {
-    console.error('Fallback: Oops, unable to copy', err);
-  }
-
-  document.body.removeChild(textArea);
-}
-function copyTextToClipboard(text) {
-  if (!navigator.clipboard) {
-    fallbackCopyTextToClipboard(text);
-    return;
-  }
-  navigator.clipboard.writeText(text).then(function() {
-    console.log('Async: Copying to clipboard was successful!');
-  }, function(err) {
-    console.error('Async: Could not copy text: ', err);
-  });
-}
-
-function createDateTime(now){
+    now.setMonth(parseInt(tokdate[1]));
+    now.setFullYear(parseInt(tokdate[2]));
+    //alert(now.toJSON())
+    //alert(now.toISOString())
+    //2022-08-22T04:40:00.553Z
     rez = ""
     rez += pad(now.getFullYear(), 4) + "-" + pad(now.getMonth(), 2) + "-" + pad(now.getDate(), 2);
     rez += "T" + pad(now.getHours(), 2) + ":" + pad(now.getMinutes(), 2);
@@ -388,6 +398,20 @@ function pad(num, size) {
     num = num.toString();
     while (num.length < size) num = "0" + num;
     return num;
+}
+
+function clearFields(str){
+    var myModal = new bootstrap.Modal(document.getElementById('modalSaveEdit'), {backdrop: "static", keyboard: false})
+    if(str === "In"){
+        document.getElementById('inputOraIn').value = ""
+        document.getElementById('inputLocIn').value = ""
+        document.getElementById('inputObsIn').value = ""
+    } else if(str === "Out") {
+        document.getElementById('inputOraOut').value = ""
+        document.getElementById('inputLocOut').value = ""
+        document.getElementById('inputObsOut').value = ""
+    }
+    myModal.show()
 }
 
 </script>

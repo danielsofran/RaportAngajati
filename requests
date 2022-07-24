@@ -33,3 +33,20 @@ Editable:
 https://www.google.com/maps/dir/47.17727110,24.15983770//@47.17727110,24.1598377047.1796062,24.1704734,21z
 
 de schimbat status ul din activityUser in form
+vizualizare status daca e absent?
+
+modify status of user:
+form -> modal -> submit from js (https://stackoverflow.com/questions/3915917/make-a-link-use-post-instead-of-get)
+
+<form name="myform" action="handle-data.php" method="post">
+  <label for="query">Search:</label>
+  <input type="text" name="query" id="query"/>
+  <button>Search</button>
+</form>
+
+<script>
+var button = document.querySelector('form[name="myform"] > button');
+button.addEventListener(function() {
+  document.querySelector("form[name="myform"]").submit();
+});
+</script>

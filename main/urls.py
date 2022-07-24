@@ -24,13 +24,11 @@ urlpatterns = [
     path("activity/2daysago", login_required(views.Act2DaysAgoView.as_view()), name="act2daysAgo"),
     path("activity/last3", login_required(views.ActLast3View.as_view()), name="actLast3"),
     path("activity/last7", login_required(views.ActLast7View.as_view()), name="actLast7"),
-    path("activity/<str:datein>,<str:dateout>", login_required(views.ActFromPathView.as_view()), name="actFromPath"),
 
+    path("activity/<str:datein>,<str:dateout>", login_required(views.ActFromPathView.as_view()), name="actFromPath"),
     path("activity/<str:datein>,<str:dateout>/<str:username>", login_required(views.ActUserFromPathView.as_view()), name="actUserFromPath"),
-    path("activity/<str:datein>,<str:dateout>/<str:username>/come", login_required(views.ActUserFromPathView.as_view()), name="actUserCome"),
-    path("activity/<str:datein>,<str:dateout>/<str:username>/cancel_come", login_required(views.ActUserFromPathView.as_view()), name="actUserCancelCome"),
-    path("activity/<str:datein>,<str:dateout>/<str:username>/left", login_required(views.ActUserFromPathView.as_view()), name="actUserLeft"),
-    path("activity/<str:datein>,<str:dateout>/<str:username>/cancel_left", login_required(views.ActUserFromPathView.as_view()), name="actUserCancelLeft"),
+    path("activity/getperiod", login_required(views.getperiod), name="actGetPeriod"),
+    path("activity/getperioduser", login_required(views.ActFromPathView.as_view()), name="actGetPeriodUser"),
 
     path("cont/detalii", login_required(views.detalii), name="detalii"),
     path("cont/detalii/<str:username>", login_required(views.detalii), name="detaliiuser"),
