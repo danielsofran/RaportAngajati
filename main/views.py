@@ -228,7 +228,26 @@ def comandaFinish(request):
 
 def comandaEdit(request):
     if request.method == "GET":
-        if not 'datetime' in request.GET:
+        if 'user' in request.GET:
+            user = models.User.objects.get(username=request.GET['user'])
+            now = datetime.datetime.fromisoformat(request.GET['datetime'])
+            if request.GET['nr'] == "":
+                messages.success(request, ("Numar comanda invalid!"))
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+            if str(request.GET['loc']).split(',').__len__() < 2:
+                messages.success(request, ("Locatie invalida!"))
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+            try:
+                models.Comanda.objects.get(datetime__year=now.year, numar_comanda=request.GET['nr'])
+                messages.success(request, ("Numar comanda duplicat!"))
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+            except: pass
+            coord = str(request.GET['loc']).split(',')
+            models.Comanda.objects.create(user=user, numar_comanda=request.GET['nr'],
+                denumire=request.GET['den'], text=request.GET['obs'], datetime=now, latitude=coord[0], longitude=coord[1])
+            messages.success(request, ("Comanda a fost adaugata!"))
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+        elif not 'datetime' in request.GET:
             now = utils.getTime()
             oldnr = request.GET['oldnr']
             try: old = models.Comanda.objects.get(user=request.user, datetime__day=now.day, datetime__year=now.year, numar_comanda=oldnr)
@@ -308,12 +327,12 @@ class ActView(TemplateView):
             if datain == dataout: context.update(data=datain)
             else: context.update(datain=datain, dataout=dataout, data=None)
             return render(request, self.template_name, context)
-        else: # Manager, Admin
+        else:  # Manager, Admin
             datetimein, datetimeout = self._getPeriod(**kwargs)
             harta = models.OwnSettings.objects.all()[0].harta.adresa
-            roluri_listate = ["Angajat", "Viewer"]
+            roluri_listate = ["Angajat", "Viewer", "Manager"]
             if request.user.role == "Admin":
-                roluri_listate.append("Manager")
+                roluri_listate.append("Admin")
             tabledata = []
             for user in models.User.objects.filter(role__in=roluri_listate):
                 for datetime in utils.rangeDays(datetimein, datetimeout):

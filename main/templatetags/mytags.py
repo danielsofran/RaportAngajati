@@ -3,6 +3,7 @@ import datetime
 from django import template
 from main import utils, models
 from siteReport import settings
+import pytz
 register = template.Library()
 
 @register.filter(name='has_group')
@@ -49,12 +50,16 @@ def is_recent(user, tip):
     return False
 
 @register.filter(name='ftime')
-def ftime(datetime: datetime.datetime, tip: str) -> str:
-    if datetime is None or str(datetime).__len__() == 0: return "-"
-    datetime = utils.getTime(datetime)
-    if tip == "time": return datetime.strftime("%H:%M")
-    if tip == "date": return datetime.strftime("%d.%m.%Y")
-    if tip == "datetime": return datetime.strftime("%d.%m.%Y-%H:%M")
+def ftime(datetimegiven: datetime.datetime, tip: str) -> str:
+    if datetimegiven is None or str(datetimegiven).__len__() == 0: return "-"
+    datetimegiven = utils.getTime(datetimegiven)
+    if tip == "time": return datetimegiven.strftime("%H:%M")
+    if tip == "date": return datetimegiven.strftime("%d.%m.%Y")
+    if tip == "datetime": return datetimegiven.strftime("%d.%m.%Y-%H:%M")
+    if tip == "date timenow":
+        time = utils.getTime().time()
+        datetimegiven = datetime.datetime.combine(datetimegiven.date(), time, tzinfo=pytz.timezone(settings.TIME_ZONE))
+        return datetimegiven.strftime("%d.%m.%Y-%H:%M")
     return "-"
 
 @register.filter(name='name_of_day')

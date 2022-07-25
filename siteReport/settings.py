@@ -130,6 +130,7 @@ AUTH_USER_MODEL = 'main.User'
 
 TIME_ZONE = 'Europe/Bucharest'
 
+
 # NR_RECALC_POZ = 3
 #
 # SEC_RECALC_AFTER = 60
