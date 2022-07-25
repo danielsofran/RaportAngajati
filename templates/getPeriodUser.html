@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container m-5 p-5 fs-1">
+    <form method="post">
+        {% csrf_token %}
+        <div class="row mb-5">
+            <label for="inputDate" class="form-label text-nowrap me-3">Data</label>
+            <input type="datetime-local" class="form-control fs-1" id="inputDate2" required pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" name="date">
+        </div>
+        <div class="row mb-5">
+            <label for="inputUser" class="form-label text-nowrap me-3">Numele angajatului</label>
+            <input class="form-control fs-1" list="datalistOptions" id="exampleDataList" placeholder="Tastati numele utilizatorului" name="user">
+            <datalist id="datalistOptions">
+              {% for user in users %}
+                  <option value="{{ user.nume }}">
+              {% endfor %}
+            </datalist>
+        </div>
+        <div class="row mb-5">
+            <div class="d-flex flex-row justify-content-around">
+                <button type="submit" class="btn btn-outline-success fs-1">Adauga</button>
+            </div>
+        </div>
+    </form>
+    </div>
+{% endblock %}

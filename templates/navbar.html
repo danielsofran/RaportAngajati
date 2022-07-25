@@ -1,3 +1,4 @@
+{% load mytags %}
 <nav class="navbar navbar-expand-lg navbar-light bg-light fs-1">
   <div class="container-fluid">
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -19,6 +20,9 @@
             <li><a class="dropdown-item" href="{% url 'actLast3' %}">Ultimele 3 zile</a></li>
             <li><a class="dropdown-item" href="{% url 'actLast7' %}">Ultima saptamana</a></li>
             <li><a class="dropdown-item" href="{% url 'actGetPeriod' %}">Alege o perioada</a></li>
+            {% if user.is_authenticated and request.user|role_at_least:"Manager" %}
+            <li><a class="dropdown-item text-success" href="{% url 'actGetPeriodUser' %}">Adauga o activitate</a></li>
+            {% endif %}
           </ul>
         </li>
         <li class="nav-item dropdown ms-5">
@@ -27,9 +31,8 @@
           </a>
           <ul class="dropdown-menu fs-5" aria-labelledby="navbarDropdown">
                 <li><a class="dropdown-item" href="{% url 'detalii' %}">Detalii</a></li>
-                {% load mytags %}
                 {% if user.is_authenticated and request.user|role_at_least:"Manager" %}
-                <li><a class="dropdown-item" href="#">Vezi Angajatii</a></li>
+                <li><a class="dropdown-item" href="{% url 'utilizatori' %}">Vezi Angajatii</a></li>
                 <li><a class="dropdown-item" href="#">Setari</a></li>
                 {% endif %}
                 <li><hr class="dropdown-divider"></li>

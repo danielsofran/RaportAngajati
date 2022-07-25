@@ -1,6 +1,37 @@
 {% extends 'base.html' %}
 
+{% block css %}
+<style>
+    .modal-dialog{
+        position: absolute;
+        top: 10%;
+        left: 10%;
+     }
+</style>
+{% endblock %}
+
 {% block content %}
+{% load mytags %}
+<div class="modal fade" id="modalDelete" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel2" aria-hidden="true">
+      <div class="modal-dialog me-auto">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title fs-2" id="staticBackdropLabel2">Atentie!</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body fs-4">
+            Sigur doriti sa stergeti acest cont?<br>
+            Datele vor fi pierdute definitiv.
+          </div>
+          <div class="modal-footer justify-content-around">
+            <button type="button" class="btn btn-danger fs-3" data-bs-dismiss="modal">Anuleaza</button>
+            {% if request.user|role_at_least:"Manager" %}
+              <button type="button" class="btn btn-warning fs-3" onclick="window.location.href = '{% url 'deleteuser' username=userdata.username %}'">Continua</button>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
 
 <div class="container-fluid m-5 fs-1 w-auto">
     <h1 class="my-5" style="font-size: 200%">Detalii cont</h1>
@@ -30,7 +61,10 @@
           </th>
       </tr>
     </table>
-    <button class="btn btn-primary fs-1 mt-5" onclick="toogleViewModif()"> Modifica cont </button>
+    <div class="d-flex flex-row mt-5">
+        <button class="btn btn-primary fs-1 me-5" onclick="toogleViewModif()"> Modifica cont </button>
+        {% if userdata != request.user and request.user|role_at_least:"Manager" %}<button data-bs-toggle="modal" data-bs-target="#modalDelete" class="btn btn-danger fs-1 me-5"> Sterge cont </button>{% endif %}
+    </div>
     <div id="divDetalii" class="d-none mt-5 fs-2 w-50">
         <form method="POST">
             {% csrf_token %}

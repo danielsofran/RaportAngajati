@@ -50,3 +50,6 @@ button.addEventListener(function() {
   document.querySelector("form[name="myform"]").submit();
 });
 </script>
+
+47.1772711,24.1598377
+47.177267,24.159877

@@ -457,6 +457,33 @@ def getperiod(request):
         return redirect('actFromPath', datein=date1.strftime("%d.%m.%Y"), dateout=date2.strftime("%d.%m.%Y"))
     return render(request, "getPeriod.html", {})
 
+def getperioduser(request):
+    if request.method == "POST":
+        print(request.POST)
+        date = datetime.datetime.fromisoformat(request.POST['date'])
+        utilizator = request.POST['user']
+        try:
+            user = models.User.objects.get(nume=utilizator)
+            return redirect('actUserFromPath', datein=date.strftime("%d.%m.%Y"), dateout=date.strftime("%d.%m.%Y"), username=user.username)
+        except: pass
+        if utils.validTel(utilizator):
+            try:
+                user = models.User.objects.get(telefon=utilizator)
+                return redirect('actUserFromPath', datein=date.strftime("%d.%m.%Y"), dateout=date.strftime("%d.%m.%Y"), username=user.username)
+            except: pass
+        if "@" in str(utilizator):
+            try:
+                user = models.User.objects.get(email=utilizator)
+                return redirect('actUserFromPath', datein=date.strftime("%d.%m.%Y"), dateout=date.strftime("%d.%m.%Y"), username=user.username)
+            except: pass
+        try:
+            user = models.User.objects.get(username=utilizator)
+            return redirect('actUserFromPath', datein=date.strftime("%d.%m.%Y"), dateout=date.strftime("%d.%m.%Y"), username=user.username)
+        except: pass
+        messages.success(request, ("Utilizatorul nu a fost gasit!"))
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+    return render(request, "getPeriodUser.html", {"users": models.User.objects.all()})
+
 @method_decorator(login_required, name='dispatch')
 class ActFromPathView(ActView):
 
@@ -502,6 +529,40 @@ class ActUserFromPathView(ActFromPathView):
 
 #endregion
 
+@user_passes_test(lambda user: user.role in ("Manager", "Admin"))
+def adduser(request):
+    if request.method == 'POST':
+        username = request.POST['user']
+        nume = request.POST['nume']
+        email = request.POST['email']
+        tel = request.POST['tel']
+        pwd = request.POST['pwd']
+        role = request.POST['role']
+        try:
+            models.User.objects.get(username=username)
+            messages.success(request, ("Numele de utilizator exista deja! Incercati altul sau regenerati-l."))
+            return redirect('adduser')
+        except: pass
+        try:
+            models.User.objects.get(nume=nume)
+            messages.success(request, ("Numele exista deja!"))
+            return redirect('adduser')
+        except: pass
+        models.User.objects.create(username=username, nume=nume, email=email, telefon=tel, password=pwd, role=role)
+        messages.success(request, ("Contul a fost creeat cu succes!"))
+        return redirect('detaliiuser', username=username)
+    return render(request, 'adduser.html', {})
+
+@user_passes_test(lambda user: user.role in ("Manager", "Admin"))
+def deleteuser(request, username):
+    try: data = models.User.objects.get(username=username)
+    except:
+        messages.success(request, ("Utilizatorul nu a fost gasit!"))
+        return HttpResponseRedirect(request.path_info)
+    data.delete()
+    messages.success(request, ("Acest cont a fost sters!"))
+    return redirect('utilizatori')
+
 def detalii(request, username=None):
     user = request.user
     if username is not None and (user.role == "Manager" or user.role == "Admin"):
@@ -536,3 +597,41 @@ def detalii(request, username=None):
                 messages.success(request, ("Modificarile au fost efectuate!"))
         else: messages.success(request, ("Nu exista nici o modificare!"))
     return render(request, 'detalii.html', {"userdata": user})
+
+@method_decorator(login_required, name='dispatch')
+class Utilizatori(TemplateView):
+    template_name = 'users.html'
+
+    def get(self, request, *args, **kwargs):
+        if request.user.role in ("Manager", "Admin"):
+            try: searchtext = request.GET['search']
+            except: searchtext = ""
+            try: crit = request.GET['crit']
+            except: crit = "nume"
+            context = {'ch1': True, 'ch2': True, 'ch3': True, 'now': utils.getTime(), 'stext': searchtext}
+            asocs = {"ch1": "angajat", "ch2": "manager", "ch3": "admin", }
+            roluri = []
+            isnothing = searchtext.__len__() == 0
+            for i in range(1, 4):
+                ch = f"ch{i}"
+                if asocs[ch] not in request.GET:
+                    context[ch] = False
+                isnothing = isnothing and not context[ch]
+                if context[ch] == True:
+                    roluri.append(asocs[ch][0].capitalize() + asocs[ch][1:])
+
+            if isnothing: users = models.User.objects.all().order_by('nume')
+            else:
+                searchcontext = {}
+                if searchtext != "":
+                    if crit == "nume": searchcontext.update(nume__contains=searchtext)
+                    elif crit == "username": searchcontext.update(username__startswith=searchtext)
+                    elif crit == "tel": searchcontext.update(telefon__startswith=searchtext)
+                    elif crit == "email": searchcontext.update(email__contains=searchtext)
+                    users = models.User.objects.filter(role__in=roluri, **searchcontext).order_by("nume")
+                else: users = models.User.objects.filter(role__in=roluri).order_by("nume")
+            context.update(users=users, isnothing=isnothing, crit=crit)
+            return render(request, "users.html", context)
+        else:
+            messages.success(request, ("NU sunteti autorizat sa vizualizati alte conturi!"))
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))

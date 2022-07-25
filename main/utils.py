@@ -121,6 +121,20 @@ def degToMeters(lat1, lon1, lat2, lon2) -> float:
     d = R * c
     return d * 1000
 
+def validTel(tel: str):
+    tel.replace(' ', '')
+    if tel.__len__() < 10:
+        #messages.success(request, ("Numarul de telefon nu contine destule cifre!"))
+        return False
+    if (tel[0] < '0' or tel[0] > '9') and tel[0] != '+':
+        #messages.success(request, ("Prima cifra a numarului de telefon este invalida!"))
+        return False
+    for cif in tel[1:]:
+        if cif not in '.-' and (cif < '0' or cif > '9'):
+            #messages.success(request, ("Numar de telefon invalid!"))
+            return False
+    return True
+
 def validAccountModif(user, request) -> bool:
     if len(str(request.POST['user'])) < 5:
         messages.success(request, ("Numele de utilizator ar trebui sa aiba cel putin 5 caractere."))

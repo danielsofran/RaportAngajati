@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load mytags %}
+<div class="w-100 h-100">
+<div class="m-5 fs-2 form w-50">
+<form method="POST">
+    {% csrf_token %}
+    <div class="mb-3 row">
+      <label for="inUsername" class="col-sm-2 col-form-label pe-3">User</label>
+      <div class="col-sm-10 pt-2">
+        <input type="text" class="form-control fs-2" id="inUsername" name="user">
+      </div>
+    </div>
+    <div class="mb-3 row">
+      <label for="inNume" class="col-sm-2 col-form-label">Nume</label>
+      <div class="col-sm-10 pt-2">
+        <input type="text" class="form-control fs-2" id="inNume" name="nume">
+      </div>
+    </div>
+    <div class="mb-3 row">
+      <label for="inEmail" class="col-sm-2 col-form-label">Email</label>
+      <div class="col-sm-10 pt-2">
+        <input type="email" class="form-control fs-2" id="inEmail" name="email">
+      </div>
+    </div>
+    <div class="mb-3 row">
+      <label for="inTelefon" class="col-sm-2 col-form-label">Telefon</label>
+      <div class="col-sm-10 pt-2">
+        <input type="text" class="form-control fs-2" id="inTelefon" name="tel">
+      </div>
+    </div>
+    <div class="mb-3 row">
+      <label for="inPassword" class="col-sm-2 col-form-label">Parola</label>
+      <div class="col-sm-10 pt-2">
+        <input type="text" class="form-control fs-2" id="inPassword" name="pwd">
+      </div>
+    </div>
+     <div class="mb-3 row">
+      <label for="inRole" class="col-sm-2 col-form-label">Statut</label>
+     <div class="col-sm-10 pt-2">
+         <select id="inRole" class="form-select fs-2" aria-label="Select statut" name="role">
+          <option selected value="Angajat">Angajat</option>
+          {% if request.user|role_at_least:"Manager" %}<option value="Manager">Manager</option>{% endif %}
+          {% if request.user|role_at_least:"Admin" %}<option value="Admin">Admin</option>{% endif %}
+         </select>
+     </div>
+    </div>
+    <div class="mb-3 row">
+        <div class="d-flex flex-row justify-content-around">
+            <button onclick="generate()" type="button" class="btn btn-outline-primary fs-3" title="Genereaza user si parola pe baza numelui">Genereaza</button>
+            <button type="submit" class="btn btn-success fs-3" >Salveaza</button>
+        </div>
+    </div>
+</form>
+</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+
+function generate(){
+    const getRandomPin = (chars, len)=>[...Array(len)].map(
+       (i)=>chars[Math.floor(Math.random()*chars.length)]
+    ).join('');
+
+    let nume = document.getElementById('inNume').value
+    if(nume == null || nume.length === 0) return;
+    let tokens = nume.split(" ")
+    let username = tokens[tokens.length-1].toLowerCase() + getRandomPin("1234567890", 3)
+    let password = tokens[0].toLowerCase() + getRandomPin("1234567890", 6)
+    document.getElementById('inUsername').value = username;
+    document.getElementById('inPassword').value = password;
+}
+
+</script>
+{% endblock %}

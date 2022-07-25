@@ -107,7 +107,7 @@
         <h1 class="my-5" style="font-size: 200%">Status:</h1>
         <div class="d-flex flex-row me-5 my-3">
             <p class="me-5 text-nowrap"> User: </p>
-            <a target="_blank" href="{% url 'detaliiuser' username=user.username %}">{{ user.nume }}</a>
+            <a href="{% url 'detaliiuser' username=user.username %}">{{ user.nume }}</a>
         </div>
         <div class="d-flex flex-row me-5 my-3">
             <p class="me-5 text-nowrap"> Data: </p>

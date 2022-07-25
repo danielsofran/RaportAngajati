@@ -25,7 +25,7 @@
         {% if not rowdata.absent %}
         <tr>
             {% if request.user|role_at_least:"Manager" %}
-                <th> <a target="_blank" href="{% url 'detaliiuser' username=rowdata.user.username %}">{{ rowdata.user.nume }}</a></th>
+                <th> <a href="{% url 'detaliiuser' username=rowdata.user.username %}">{{ rowdata.user.nume }}</a></th>
                 <th> {{ rowdata.datetime|ftime:"date" }} </th>
             {% else %}
                 <th> {{ rowdata.datetime|name_of_day }}</th>

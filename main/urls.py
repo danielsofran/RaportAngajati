@@ -28,8 +28,11 @@ urlpatterns = [
     path("activity/<str:datein>,<str:dateout>", login_required(views.ActFromPathView.as_view()), name="actFromPath"),
     path("activity/<str:datein>,<str:dateout>/<str:username>", login_required(views.ActUserFromPathView.as_view()), name="actUserFromPath"),
     path("activity/getperiod", login_required(views.getperiod), name="actGetPeriod"),
-    path("activity/getperioduser", login_required(views.ActFromPathView.as_view()), name="actGetPeriodUser"),
+    path("activity/getperioduser", login_required(views.getperioduser), name="actGetPeriodUser"),
 
     path("cont/detalii", login_required(views.detalii), name="detalii"),
+    path("cont/users", login_required(views.Utilizatori.as_view()), name="utilizatori"),
     path("cont/detalii/<str:username>", login_required(views.detalii), name="detaliiuser"),
+    path("cont/add", login_required(views.adduser), name="adduser"),
+    path("cont/<str:username>/delete", login_required(views.deleteuser), name="deleteuser"),
 ]
