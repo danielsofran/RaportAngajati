@@ -70,11 +70,12 @@ def rangeDays(datatimein: datetime.datetime, datetimeout: datetime.datetime):
         datatimein = getNextDay(datatimein)
     return rez
 
-def getMinDistance(info: models.Info) -> float:
-    def get_min_distance(position: tuple) -> float:
+def getMinDistance(info: models.Info):
+    def get_min_distance(position: tuple):
         # returneaza distanta in metrii pana la cea mai apropiata unitate
         forme = models.Forma.objects.all()
         minim = 2**32
+        formamin = None
         for forma in forme:
             shape = forma.getShape()
             dc = hs.haversine(shape.center, position, unit=Unit.METERS)
@@ -82,14 +83,15 @@ def getMinDistance(info: models.Info) -> float:
             diff = dc - raza
             if diff < 0: diff = 0
             minim = min(minim, diff)
-        return minim
+            formamin = forma
+        return minim, formamin.nume
     return get_min_distance((info.latitude, info.longitude))
 
 def locStr(info: models.Info) -> str:
     error = models.OwnSettings.objects.all()[0].disterror
     try: dst = getMinDistance(info)
     except: return "-"
-    diff = dst - error
+    diff = dst[0] - error
     if diff <= 0:
         return "In firma"
     elif diff <= 500:
@@ -171,3 +173,5 @@ def validAccountModif(user, request) -> bool:
             messages.success(request, ("Nume prea scurt!"))
             return False
     return True
+
+class MyException(Exception): pass

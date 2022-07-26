@@ -22,7 +22,7 @@ class Forma(models.Model):
             strpcts.remove("")
         pcts = []
         for pctstr in strpcts:
-            s = str(pctstr).replace('\r', '').split(' ')
+            s = str(pctstr).replace('\r', '').replace(',', ' ').split(' ')
             pcts.append([float(s[0]), float(s[1])])
         return model(*pcts)
     def __str__(self): return self.nume
@@ -53,6 +53,7 @@ class OwnSettings(models.Model):
     secafterrecalc = models.IntegerField(blank=False, default=60, verbose_name="Numarul de secunde dupa care este disponibila o relocare")
     disterror = models.FloatField(blank=False, default=10, verbose_name="Distanta in metrii acceptata ca eroare a calculului de locatie")
     program = models.CharField(blank=False, default="L Ma Mi J V S D", max_length=20)
+    min_tolerated = models.IntegerField(blank=False, default=5, verbose_name="Numarul de minute tolerate in calculul celor 8 ore dintre intrare si iesire")
     harta = models.ForeignKey(Harta, null=True, on_delete=models.DO_NOTHING)
 
     def __str__(self): return "Setare"

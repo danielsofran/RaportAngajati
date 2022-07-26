@@ -20,3 +20,25 @@
     </form>
     </div>
 {% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+
+function createDateTimeFromDate(now){
+    rez = ""
+    rez += pad(now.getFullYear(), 4) + "-" + pad(now.getMonth(), 2) + "-" + pad(now.getDate(), 2);
+    rez += "T" + pad(now.getHours(), 2) + ":" + pad(now.getMinutes(), 2);
+    return rez;
+}
+
+function pad(num, size) {
+    num = num.toString();
+    while (num.length < size) num = "0" + num;
+    return num;
+}
+
+date = new Date()
+document.getElementById('inputDate2').value = createDateTimeFromDate(date)
+
+</script>
+{% endblock %}

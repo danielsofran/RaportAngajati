@@ -6,7 +6,7 @@
         {% csrf_token %}
         <div class="row mb-5">
             <label for="inputDate" class="form-label text-nowrap me-3">Data</label>
-            <input type="datetime-local" class="form-control fs-1" id="inputDate2" required pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" name="date">
+            <input type="datetime-local" class="form-control fs-1" id="inputDate" required pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" name="date">
         </div>
         <div class="row mb-5">
             <label for="inputUser" class="form-label text-nowrap me-3">Numele angajatului</label>
@@ -24,4 +24,26 @@
         </div>
     </form>
     </div>
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+
+function createDateTimeFromDate(now){
+    rez = ""
+    rez += pad(now.getFullYear(), 4) + "-" + pad(now.getMonth(), 2) + "-" + pad(now.getDate(), 2);
+    rez += "T" + pad(now.getHours(), 2) + ":" + pad(now.getMinutes(), 2);
+    return rez;
+}
+
+function pad(num, size) {
+    num = num.toString();
+    while (num.length < size) num = "0" + num;
+    return num;
+}
+
+date = new Date()
+document.getElementById('inputDate').value = createDateTimeFromDate(date)
+
+</script>
 {% endblock %}

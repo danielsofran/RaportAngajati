@@ -138,14 +138,16 @@
                 <label for="inputLocIn" class="col-form-label fs-3 text-start">Locatie intrare (lat, long): {{ locStrIn }}</label>
                 <div class="d-flex flex-row col-sm-10">
                   <input type="text" class="form-control fs-3 me-5" id="inputLocIn" value="{{ locIn }}" name="locin">
-                  <button class="btn btn-light btn-lg" onclick="loadMap('{{ locIn }}')"><i class="fa-solid fa-location-crosshairs"></i></button>
+                  <button type="button" class="btn btn-light btn-lg fs-3 me-3" onclick="loadMap('{{ locIn }}')" title="Arata pe harta"><i class="fa-solid fa-magnifying-glass-location"></i></button>
+                  <button type="button" class="btn btn-light btn-lg fs-3" onclick="setCurentCoords('inputLocIn')" title="Seteaza pozitia curenta"><i class="fa-solid fa-location-crosshairs"></i></button>
                 </div>
             </div>
             <div class="row mb-3 fs-3">
                 <label for="inputLocOut" class="col-form-label fs-3 text-start">Locatie plecare (lat, long): {{ locStrOut }}</label>
                 <div class="d-flex flex-row col-sm-10">
                   <input type="text" class="form-control fs-3 me-5" id="inputLocOut" required value="{{ locOut }}" name="locout">
-                  <button class="btn btn-light btn-lg" onclick="loadMap('{{ locOut }}')"><i class="fa-solid fa-location-crosshairs"></i></button>
+                  <button type="button" class="btn btn-light btn-lg fs-3 me-3" onclick="loadMap('{{ locOut }}')" title="Arata pe harta"><i class="fa-solid fa-magnifying-glass-location"></i></button>
+                  <button type="button" class="btn btn-light btn-lg fs-3" onclick="setCurentCoords('inputLocOut')" title="Seteaza pozitia curenta"><i class="fa-solid fa-location-crosshairs"></i></button>
                 </div>
             </div>
             {% if show_nrReloc %}
@@ -174,14 +176,14 @@
 {#              <label for="inputObsOut">Observatie la plecare</label>#}
             </div>
             <div class="d-flex flex-row justify-content-around mt-2 fs-5">
-              <button onclick="location.reload()" class="btn btn-danger font-weight-bold fs-2 align-self-center my-0" > Anuleaza </button>
+              <button type="reset" class="btn btn-danger font-weight-bold fs-2 align-self-center my-0" > Anuleaza </button>
               <button id="" type="button" data-bs-toggle="modal" data-bs-target="#modalSaveEdit" class="btn btn-primary font-weight-bold fs-2 align-self-center my-0 me-3">Salveaza modificarile</button>
             </div>
         </div>
     </form>
         <div class="my-3 mt-5 w-50">
             <div class="d-flex flex-row">
-                <p class="me-5 text-nowrap"> Comenzi finalizate: </p>
+                <p class="me-5 text-nowrap"> Comenzi finalizate: {{ nrcomenzi }} </p>
                 <button onclick="arataascunde()" id="btnShowHide" class="btn btn-outline-primary btn-square-md font-weight-bold fs-3 align-self-center my-0 px-4 me-5" > Ascunde </button>
                 <button onclick="showEdit('', '', '', '', '{{ datetime|ftime:"date timenow" }}')" id="btnShowAdd" class="btn btn-success btn-square-md font-weight-bold fs-3 align-self-center my-0 px-4" > Adauga </button>
             </div>
@@ -199,7 +201,7 @@
                       <li class="list-group-item">
                           <div class="d-flex flex-row">
                               <p class="me-3">Locatie: {{ comanda|strloc }}</p>
-                              <button class="btn btn-light" onclick="loadMap('{{ comanda.getCoords|safe }}')"><i class="fa-solid fa-location-crosshairs"></i></button>
+                              <button class="btn btn-light fs-3" onclick="loadMap('{{ comanda.getCoords|safe }}')" title="Arata pe harta"><i class="fa-solid fa-location-crosshairs"></i></button>
                           </div>
                       </li>
                       <li class="list-group-item">Observatie: {{ comanda.text }} </li>
@@ -233,7 +235,9 @@
                 </div>
             </div>
             <div class="row mb-3 fs-3">
-                <label for="inputLoc" class="col-form-label fs-3 text-start">Locatie (lat, long)</label>
+                <label for="inputLoc" class="col-form-label fs-3 text-start">Locatie (lat, long) &nbsp;
+                    <button onclick="setCurentCoords('inputLoc')" title="Seteaza locatia curenta" class="btn btn-light fs-5"><i class="fa-solid fa-location-crosshairs"></i></button>
+                </label>
                 <div class="col-sm-10">
                   <input type="text" class="form-control fs-3" id="inputLoc" required pattern="[0-9]{1,2}.[0-9]{2,},[\s ][0-9]{1,2}.[0-9]{2,}">
                 </div>
@@ -326,6 +330,7 @@ function arataascunde(){
 }
 
 function loadMap(loc){
+    loc = loc.replace('-', "")
     if(loc.trim().length === 0 || loc === "-") {
         invComModal = new bootstrap.Modal(document.getElementById("modalInvalidLoc"), {});
         invComModal.show();
@@ -337,6 +342,13 @@ function loadMap(loc){
         adress = adress.replace('^^lat^^', pos[0]).replace('^^long^^', pos[1])
         window.open(adress, '_blank');
     }
+}
+
+function setCurentCoords(id){
+    elem = document.getElementById(id)
+    getLocation((position) => {
+        elem.value = `${position.coords.latitude},${position.coords.longitude}`
+    })
 }
 
 function displayError(error) {

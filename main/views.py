@@ -13,35 +13,43 @@ from django.views.generic import View, TemplateView, ListView, DetailView, Creat
 import main.templatetags.mytags
 from . import models
 from . import utils
+from .utils import MyException
 from siteReport import settings
 from .viewmodels import *
+
 
 # Create your views here.
 
 # region Login
 def login_user(request):
-    if(request.method == "POST"):
+    if (request.method == "POST"):
         username = request.POST['username']
         password = request.POST['password']
 
         user = None
 
-        try: user = get_user_model().objects.get(username=username, password=password)
-        except: pass
+        try:
+            user = get_user_model().objects.get(username=username, password=password)
+        except:
+            pass
 
         if user is not None:
             login(request, user)
             return redirect('home')
 
-        try: user = get_user_model().objects.get(email=username, password=password)
-        except: pass
+        try:
+            user = get_user_model().objects.get(email=username, password=password)
+        except:
+            pass
 
         if user is not None:
             login(request, user)
             return redirect('home')
 
-        try: user = get_user_model().objects.get(telefon=username, password=password)
-        except: pass
+        try:
+            user = get_user_model().objects.get(telefon=username, password=password)
+        except:
+            pass
 
         if user is not None:
             login(request, user)
@@ -53,15 +61,17 @@ def login_user(request):
     else:
         return render(request, 'login.html', {})
 
+
 def logout_user(request):
     logout(request)
     return redirect('mylogin')
 
-#endregion
 
-#region Home
+# endregion
 
-#region Come Left
+# region Home
+
+# region Come Left
 
 def come(request):
     if request.method == 'GET':
@@ -78,17 +88,23 @@ def come(request):
             data = models.Iesire.objects.get(user=request.user, datetime__day=now.day)
             messages.success(request, ("Nu puteti inregistra intrarea din moment ce iesirea este salvata!"))
             return redirect('home')
-        except: pass
+        except:
+            pass
         try:
             data = models.Intrare.objects.get(user=request.user, datetime__day=now.day)
-            messages.success(request, ("Momentul intrarii a fost deja inregistrat!\nVa rugam sa il stergeti daca a fost adaugat din greseala!"))
+            messages.success(request, (
+                "Momentul intrarii a fost deja inregistrat!\nVa rugam sa il stergeti daca a fost adaugat din greseala!"))
             return redirect('home')
         except:
-            models.Intrare.objects.create(user=request.user, latitude=request.GET['lat'], longitude=request.GET['long'], datetime=now, nrcalcloc=1, text=utils.secureStr(request.GET['obs']))
+            models.Intrare.objects.create(user=request.user, latitude=request.GET['lat'], longitude=request.GET['long'],
+                                          datetime=now, nrcalcloc=1, text=utils.secureStr(request.GET['obs']))
             messages.success(request, ("Succes!"))
-            messages.success(request, (f"Daca considerati ca locatia nu este precisa(erori de peste 10-20m), puteti sa folositi butonul relocare de maxim {NR_RECALC_POZ} ori.\nTimpul limita pentru o relocare este de un minut dupa ultima relocare."))
-    else: print("POST in come")
+            messages.success(request, (
+                f"Daca considerati ca locatia nu este precisa(erori de peste 10-20m), puteti sa folositi butonul relocare de maxim {NR_RECALC_POZ} ori.\nTimpul limita pentru o relocare este de un minut dupa ultima relocare."))
+    else:
+        print("POST in come")
     return redirect('home')
+
 
 def cancel_come(request):
     now = utils.getTime()
@@ -96,14 +112,17 @@ def cancel_come(request):
         data = models.Iesire.objects.get(user=request.user, datetime__day=now.day)
         messages.success(request, ("Nu puteti anula intrarea daca ati inregistrat iesirea!"))
         return redirect('home')
-    except: pass
-    try: data = models.Intrare.objects.get(user=request.user, datetime__day=now.day)
+    except:
+        pass
+    try:
+        data = models.Intrare.objects.get(user=request.user, datetime__day=now.day)
     except:
         messages.success(request, ("Momentul intrarii nu a fost inregistrat!"))
         return redirect('home')
     data.delete()
     messages.success(request, ("Momentul intrarii a fost sters!"))
     return redirect('home')
+
 
 def recalc_come(request):
     SEC_RECALC_AFTER = 60
@@ -112,11 +131,12 @@ def recalc_come(request):
         setare = models.OwnSettings.objects.all()[0]
         SEC_RECALC_AFTER = setare.secafterrecalc
         NR_RECALC_POZ = setare.nrrecalcpoz
-    except: print("Nu exista setari")
+    except:
+        print("Nu exista setari")
     try:
         now = utils.getTime()
         data = models.Intrare.objects.get(user=request.user, datetime__day=now.day)
-        if (now-utils.getTime(data)).seconds > SEC_RECALC_AFTER:
+        if (now - utils.getTime(data)).seconds > SEC_RECALC_AFTER:
             raise ValueError("Timpul pentru relocare a expirat!")
         nr = data.nrcalcloc
         if nr <= NR_RECALC_POZ:
@@ -124,10 +144,14 @@ def recalc_come(request):
             data.latitude = request.GET['lat']
             data.longitude = request.GET['long']
             data.save(update_fields=['latitude', 'longitude', 'nrcalcloc'])
-            messages.success(request, (f"Locatie actualizata! Mai aveti {NR_RECALC_POZ +1 - data.nrcalcloc} relocari."))
-        else: messages.success(request, (f"Nu mai aveti relocari disponibile."))
-    except: messages.success(request, ("Timpul pentru relocare a expirat!"))
+            messages.success(request,
+                             (f"Locatie actualizata! Mai aveti {NR_RECALC_POZ + 1 - data.nrcalcloc} relocari."))
+        else:
+            messages.success(request, (f"Nu mai aveti relocari disponibile."))
+    except:
+        messages.success(request, ("Timpul pentru relocare a expirat!"))
     return redirect('actToday')
+
 
 def left(request):
     now = utils.getTime()
@@ -144,13 +168,17 @@ def left(request):
         return redirect('home')
     try:
         data = models.Iesire.objects.get(user=request.user, datetime__day=now.day)
-        messages.success(request, ("Momentul iesirii a fost deja inregistrat!\nVa rugam sa il stergeti daca a fost adaugat din greseala!"))
+        messages.success(request, (
+            "Momentul iesirii a fost deja inregistrat!\nVa rugam sa il stergeti daca a fost adaugat din greseala!"))
         return redirect('home')
     except:
-        models.Iesire.objects.create(user=request.user, latitude=request.GET['lat'], longitude=request.GET['long'], datetime=now, nrcalcloc=1, text=utils.secureStr(request.GET['obs']))
+        models.Iesire.objects.create(user=request.user, latitude=request.GET['lat'], longitude=request.GET['long'],
+                                     datetime=now, nrcalcloc=1, text=utils.secureStr(request.GET['obs']))
         messages.success(request, ("Succes!"))
-        messages.success(request, (f"Daca considerati ca locatia nu este precisa(erori de peste 10-20m), puteti sa folositi butonul relocare de maxim {NR_RECALC_POZ} ori.\nTimpul limita pentru o relocare este de un minut dupa ultima relocare."))
+        messages.success(request, (
+            f"Daca considerati ca locatia nu este precisa(erori de peste 10-20m), puteti sa folositi butonul relocare de maxim {NR_RECALC_POZ} ori.\nTimpul limita pentru o relocare este de un minut dupa ultima relocare."))
     return redirect('home')
+
 
 def cancel_left(request):
     now = utils.getTime()
@@ -159,13 +187,15 @@ def cancel_left(request):
     except:
         messages.success(request, (f"Nu puteti parasi inainte sa intrati!"))
         return redirect('home')
-    try: data = models.Iesire.objects.get(user=request.user, datetime__day=now.day)
+    try:
+        data = models.Iesire.objects.get(user=request.user, datetime__day=now.day)
     except:
         messages.success(request, ("Momentul iesirii nu a fost inregistrat!"))
         return redirect('home')
     data.delete()
     messages.success(request, ("Momentul iesirii a fost sters!"))
     return redirect('home')
+
 
 def recalc_left(request):
     now = utils.getTime()
@@ -184,7 +214,7 @@ def recalc_left(request):
         return redirect('actToday')
     try:
         data = models.Iesire.objects.get(user=request.user, datetime__day=now.day)
-        if (now-utils.getTime(data)).seconds > SEC_RECALC_AFTER:
+        if (now - utils.getTime(data)).seconds > SEC_RECALC_AFTER:
             raise ValueError("Timpul pentru relocare a expirat!")
         nr = data.nrcalcloc
         if nr <= NR_RECALC_POZ:
@@ -192,19 +222,24 @@ def recalc_left(request):
             data.latitude = request.GET['lat']
             data.longitude = request.GET['long']
             data.save(update_fields=['latitude', 'longitude', 'nrcalcloc'])
-            messages.success(request, (f"Locatie actualizata! Mai aveti {NR_RECALC_POZ +1 - data.nrcalcloc} relocari."))
-        else: messages.success(request, (f"Nu mai aveti relocari disponibile."))
-    except: messages.success(request, ("Nu exista o locatie initiala ce poate fi actualizata"))
+            messages.success(request,
+                             (f"Locatie actualizata! Mai aveti {NR_RECALC_POZ + 1 - data.nrcalcloc} relocari."))
+        else:
+            messages.success(request, (f"Nu mai aveti relocari disponibile."))
+    except:
+        messages.success(request, ("Nu exista o locatie initiala ce poate fi actualizata"))
     return redirect('actToday')
 
-#endregion
 
-#region Comanda
+# endregion
+
+# region Comanda
 
 def comandaFinish(request):
     if request.method == "GET":
         now = utils.getTime()
-        try: models.Intrare.objects.get(user=request.user, datetime__day=now.day, datetime__lte=now)
+        try:
+            models.Intrare.objects.get(user=request.user, datetime__day=now.day, datetime__lte=now)
         except:
             messages.success(request, ("Nu puteti termina o comanda daca nu ati inregistrat intrarea!"))
             return redirect('home')
@@ -212,7 +247,8 @@ def comandaFinish(request):
             models.Iesire.objects.get(user=request.user, datetime__day=now.day)
             messages.success(request, ("Nu puteti termina o comanda daca ati inregistrat iesirea!"))
             return redirect('home')
-        except: pass
+        except:
+            pass
         try:
             models.Comanda.objects.get(numar_comanda=request.GET['nrcom'])
             messages.success(request, ("Aceasta comanda exista deja!"))
@@ -220,11 +256,13 @@ def comandaFinish(request):
         except:
             models.Comanda.objects.create(user=request.user, latitude=request.GET['lat'],
                                           longitude=request.GET['long'], datetime=now,
-                                          nrcalcloc=1, text=utils.secureStr(request.GET['obs']), numar_comanda=request.GET['nrcom'], denumire=request.GET['den'])
+                                          nrcalcloc=1, text=utils.secureStr(request.GET['obs']),
+                                          numar_comanda=request.GET['nrcom'], denumire=request.GET['den'])
             messages.success(request, ("Succes! Finalizarea a fost inregistrata!"))
     else:
         raise ValueError("POST in comand finish")
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
 
 def comandaEdit(request):
     if request.method == "GET":
@@ -241,16 +279,19 @@ def comandaEdit(request):
                 models.Comanda.objects.get(datetime__year=now.year, numar_comanda=request.GET['nr'])
                 messages.success(request, ("Numar comanda duplicat!"))
                 return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
-            except: pass
+            except:
+                pass
             coord = str(request.GET['loc']).split(',')
             models.Comanda.objects.create(user=user, numar_comanda=request.GET['nr'],
-                denumire=request.GET['den'], text=request.GET['obs'], datetime=now, latitude=coord[0], longitude=coord[1])
+                                          denumire=request.GET['den'], text=request.GET['obs'], datetime=now,
+                                          latitude=coord[0], longitude=coord[1])
             messages.success(request, ("Comanda a fost adaugata!"))
             return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
         elif not 'datetime' in request.GET:
             now = utils.getTime()
             oldnr = request.GET['oldnr']
-            try: old = models.Comanda.objects.get(user=request.user, datetime__day=now.day, datetime__year=now.year, numar_comanda=oldnr)
+            try:
+                old = models.Comanda.objects.get(user=request.user, datetime__date=now.date(), numar_comanda=oldnr)
             except:
                 messages.success(request, ("Comanda veche nu a fost gasita!"))
                 return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
@@ -263,7 +304,8 @@ def comandaEdit(request):
             now = datetime.datetime.fromisoformat(request.GET['datetime'])
             oldnr = request.GET['oldnr']
 
-            try: old = models.Comanda.objects.get(datetime__day=now.day, datetime__year=now.year, numar_comanda=oldnr)
+            try:
+                old = models.Comanda.objects.get(datetime__date=now.date(), numar_comanda=oldnr)
             except:
                 messages.success(request, ("Comanda veche nu a fost gasita!"))
                 return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
@@ -273,17 +315,21 @@ def comandaEdit(request):
             old.datetime = now
             old.latitude = str(request.GET['loc']).split(',')[0]
             old.longitude = str(request.GET['loc']).split(',')[1]
-            old.save(force_update=True, update_fields=['numar_comanda', 'denumire', 'text', 'datetime', 'latitude', 'longitude'])
-    else: raise ValueError("POST in comand edit")
+            old.save(force_update=True,
+                     update_fields=['numar_comanda', 'denumire', 'text', 'datetime', 'latitude', 'longitude'])
+    else:
+        raise ValueError("POST in comand edit")
     messages.success(request, ("Comanda a fost actualizata!"))
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
 
 def comandaCancel(request):
     if request.method == 'GET':
         now = utils.getTime()
         if not request.user.role in ("Manager", "Admin"):
             try:
-                data = models.Comanda.objects.get(user=request.user, datetime__year=now.year, numar_comanda=request.GET['nr'])
+                data = models.Comanda.objects.get(user=request.user, datetime__year=now.year,
+                                                  numar_comanda=request.GET['nr'])
                 data.delete()
             except:
                 messages.success(request, ("Comanda nu a fost gasita!"))
@@ -295,19 +341,22 @@ def comandaCancel(request):
             except:
                 messages.success(request, ("Comanda nu a fost gasita!"))
                 return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
-    else: raise ValueError("POST in cancel comanda")
+    else:
+        raise ValueError("POST in cancel comanda")
     messages.success(request, ("Terminarea comenzii a fost anulata!"))
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
-#endregion
+
+# endregion
 
 @method_decorator(login_required, name='dispatch')
 class HomeView(TemplateView):
     template_name = 'home.html'
 
-#endregion
 
-#region Activity
+# endregion
+
+# region Activity
 
 @method_decorator(login_required, name='dispatch')
 class ActView(TemplateView):
@@ -315,6 +364,37 @@ class ActView(TemplateView):
 
     def _getPeriod(self, **kwargs) -> tuple:
         pass
+
+    def __proces_request_to_context(self, request, context: dict):
+        context2 = {"stext": "",
+                    "scrit": "nume", "osin": "06:00", "osout": "22:00", "tiora": "in",
+                    "ocrit": "nume", "oord": "cresc",
+                    "prezenta": "pr"}
+        for key in context2:
+            if key in request.GET and len(request.GET[key]) != 0:
+                context2[key] = request.GET[key]
+        context.update(context2)
+
+    def __create_filters(self, context: dict):
+        models.User.objects.filter(nume__contains=context["stext"])
+        #models.Comanda.objects.filter(denumire__contains=)
+        filteruser = {}
+        # filterin = {}
+        # filterout = {}
+        # filtercmd = {}
+        if len(context["stext"]) > 0:
+            if context["scrit"] == "nume": filteruser.update(nume__contains=context["stext"])
+            elif context["scrit"] == "email": filteruser.update(email__contains=context["stext"])
+            elif context["scrit"] == "tel": filteruser.update(telefon__startswith=context["stext"])
+        ordlst = {}
+        if context['oord'] == "desc": ordlst.update(reverse=True)
+        if context["ocrit"] == "nume": ordlst.update(key=lambda r: (r.user.nume, r.datetime.date()))
+        elif context["ocrit"] == "datetimein": ordlst.update(key=lambda r: (r.datetime.date(), r.intrare.datetime.time()))
+        elif context["ocrit"] == "datetimeout": ordlst.update(key=lambda r: (r.datetime.date(), r.iesire.datetime.time()))
+        elif context["ocrit"] == "timein": ordlst.update(key=lambda r: (r.intrare.datetime.time(), r.user.nume))
+        elif context["ocrit"] == "timeout": ordlst.update(key=lambda r: (r.iesire.datetime.time(), r.user.nume))
+        elif context["ocrit"] == "nrcom": ordlst.update(key=lambda r: (r.nrcomenzi, r.user.nume))
+        return filteruser, ordlst
 
     def get(self, request, *args, **kwargs):
         if request.user.role == "Angajat":
@@ -324,22 +404,32 @@ class ActView(TemplateView):
             context = self.get_context_data(**kwargs)
             datain = self._getPeriod(**context)[0].strftime("%d.%m.%Y")
             dataout = self._getPeriod(**context)[1].strftime("%d.%m.%Y")
-            if datain == dataout: context.update(data=datain)
-            else: context.update(datain=datain, dataout=dataout, data=None)
+            if datain == dataout:
+                context.update(data=datain)
+            else:
+                context.update(datain=datain, dataout=dataout, data=None)
             return render(request, self.template_name, context)
         else:  # Manager, Admin
+            # filtre
+            context = {}
+            self.__proces_request_to_context(request, context)
+            filteruser, order = self.__create_filters(context)
+            setari = models.OwnSettings.objects.all()[0]
+
+            # get data
             datetimein, datetimeout = self._getPeriod(**kwargs)
             harta = models.OwnSettings.objects.all()[0].harta.adresa
             roluri_listate = ["Angajat", "Viewer", "Manager"]
-            if request.user.role == "Admin":
-                roluri_listate.append("Admin")
+            if request.user.role == "Admin": roluri_listate.append("Admin")
             tabledata = []
-            for user in models.User.objects.filter(role__in=roluri_listate):
+            for user in models.User.objects.filter(role__in=roluri_listate, **filteruser):
                 for datetime in utils.rangeDays(datetimein, datetimeout):
-                    row = RowDataActiviy(user, datetime)
-                    tabledata.append(row)
-            tabledata.sort()
-            return render(request, self.template_name, {"tabledata": tabledata, "harta": harta})
+                    row = RowDataActivity(user, datetime, setari.min_tolerated)
+                    if context['prezenta']=="pr" and not row.absent or context['prezenta']=='abs' and row.absent:
+                        tabledata.append(row)
+            tabledata.sort(**order)
+            context.update(tabledata=tabledata, harta=harta)
+            return render(request, self.template_name, context)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -379,12 +469,10 @@ class ActView(TemplateView):
                 context2['locStrOut'] = "-"
                 context2['obsOut'] = ""
 
-            #Comenzi
-            try:
-                comenzi = models.Comanda.objects.filter(user=user, datetime__gte=datain, datetime__lte=dataout)
-                context2['comenzi'] = comenzi
-            except:
-                context2['comenzi'] = []
+            # Comenzi
+            comenzi = models.Comanda.objects.filter(user=user, datetime__gte=datain, datetime__lte=dataout)
+            context2['comenzi'] = comenzi
+            context2['nrcomenzi'] = comenzi.count()
         else:
             tabledata = []
             for datetime in utils.rangeDays(datain, dataout):
@@ -395,14 +483,20 @@ class ActView(TemplateView):
         context.update(context2)
         return context
 
+
+# region Inherited change period
+
 @method_decorator(login_required, name='dispatch')
 class ActTodayView(ActView):
 
     def _getPeriod(self, **kwargs) -> tuple:
         date = utils.getTime().date()
-        datetimein = datetime.datetime.combine(date, utils.datetime.datetime.strptime("00:00:00", "%H:%M:%S").time(), tzinfo=pytz.timezone(settings.TIME_ZONE))
-        datetimeout = datetime.datetime.combine(date, datetime.datetime.strptime("23:59:59", "%H:%M:%S").time(), tzinfo=pytz.timezone(settings.TIME_ZONE))
+        datetimein = datetime.datetime.combine(date, utils.datetime.datetime.strptime("00:00:00", "%H:%M:%S").time(),
+                                               tzinfo=pytz.timezone(settings.TIME_ZONE))
+        datetimeout = datetime.datetime.combine(date, datetime.datetime.strptime("23:59:59", "%H:%M:%S").time(),
+                                                tzinfo=pytz.timezone(settings.TIME_ZONE))
         return datetimein, datetimeout
+
 
 @method_decorator(login_required, name='dispatch')
 class ActYesterdayView(ActView):
@@ -410,9 +504,12 @@ class ActYesterdayView(ActView):
     def _getPeriod(self, **kwargs) -> tuple:
         date = utils.getTime().date()
         date = utils.getPrevDay(date)
-        datetimein = datetime.datetime.combine(date, datetime.datetime.strptime("00:00:00", "%H:%M:%S").time(), tzinfo=pytz.timezone(settings.TIME_ZONE))
-        datetimeout = datetime.datetime.combine(date, datetime.datetime.strptime("23:59:59", "%H:%M:%S").time(), tzinfo=pytz.timezone(settings.TIME_ZONE))
+        datetimein = datetime.datetime.combine(date, datetime.datetime.strptime("00:00:00", "%H:%M:%S").time(),
+                                               tzinfo=pytz.timezone(settings.TIME_ZONE))
+        datetimeout = datetime.datetime.combine(date, datetime.datetime.strptime("23:59:59", "%H:%M:%S").time(),
+                                                tzinfo=pytz.timezone(settings.TIME_ZONE))
         return datetimein, datetimeout
+
 
 @method_decorator(login_required, name='dispatch')
 class Act2DaysAgoView(ActView):
@@ -421,9 +518,12 @@ class Act2DaysAgoView(ActView):
         date = utils.getTime().date()
         date = utils.getPrevDay(date)
         date = utils.getPrevDay(date)
-        datetimein = datetime.datetime.combine(date, datetime.datetime.strptime("00:00:00", "%H:%M:%S").time(), tzinfo=pytz.timezone(settings.TIME_ZONE))
-        datetimeout = datetime.datetime.combine(date, datetime.datetime.strptime("23:59:59", "%H:%M:%S").time(), tzinfo=pytz.timezone(settings.TIME_ZONE))
+        datetimein = datetime.datetime.combine(date, datetime.datetime.strptime("00:00:00", "%H:%M:%S").time(),
+                                               tzinfo=pytz.timezone(settings.TIME_ZONE))
+        datetimeout = datetime.datetime.combine(date, datetime.datetime.strptime("23:59:59", "%H:%M:%S").time(),
+                                                tzinfo=pytz.timezone(settings.TIME_ZONE))
         return datetimein, datetimeout
+
 
 @method_decorator(login_required, name='dispatch')
 class ActLast3View(ActView):
@@ -432,9 +532,12 @@ class ActLast3View(ActView):
         dateout = utils.getTime().date()
         datein = dateout
         for k in range(2): datein = utils.getPrevDay(datein)
-        datetimein = datetime.datetime.combine(datein, datetime.datetime.strptime("00:00:00", "%H:%M:%S").time(), tzinfo=pytz.timezone(settings.TIME_ZONE))
-        datetimeout = datetime.datetime.combine(dateout, datetime.datetime.strptime("23:59:59", "%H:%M:%S").time(), tzinfo=pytz.timezone(settings.TIME_ZONE))
+        datetimein = datetime.datetime.combine(datein, datetime.datetime.strptime("00:00:00", "%H:%M:%S").time(),
+                                               tzinfo=pytz.timezone(settings.TIME_ZONE))
+        datetimeout = datetime.datetime.combine(dateout, datetime.datetime.strptime("23:59:59", "%H:%M:%S").time(),
+                                                tzinfo=pytz.timezone(settings.TIME_ZONE))
         return datetimein, datetimeout
+
 
 @method_decorator(login_required, name='dispatch')
 class ActLast7View(ActView):
@@ -443,9 +546,30 @@ class ActLast7View(ActView):
         dateout = utils.getTime().date()
         datein = dateout
         while datein.strftime("%A") != "Monday": datein = utils.getPrevDay(datein)
-        datetimein = datetime.datetime.combine(datein, datetime.datetime.strptime("00:00:00", "%H:%M:%S").time(), tzinfo=pytz.timezone(settings.TIME_ZONE))
-        datetimeout = datetime.datetime.combine(dateout, datetime.datetime.strptime("23:59:59", "%H:%M:%S").time(), tzinfo=pytz.timezone(settings.TIME_ZONE))
+        datetimein = datetime.datetime.combine(datein, datetime.datetime.strptime("00:00:00", "%H:%M:%S").time(),
+                                               tzinfo=pytz.timezone(settings.TIME_ZONE))
+        datetimeout = datetime.datetime.combine(dateout, datetime.datetime.strptime("23:59:59", "%H:%M:%S").time(),
+                                                tzinfo=pytz.timezone(settings.TIME_ZONE))
         return datetimein, datetimeout
+
+
+@method_decorator(login_required, name='dispatch')
+class ActFromPathView(ActView):
+
+    def _getPeriod(self, **kwargs) -> tuple:
+        datein = datetime.datetime.strptime(kwargs['datein'], "%d.%m.%Y")
+        dateout = datetime.datetime.strptime(kwargs['dateout'], "%d.%m.%Y")
+        datetimein = datetime.datetime.combine(datein, datetime.datetime.strptime("00:00:00", "%H:%M:%S").time(),
+                                               tzinfo=pytz.timezone(settings.TIME_ZONE))
+        datetimeout = datetime.datetime.combine(dateout, datetime.datetime.strptime("23:59:59", "%H:%M:%S").time(),
+                                                tzinfo=pytz.timezone(settings.TIME_ZONE))
+        # datetimein = utils.getTime(datetimein)
+        # datetimeout = utils.getTime(datetimeout)
+        # print(datetimein, datetimeout)
+        return datetimein, datetimeout
+
+
+# endregion
 
 def getperiod(request):
     if request.method == "POST":
@@ -457,45 +581,41 @@ def getperiod(request):
         return redirect('actFromPath', datein=date1.strftime("%d.%m.%Y"), dateout=date2.strftime("%d.%m.%Y"))
     return render(request, "getPeriod.html", {})
 
+
 def getperioduser(request):
     if request.method == "POST":
-        print(request.POST)
         date = datetime.datetime.fromisoformat(request.POST['date'])
         utilizator = request.POST['user']
         try:
             user = models.User.objects.get(nume=utilizator)
-            return redirect('actUserFromPath', datein=date.strftime("%d.%m.%Y"), dateout=date.strftime("%d.%m.%Y"), username=user.username)
-        except: pass
+            return redirect('actUserFromPath', datein=date.strftime("%d.%m.%Y"), dateout=date.strftime("%d.%m.%Y"),
+                            username=user.username)
+        except:
+            pass
         if utils.validTel(utilizator):
             try:
                 user = models.User.objects.get(telefon=utilizator)
-                return redirect('actUserFromPath', datein=date.strftime("%d.%m.%Y"), dateout=date.strftime("%d.%m.%Y"), username=user.username)
-            except: pass
+                return redirect('actUserFromPath', datein=date.strftime("%d.%m.%Y"), dateout=date.strftime("%d.%m.%Y"),
+                                username=user.username)
+            except:
+                pass
         if "@" in str(utilizator):
             try:
                 user = models.User.objects.get(email=utilizator)
-                return redirect('actUserFromPath', datein=date.strftime("%d.%m.%Y"), dateout=date.strftime("%d.%m.%Y"), username=user.username)
-            except: pass
+                return redirect('actUserFromPath', datein=date.strftime("%d.%m.%Y"), dateout=date.strftime("%d.%m.%Y"),
+                                username=user.username)
+            except:
+                pass
         try:
             user = models.User.objects.get(username=utilizator)
-            return redirect('actUserFromPath', datein=date.strftime("%d.%m.%Y"), dateout=date.strftime("%d.%m.%Y"), username=user.username)
-        except: pass
+            return redirect('actUserFromPath', datein=date.strftime("%d.%m.%Y"), dateout=date.strftime("%d.%m.%Y"),
+                            username=user.username)
+        except:
+            pass
         messages.success(request, ("Utilizatorul nu a fost gasit!"))
         return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
     return render(request, "getPeriodUser.html", {"users": models.User.objects.all()})
 
-@method_decorator(login_required, name='dispatch')
-class ActFromPathView(ActView):
-
-    def _getPeriod(self, **kwargs) -> tuple:
-        datein = datetime.datetime.strptime(kwargs['datein'], "%d.%m.%Y")
-        dateout = datetime.datetime.strptime(kwargs['dateout'], "%d.%m.%Y")
-        datetimein = datetime.datetime.combine(datein, datetime.datetime.strptime("00:00:00", "%H:%M:%S").time(), tzinfo=pytz.timezone(settings.TIME_ZONE))
-        datetimeout = datetime.datetime.combine(dateout, datetime.datetime.strptime("23:59:59", "%H:%M:%S").time(), tzinfo=pytz.timezone(settings.TIME_ZONE))
-        # datetimein = utils.getTime(datetimein)
-        # datetimeout = utils.getTime(datetimeout)
-        # print(datetimein, datetimeout)
-        return datetimein, datetimeout
 
 @method_decorator(login_required, name='dispatch')
 class ActUserFromPathView(ActFromPathView):
@@ -516,18 +636,138 @@ class ActUserFromPathView(ActFromPathView):
             return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
     def post(self, request, *args, **kwargs):
-        print(request.POST)
+        global locin, locout, orain, oraout, datetimein, datetimeout
+
+        def is_one_null(strora: str, strloc: str) -> bool:
+            return len(strora) == 0 or len(strloc) == 0
+
+        def is_both_null(strora: str, strloc: str) -> bool:
+            return len(strora) == 0 and len(strloc) == 0
+
+        try:
+            # process data
+            user = models.User.objects.get(username=kwargs['username'])
+            data = datetime.datetime.strptime(kwargs['datein'], "%d.%m.%Y").date()
+            strorain = str(request.POST['orain']).replace(" ", "").replace("-", "")
+            stroraout = str(request.POST['oraout']).replace(" ", "").replace("-", "")
+            if len(strorain) > 0:
+                try:
+                    orain = datetime.datetime.strptime(strorain, "%H:%M").time()
+                    datetimein = datetime.datetime.combine(data, orain)
+                except:
+                    raise MyException("Format ora intrare invalid!")
+            if len(stroraout) > 0:
+                try:
+                    oraout = datetime.datetime.strptime(stroraout, "%H:%M").time()
+                    datetimeout = datetime.datetime.combine(data, oraout)
+                except:
+                    raise MyException("Format ora iesire invalid!")
+            strlocin = str(request.POST['locin']).replace(" ", "").replace("-", "")
+            strlocout = str(request.POST['locout']).replace(" ", "").replace("-", "")
+            if len(strlocin) > 0:
+                try:
+                    locin = strlocin.split(',')
+                    assert (locin.__len__() == 2)
+                except:
+                    raise MyException("Format locatie intrare invalid! Formatul este (lat,long)!")
+            if len(strlocout) > 0:
+                try:
+                    locout = strlocout.split(',')
+                    assert (locout.__len__() == 2)
+                except:
+                    raise MyException("Format locatie iesire invalid! Formatul este (lat,long)!")
+            obsin = request.POST['obsin']
+            obsout = request.POST['obsout']
+
+            # intrare
+            intrare = None
+            try:
+                intrare = models.Intrare.objects.get(user=user, datetime__date=data)
+            except:
+                if not is_one_null(strorain, strlocin):
+                    print("intrare is_notnull\n", locals())
+                    models.Intrare.objects.create(user=user, latitude=locin[0], longitude=locin[1], datetime=datetimein,
+                                                  text=obsin)
+                    messages.success(request, ("Intrarea a fost adaugata cu succes!"))
+                else:
+                    messages.success(request, ("Date insuficiente intrare!"))
+            if intrare is not None:
+                if is_both_null(strorain, strlocin):
+                    intrare.delete()
+                    messages.success(request, ("Intrarea a fost stearsa!"))
+                elif is_one_null(strorain, strlocin):
+                    if len(strlocin) > 0:  # locatia
+                        intrare.latitude = locin[0]
+                        intrare.longitude = locin[1]
+                        intrare.text = obsin
+                        intrare.save(force_update=True, update_fields=['latitude', 'longitude', 'text'])
+                        messages.success(request, ("Intrarea a fost modificata cu succes!"))
+                    else:  # ora
+                        intrare.datetime = datetimein
+                        intrare.text = obsin
+                        intrare.save(force_update=True, update_fields=['datetime', 'text'])
+                        messages.success(request, ("Intrarea a fost modificata cu succes!"))
+                else:
+                    intrare.latitude = locin[0]
+                    intrare.longitude = locin[1]
+                    intrare.datetime = datetimein
+                    intrare.text = obsin
+                    intrare.save(force_update=True, update_fields=['latitude', 'longitude', 'datetime', 'text'])
+                    messages.success(request, ("Intrarea a fost modificata cu succes!"))
+
+            # iesire
+            iesire = None
+            try:
+                iesire = models.Iesire.objects.get(user=user, datetime__date=data)
+            except:
+                if not is_one_null(stroraout, strlocout):
+                    print("iesire is_notnull\n", locals())
+                    models.Iesire.objects.create(user=user, latitude=locout[0], longitude=locout[1],
+                                                 datetime=datetimeout, text=obsout)
+                    messages.success(request, ("Iesirea a fost adaugata cu succes!"))
+                else:
+                    messages.success(request, ("Date insuficiente iesire!"))
+            if iesire is not None:
+                if is_both_null(stroraout, strlocout):
+                    iesire.delete()
+                    messages.success(request, ("Iesirea a fost stearsa!"))
+                elif is_one_null(stroraout, strlocout):
+                    if len(strlocout) > 0:  # locatia
+                        iesire.latitude = locout[0]
+                        iesire.longitude = locout[1]
+                        iesire.text = obsout
+                        iesire.save(force_update=True, update_fields=['latitude', 'longitude', 'text'])
+                        messages.success(request, ("Iesirea a fost modificata cu succes!"))
+                    else:  # ora
+                        iesire.datetime = datetimeout
+                        iesire.text = obsout
+                        iesire.save(force_update=True, update_fields=['datetime', 'text'])
+                        messages.success(request, ("Iesirea a fost modificata cu succes!"))
+                else:
+                    iesire.latitude = locout[0]
+                    iesire.longitude = locout[1]
+                    iesire.datetime = datetimeout
+                    iesire.text = obsout
+                    iesire.save(force_update=True, update_fields=['latitude', 'longitude', 'datetime', 'text'])
+                    messages.success(request, ("Iesirea a fost modificata cu succes!"))
+        except MyException as e:
+            messages.success(request, (e.args[0]))
+        except Exception as ex:
+            messages.success(request, ("Eroare!"))
+        finally:
+            pass
         return HttpResponseRedirect(self.request.path_info)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         setare = models.OwnSettings.objects.all()[0]
-        context.update(show_edit=True, nrrecalcpoz=setare.nrrecalcpoz+1)
+        context.update(show_edit=True, nrrecalcpoz=setare.nrrecalcpoz + 1)
         return context
 
 
+# endregion
 
-#endregion
+# region Users
 
 @user_passes_test(lambda user: user.role in ("Manager", "Admin"))
 def adduser(request):
@@ -542,26 +782,31 @@ def adduser(request):
             models.User.objects.get(username=username)
             messages.success(request, ("Numele de utilizator exista deja! Incercati altul sau regenerati-l."))
             return redirect('adduser')
-        except: pass
+        except:
+            pass
         try:
             models.User.objects.get(nume=nume)
             messages.success(request, ("Numele exista deja!"))
             return redirect('adduser')
-        except: pass
+        except:
+            pass
         models.User.objects.create(username=username, nume=nume, email=email, telefon=tel, password=pwd, role=role)
         messages.success(request, ("Contul a fost creeat cu succes!"))
         return redirect('detaliiuser', username=username)
     return render(request, 'adduser.html', {})
 
+
 @user_passes_test(lambda user: user.role in ("Manager", "Admin"))
 def deleteuser(request, username):
-    try: data = models.User.objects.get(username=username)
+    try:
+        data = models.User.objects.get(username=username)
     except:
         messages.success(request, ("Utilizatorul nu a fost gasit!"))
         return HttpResponseRedirect(request.path_info)
     data.delete()
     messages.success(request, ("Acest cont a fost sters!"))
     return redirect('utilizatori')
+
 
 def detalii(request, username=None):
     user = request.user
@@ -595,8 +840,10 @@ def detalii(request, username=None):
                     user.save(force_update=True)
                     login(request, user)
                 messages.success(request, ("Modificarile au fost efectuate!"))
-        else: messages.success(request, ("Nu exista nici o modificare!"))
+        else:
+            messages.success(request, ("Nu exista nici o modificare!"))
     return render(request, 'detalii.html', {"userdata": user})
+
 
 @method_decorator(login_required, name='dispatch')
 class Utilizatori(TemplateView):
@@ -604,10 +851,14 @@ class Utilizatori(TemplateView):
 
     def get(self, request, *args, **kwargs):
         if request.user.role in ("Manager", "Admin"):
-            try: searchtext = request.GET['search']
-            except: searchtext = ""
-            try: crit = request.GET['crit']
-            except: crit = "nume"
+            try:
+                searchtext = request.GET['search']
+            except:
+                searchtext = ""
+            try:
+                crit = request.GET['crit']
+            except:
+                crit = "nume"
             context = {'ch1': True, 'ch2': True, 'ch3': True, 'now': utils.getTime(), 'stext': searchtext}
             asocs = {"ch1": "angajat", "ch2": "manager", "ch3": "admin", }
             roluri = []
@@ -620,18 +871,26 @@ class Utilizatori(TemplateView):
                 if context[ch] == True:
                     roluri.append(asocs[ch][0].capitalize() + asocs[ch][1:])
 
-            if isnothing: users = models.User.objects.all().order_by('nume')
+            if isnothing:
+                users = models.User.objects.all().order_by('nume')
             else:
                 searchcontext = {}
                 if searchtext != "":
-                    if crit == "nume": searchcontext.update(nume__contains=searchtext)
-                    elif crit == "username": searchcontext.update(username__startswith=searchtext)
-                    elif crit == "tel": searchcontext.update(telefon__startswith=searchtext)
-                    elif crit == "email": searchcontext.update(email__contains=searchtext)
+                    if crit == "nume":
+                        searchcontext.update(nume__contains=searchtext)
+                    elif crit == "username":
+                        searchcontext.update(username__startswith=searchtext)
+                    elif crit == "tel":
+                        searchcontext.update(telefon__startswith=searchtext)
+                    elif crit == "email":
+                        searchcontext.update(email__contains=searchtext)
                     users = models.User.objects.filter(role__in=roluri, **searchcontext).order_by("nume")
-                else: users = models.User.objects.filter(role__in=roluri).order_by("nume")
+                else:
+                    users = models.User.objects.filter(role__in=roluri).order_by("nume")
             context.update(users=users, isnothing=isnothing, crit=crit)
             return render(request, "users.html", context)
         else:
             messages.success(request, ("NU sunteti autorizat sa vizualizati alte conturi!"))
             return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+# endregion

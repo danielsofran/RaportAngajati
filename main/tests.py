@@ -2,8 +2,8 @@ import datetime
 
 from django.test import TestCase
 
-import main.models
 from . import utils
+from . import models
 from main.geometry import *
 
 # Create your tests here.
@@ -46,7 +46,7 @@ class GeometryTestCase(TestCase):
 
 class OwnSettingsTestCase(TestCase):
     def setUp(self) -> None:
-        self.forma = main.models.Forma()
+        self.forma = models.Forma()
 
     def test_forma(self):
         forma = self.forma
@@ -64,7 +64,7 @@ class OwnSettingsTestCase(TestCase):
 
 class UtilsTestCase(TestCase):
     def setUp(self):
-        main.models.OwnSettings.objects.create(program="L Ma Mi J V")
+        models.OwnSettings.objects.create(program="L Ma Mi J V")
 
     def test_getnext(self):
         now = datetime.date(year=2022, month=7, day=20)
@@ -76,3 +76,14 @@ class UtilsTestCase(TestCase):
 
     def test_location_formula(self):
         pass
+
+class InfoTestCase(TestCase):
+    def setUp(self) -> None:
+        pass
+
+    def test_get_date(self):
+        user = models.User.objects.create(nume="Nume", email="a@b.c", telefon="1234", username="abc", password="1234")
+        datetime1 = datetime.datetime.strptime("11.12.2021 13:14:15", "%d.%m.%Y %H:%M:%S")
+        date = datetime1.date()
+        info = models.Info.objects.create(user=user, latitude="1.1", longitude="2.2", datetime=datetime1, text="obs")
+        self.assertEqual(info, models.Info.objects.get(user=user, datetime__date=date))

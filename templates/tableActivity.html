@@ -1,5 +1,5 @@
 {% load mytags %}
-<table class="table table-striped table-hover fs-5">
+<table class="table table-hover fs-5">
     <thead class="">
         <tr>
             {% if request.user|role_at_least:"Manager" %}
@@ -22,8 +22,7 @@
     </thead>
     <tbody>
         {% for rowdata in tabledata %}
-        {% if not rowdata.absent %}
-        <tr>
+        <tr {{ rowdata.color }}>
             {% if request.user|role_at_least:"Manager" %}
                 <th> <a href="{% url 'detaliiuser' username=rowdata.user.username %}">{{ rowdata.user.nume }}</a></th>
                 <th> {{ rowdata.datetime|ftime:"date" }} </th>
@@ -32,7 +31,7 @@
             {% endif %}
 
             {% if rowdata.absent %}
-                <th colspan="10" class="text-center"> Absent </th>
+                <th colspan="9" class="text-center"> Absent </th>
             {% else %}
                 <th> {{ rowdata.intrare.datetime|ftime:"time" }} </th>
                 <th> {{ rowdata.intrare|strloc }}
@@ -47,12 +46,11 @@
                 <th> {{ rowdata.nrcomenzi }} </th>
                 <th> {{ rowdata.numecomenzi|safe }} </th>
                 <th> Link comenzi </th>
+            {% endif %}
             {% if request.user|role_at_least:"Manager" %}
                 <th> <a href="{% url 'actUserFromPath' datein=rowdata.datetime|ftime:"date" dateout=rowdata.datetime|ftime:"date" username=rowdata.user.username%}" class="btn btn-primary">Modificare</a> </th>
             {% endif %}
-            {% endif %}
         </tr>
-        {% endif %}
         {% endfor %}
     </tbody>
 </table>
