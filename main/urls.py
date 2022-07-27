@@ -30,9 +30,18 @@ urlpatterns = [
     path("activity/getperiod", login_required(views.getperiod), name="actGetPeriod"),
     path("activity/getperioduser", login_required(views.getperioduser), name="actGetPeriodUser"),
 
+    path("activity/intrare", login_required(views.IntrareActivity.as_view()), name="intrare"),
+    path("activity/intrare/<str:date>/<str:username>", login_required(views.IntrareActivity.as_view()), name="intrareUser"),
+    path("activity/iesire", login_required(views.IesireActivity.as_view()), name="iesire"),
+    path("activity/iesire/<str:date>/<str:username>", login_required(views.IesireActivity.as_view()), name="iesireUser"),
+    path("activity/comenzi", login_required(views.ComandaActivity.as_view()), name="comenzi"),
+    path("activity/comenzi/<str:date>/<str:username>", login_required(views.ComandaActivity.as_view()), name="comenziUser"),
+
     path("cont/detalii", login_required(views.detalii), name="detalii"),
     path("cont/users", login_required(views.Utilizatori.as_view()), name="utilizatori"),
     path("cont/detalii/<str:username>", login_required(views.detalii), name="detaliiuser"),
     path("cont/add", login_required(views.adduser), name="adduser"),
     path("cont/<str:username>/delete", login_required(views.deleteuser), name="deleteuser"),
+
+    path("setari", login_required(views.Setari.as_view()), name="setari"),
 ]

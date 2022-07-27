@@ -138,16 +138,16 @@
                 <label for="inputLocIn" class="col-form-label fs-3 text-start">Locatie intrare (lat, long): {{ locStrIn }}</label>
                 <div class="d-flex flex-row col-sm-10">
                   <input type="text" class="form-control fs-3 me-5" id="inputLocIn" value="{{ locIn }}" name="locin">
-                  <button type="button" class="btn btn-light btn-lg fs-3 me-3" onclick="loadMap('{{ locIn }}')" title="Arata pe harta"><i class="fa-solid fa-magnifying-glass-location"></i></button>
-                  <button type="button" class="btn btn-light btn-lg fs-3" onclick="setCurentCoords('inputLocIn')" title="Seteaza pozitia curenta"><i class="fa-solid fa-location-crosshairs"></i></button>
+                  <button type="button" class="btn btn-light btn-lg fs-3 me-3" onclick="loadMap('{{ locIn }}')" title="Arata pe harta"><i class="fa-solid fa-location-crosshairs"></i></button>
+                  <button type="button" class="btn btn-light btn-lg fs-3" onclick="setCurentCoords('inputLocIn')" title="Seteaza pozitia curenta"><i class="fa-solid fa-magnifying-glass-location"></i></button>
                 </div>
             </div>
             <div class="row mb-3 fs-3">
                 <label for="inputLocOut" class="col-form-label fs-3 text-start">Locatie plecare (lat, long): {{ locStrOut }}</label>
                 <div class="d-flex flex-row col-sm-10">
                   <input type="text" class="form-control fs-3 me-5" id="inputLocOut" required value="{{ locOut }}" name="locout">
-                  <button type="button" class="btn btn-light btn-lg fs-3 me-3" onclick="loadMap('{{ locOut }}')" title="Arata pe harta"><i class="fa-solid fa-magnifying-glass-location"></i></button>
-                  <button type="button" class="btn btn-light btn-lg fs-3" onclick="setCurentCoords('inputLocOut')" title="Seteaza pozitia curenta"><i class="fa-solid fa-location-crosshairs"></i></button>
+                  <button type="button" class="btn btn-light btn-lg fs-3 me-3" onclick="loadMap('{{ locOut }}')" title="Arata pe harta"><i class="fa-solid fa-location-crosshairs"></i></button>
+                  <button type="button" class="btn btn-light btn-lg fs-3" onclick="setCurentCoords('inputLocOut')" title="Seteaza pozitia curenta"><i class="fa-solid fa-magnifying-glass-location"></i></button>
                 </div>
             </div>
             {% if show_nrReloc %}

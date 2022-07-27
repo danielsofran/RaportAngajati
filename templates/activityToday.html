@@ -199,7 +199,8 @@
 {% endif %}
     {% else %} <!-- Table View -->
         <div class="mt-5">
-            <button id='btnSHS' onclick="arataascunde('filter', 'btnSHS')" class="btn btn-outline-secondary btn-square-md font-weight-bold fs-3 align-self-center my-0 px-4 ms-5">Ascunde</button>
+            {% if request.user|role_at_least:"Manager" %}
+            <button id='btnSHS' title="Arata / Ascunde filtrarea" onclick="arataascunde('filter', 'btnSHS')" class="btn btn-outline-secondary btn-square-md font-weight-bold fs-3 align-self-center my-0 px-4 ms-5">Ascunde</button>
             <div class="m-5 fs-3" id="filter">
             <div class="fs-3 mt-5 mx-5 mb-3">
             <form method="get">
@@ -211,6 +212,8 @@
                       <option {% if scrit == "nume" %}selected{% endif %} value="nume">Nume Prenume</option>
                       <option {% if scrit == "email" %}selected{% endif %} value="email">Email</option>
                       <option {% if scrit == "tel" %}selected{% endif %} value="tel">Telefon</option>
+                      <option {% if scrit == "numecmd" %}selected{% endif %} value="numecmd">Denumire comanda</option>
+                      <option {% if scrit == "nrcmd" %}selected{% endif %} value="nrcmd">Numar comanda</option>
                     </select>
                 </div>
 {#                <div class="d-flex flex-row mb-3">#}
@@ -245,10 +248,37 @@
                   <input class="form-check-input" type="radio" name="prezenta" id="exampleRadios2" value="abs" {% if prezenta == "abs" %} checked {% endif %}>
                   <label class="form-check-label" for="exampleRadios2">Absenti</label>
                 </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="prezenta" id="exampleRadios3" value="iec" {% if prezenta == "iec" %} checked {% endif %}>
+                  <label class="form-check-label" for="exampleRadios3">Intrare/Iesire completate</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="prezenta" id="exampleRadios4" value="iei" {% if prezenta == "iei" %} checked {% endif %}>
+                  <label class="form-check-label" for="exampleRadios4">Intrare/Iesire incomplete</label>
+                </div>
+                <div class="form-check mt-2">
+                  <input class="form-check-input" type="checkbox" value="1" id="flexCheckDefault" name="selobs" {% if selobs == "1" %} checked {% endif %}>
+                  <label class="form-check-label" for="flexCheckDefault">
+                    Arata doar daca exista observatii
+                  </label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="tobs" id="exampleRadios5" value="i" {% if tobs == "i" %} checked {% endif %}>
+                  <label class="form-check-label" for="exampleRadios5" title="Observatii">La intrare</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="tobs" id="exampleRadios6" value="e" {% if tobs == "e" %} checked {% endif %}>
+                  <label class="form-check-label" for="exampleRadios6" title="Observatii">La iesire</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="tobs" id="exampleRadios7" value="ie" {% if tobs == "ie" %} checked {% endif %}>
+                  <label class="form-check-label" for="exampleRadios7" title="Observatii">La intrare si iesire</label>
+                </div>
                 <button type="submit" class="btn btn-primary mt-3 me-5 fs-3">Filtreaza</button>
             </form>
             </div>
             </div>
+            {% endif %}
             {% include 'tableActivity.html' with tabledata=tabledata %}
         </div>
     {% endif %}

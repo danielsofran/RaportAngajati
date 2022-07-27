@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block css %}
+<style>
+    .w-15{
+        width: 15%;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="w-100 h-100 mb-5">
+<div class="container-fluid m-5 fs-1">
+    <h1 class="ms-5" style="font-size: 200%">Setari</h1>
+    <div class="fs-3 pt-3 w-75">
+        <div class="row mb-3">
+            <div class="d-flex flex-row">
+                <label for="inputSetareReloc" class="form-label col-form-label text-nowrap me-5">Numarul de relocari</label>
+                <div class="col-sm-10">
+                    <input type="number" min="1" max="10" class="form-control fs-3 w-15" id="inputSetareReloc" required value="{{ setare.nrrecalcpoz }}">
+                </div>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="d-flex flex-row">
+                <label for="inputSetareSecReloc" class="form-label col-form-label text-nowrap me-5">Numarul de secunde dupa care este disponibila o relocare</label>
+                <div class="col-sm-10">
+                    <input type="number" min="1" max="2000" class="form-control fs-3 w-15" id="inputSetareSecReloc" required value="{{ setare.secafterrecalc }}">
+                </div>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="d-flex flex-row">
+                <label for="inputSetareDist" class="form-label col-form-label text-nowrap me-5">Distanta in metrii acceptata ca eroare a calculului de locatie</label>
+                <div class="col-sm-10">
+                    <input type="number" min="1" max="5000" class="form-control fs-3 w-15" id="inputSetareDist" required value="{{ setare.disterror }}">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

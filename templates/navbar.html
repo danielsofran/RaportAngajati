@@ -7,13 +7,13 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav w-100 me-auto mb-2 mb-lg-0">
         <li class="nav-item ms-5">
-          <a class="nav-link active" aria-current="page" href="{% url 'home' %}"><i class="fa-solid fa-house me-3"></i>Acasa</a>
+          <a class="nav-link active text-nowrap" aria-current="page" href="{% url 'home' %}"><i class="fa-solid fa-house me-3"></i>Acasa</a>
         </li>
-        <li class="nav-item dropdown ms-5">
-          <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <li class="nav-item dropdown ms-4">
+          <a class="nav-link dropdown-toggle" id="navbarDropdown1" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="fa-solid fa-list-check me-3"></i> Activitate
           </a>
-          <ul class="dropdown-menu fs-5" aria-labelledby="navbarDropdown">
+          <ul class="dropdown-menu fs-5" aria-labelledby="navbarDropdown1">
             <li><a class="dropdown-item" href="{% url 'actToday' %}">Azi</a></li>
             <li><a class="dropdown-item" href="{% url 'actYesterday' %}">Ieri</a></li>
             <li><a class="dropdown-item" href="{% url 'act2daysAgo' %}">Alaltaieri</a></li>
@@ -27,19 +27,34 @@
             {% endif %}
           </ul>
         </li>
-        <li class="nav-item dropdown ms-5">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        {% if user.is_authenticated and request.user|role_at_least:"Manager" %}
+        <li class="nav-item dropdown ms-4">
+          <a class="nav-link dropdown-toggle" id="navbarDropdown2" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fa-solid fa-table-list"></i> Raport extins
+          </a>
+          <ul class="dropdown-menu fs-5" aria-labelledby="navbarDropdown2">
+            <li><a class="dropdown-item" href="{% url 'intrare' %}"> <i class="fa-solid fa-person-walking-arrow-loop-left"></i> Intrari</a></li>
+            <li><a class="dropdown-item" href="{% url 'iesire' %}"> <i class="fa-solid fa-person-walking-arrow-right"></i> Iesiri</a></li>
+            <li><a class="dropdown-item" href="{% url 'comenzi' %}"> <i class="fa-solid fa-box"></i> Comenzi</a></li>
+          </ul>
+        </li>
+        {% endif %}
+        <li class="nav-item dropdown ms-4">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown3" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="fa-solid fa-circle-user me-3"></i>Cont
           </a>
-          <ul class="dropdown-menu fs-5" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" href="{% url 'detalii' %}">Detalii</a></li>
+          <ul class="dropdown-menu fs-5" aria-labelledby="navbarDropdown3">
+                <li><a class="dropdown-item" href="{% url 'detalii' %}"> <i class="fa-solid fa-circle-info"></i> Detalii</a></li>
                 {% if user.is_authenticated and request.user|role_at_least:"Manager" %}
                 <li><a class="dropdown-item" href="{% url 'utilizatori' %}">Vezi Angajatii</a></li>
-                <li><a class="dropdown-item" href="#">Setari</a></li>
+                <li><a class="dropdown-item" href="{% url 'setari' %}"> <i class="fa-solid fa-gear"></i> Setari</a></li>
                 {% endif %}
                 <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item" href="{% url 'mylogout' %}">Log out</a></li>
           </ul>
+        </li>
+        <li class="nav-item ms-4">
+            <a class="nav-link text-nowrap" aria-current="page" href="#"><i class="fa-solid fa-circle-question"></i> Ajutor</a>
         </li>
       </ul>
     </div>

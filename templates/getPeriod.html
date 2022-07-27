@@ -1,9 +1,11 @@
 {% extends 'base.html' %}
 
 {% block content %}
+    {% load mytags %}
     <div class="container m-5 p-5 fs-1">
     <form method="post">
         {% csrf_token %}
+        {% if request.user|role_at_least:"Manager" %}
         <div class="row mb-5">
             <label for="inputDate1" class="text-nowrap me-3">Data inceput</label>
             <input type="datetime-local" class="form-control fs-1" id="inputDate1" required pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" name="date1">
@@ -12,6 +14,12 @@
             <label for="inputDate2" class="text-nowrap me-3">Data sfarsit</label>
             <input type="datetime-local" class="form-control fs-1" id="inputDate2" required pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" name="date2">
         </div>
+        {% else %}
+        <div class="row mb-5">
+            <label for="inputDate" class="text-nowrap me-3">Data</label>
+            <input type="datetime-local" class="form-control fs-1" id="inputDate" required pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" name="date">
+        </div>
+        {% endif %}
         <div class="row mb-5">
             <div class="d-flex flex-row justify-content-around">
                 <button type="submit" class="btn btn-primary fs-1">Cauta</button>
@@ -24,7 +32,31 @@
 {% block scripts %}
 <script type="text/javascript">
 
+function createDateTime(datestr){
+    if(datestr == null || datestr.length === 0)
+        return ""
+    const now = new Date();
+    let elems = datestr.split("-");
+    let toktime = elems[1].split(":");
+    let tokdate = elems[0].split(".");
+    now.setHours(parseInt(toktime[0]));
+    now.setMinutes(parseInt(toktime[1]));
+    now.setDate(parseInt(tokdate[0]));
+
+    now.setMonth(parseInt(tokdate[1]));
+    now.setFullYear(parseInt(tokdate[2]));
+    //alert(now.toJSON())
+    //alert(now.toISOString())
+    //2022-08-22T04:40:00.553Z
+    rez = ""
+    rez += pad(now.getFullYear(), 4) + "-" + pad(now.getMonth(), 2) + "-" + pad(now.getDate(), 2);
+    rez += "T" + pad(now.getHours(), 2) + ":" + pad(now.getMinutes(), 2);
+    return rez;
+}
+
 function createDateTimeFromDate(now){
+    //utc_time = now.getTime() + (now.getTimezoneOffset() * 60000)
+    //now = new Date(utc_time)
     rez = ""
     rez += pad(now.getFullYear(), 4) + "-" + pad(now.getMonth(), 2) + "-" + pad(now.getDate(), 2);
     rez += "T" + pad(now.getHours(), 2) + ":" + pad(now.getMinutes(), 2);
@@ -38,7 +70,7 @@ function pad(num, size) {
 }
 
 date = new Date()
-document.getElementById('inputDate2').value = createDateTimeFromDate(date)
+document.getElementById('inputDate2').value = createDateTime("{{ now|ftime:"datetime" }}")
 
 </script>
 {% endblock %}

@@ -5,7 +5,7 @@ from django.contrib.auth.models import Group
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib import messages
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, QueryDict
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.utils.decorators import method_decorator
 from django.views.generic import View, TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
@@ -366,7 +366,7 @@ class ActView(TemplateView):
         pass
 
     def __proces_request_to_context(self, request, context: dict):
-        context2 = {"stext": "",
+        context2 = {"stext": "", "selobs": "", "tobs": "",
                     "scrit": "nume", "osin": "06:00", "osout": "22:00", "tiora": "in",
                     "ocrit": "nume", "oord": "cresc",
                     "prezenta": "pr"}
@@ -376,8 +376,6 @@ class ActView(TemplateView):
         context.update(context2)
 
     def __create_filters(self, context: dict):
-        models.User.objects.filter(nume__contains=context["stext"])
-        #models.Comanda.objects.filter(denumire__contains=)
         filteruser = {}
         # filterin = {}
         # filterout = {}
@@ -389,10 +387,10 @@ class ActView(TemplateView):
         ordlst = {}
         if context['oord'] == "desc": ordlst.update(reverse=True)
         if context["ocrit"] == "nume": ordlst.update(key=lambda r: (r.user.nume, r.datetime.date()))
-        elif context["ocrit"] == "datetimein": ordlst.update(key=lambda r: (r.datetime.date(), r.intrare.datetime.time()))
-        elif context["ocrit"] == "datetimeout": ordlst.update(key=lambda r: (r.datetime.date(), r.iesire.datetime.time()))
-        elif context["ocrit"] == "timein": ordlst.update(key=lambda r: (r.intrare.datetime.time(), r.user.nume))
-        elif context["ocrit"] == "timeout": ordlst.update(key=lambda r: (r.iesire.datetime.time(), r.user.nume))
+        elif context["ocrit"] == "datetimein": ordlst.update(key=lambda r: (r.datetime.date(), r.intrare_notnone.datetime.time()))
+        elif context["ocrit"] == "datetimeout": ordlst.update(key=lambda r: (r.datetime.date(), r.iesire_notnone.datetime.time()))
+        elif context["ocrit"] == "timein": ordlst.update(key=lambda r: (r.intrare_notnone.datetime.time(), r.user.nume))
+        elif context["ocrit"] == "timeout": ordlst.update(key=lambda r: (r.iesire_notnone.datetime.time(), r.user.nume))
         elif context["ocrit"] == "nrcom": ordlst.update(key=lambda r: (r.nrcomenzi, r.user.nume))
         return filteruser, ordlst
 
@@ -425,7 +423,23 @@ class ActView(TemplateView):
             for user in models.User.objects.filter(role__in=roluri_listate, **filteruser):
                 for datetime in utils.rangeDays(datetimein, datetimeout):
                     row = RowDataActivity(user, datetime, setari.min_tolerated)
-                    if context['prezenta']=="pr" and not row.absent or context['prezenta']=='abs' and row.absent:
+                    # skip condition not based on filters
+                    if context["scrit"]=="numecmd" and str(context['stext']).casefold() not in row.numecomenzi.casefold() or \
+                       context["scrit"]=="nrcmd" and not row.hasCmd(context["stext"]):
+                        continue
+
+                    # radio buttons - obs
+                    if context["selobs"]=="1":
+                        if context["tobs"]=="i" and row.intrare_notnone.text == "": continue
+                        elif context["tobs"]=="e" and row.iesire_notnone.text == "": continue
+                        elif context["tobs"]=="ie" and (row.intrare_notnone.text == "" or row.iesire_notnone.text == ""): continue
+                        else: pass
+
+                    # radio buttons - prezenta
+                    if context['prezenta']=="pr" and not row.absent or \
+                       context['prezenta']=='abs' and row.absent or \
+                       context['prezenta']=="iec" and not row.notAllDataCompleted or \
+                       context['prezenta']=="iei" and row.notAllDataCompleted and not row.noneDataCompleted:
                         tabledata.append(row)
             tabledata.sort(**order)
             context.update(tabledata=tabledata, harta=harta)
@@ -438,7 +452,8 @@ class ActView(TemplateView):
         datain, dataout = self._getPeriod(**context)
         user = self.request.user
         if 'ownuser' in kwargs: user = kwargs['ownuser']
-        harta = models.OwnSettings.objects.all()[0].harta.adresa
+        setari = models.OwnSettings.objects.all()[0]
+        harta = setari.harta.adresa
         context2['harta'] = harta
 
         if datain.date() == dataout.date():
@@ -476,7 +491,7 @@ class ActView(TemplateView):
         else:
             tabledata = []
             for datetime in utils.rangeDays(datain, dataout):
-                row = RowDataActiviy(user, datetime)
+                row = RowDataActivity(user, datetime, setari.min_tolerated)
                 tabledata.append(row)
             tabledata.sort()
             context2['tabledata'] = tabledata
@@ -573,14 +588,17 @@ class ActFromPathView(ActView):
 
 def getperiod(request):
     if request.method == "POST":
-        date1 = datetime.datetime.fromisoformat(request.POST['date1'])
-        date2 = datetime.datetime.fromisoformat(request.POST['date2'])
-        if not date1 < date2:
-            messages.success(request, ("Data inceputului este dupa data sfarsitului perioadei!"))
-            return render(request, "getPeriod.html", {})
-        return redirect('actFromPath', datein=date1.strftime("%d.%m.%Y"), dateout=date2.strftime("%d.%m.%Y"))
-    return render(request, "getPeriod.html", {})
-
+        if request.user.role in ("Manager", "Admin"):
+            date1 = datetime.datetime.fromisoformat(request.POST['date1'])
+            date2 = datetime.datetime.fromisoformat(request.POST['date2'])
+            if not date1 < date2:
+                messages.success(request, ("Data inceputului este dupa data sfarsitului perioadei!"))
+                return render(request, "getPeriod.html", {"now": utils.getTime()})
+            return redirect('actFromPath', datein=date1.strftime("%d.%m.%Y"), dateout=date2.strftime("%d.%m.%Y"))
+        else:
+            date = datetime.datetime.fromisoformat(request.POST['date'])
+            return redirect('actFromPath', datein=date.strftime("%d.%m.%Y"), dateout=date.strftime("%d.%m.%Y"))
+    return render(request, "getPeriod.html", {"now": utils.getTime()})
 
 def getperioduser(request):
     if request.method == "POST":
@@ -614,7 +632,7 @@ def getperioduser(request):
             pass
         messages.success(request, ("Utilizatorul nu a fost gasit!"))
         return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
-    return render(request, "getPeriodUser.html", {"users": models.User.objects.all()})
+    return render(request, "getPeriodUser.html", {"users": models.User.objects.all(), "now": utils.getTime()})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -767,6 +785,114 @@ class ActUserFromPathView(ActFromPathView):
 
 # endregion
 
+#region Separated Activity
+
+class BaseActivityView(TemplateView):
+    template_name = "sepAct.html"
+    titlu = "Intrare/Iesire/Comenzi"
+    model = models.Info
+
+    def _proces_request_to_context(self, request, context: dict):
+        context2 = {"stext": "", "showday": "",
+                    "scrit": "nume",
+                    "ocrit": "nume", "oord": "cresc",
+                    "prezenta": "pr"}
+        for key in context2:
+            if key in request.GET and len(request.GET[key]) != 0:
+                context2[key] = request.GET[key]
+        for datekey in ("date1", "date2"):
+            if datekey in request.GET:
+                data = datetime.datetime.fromisoformat(request.GET[datekey])
+                #print(data, datekey[-1])
+                context2[f"datetime{datekey[-1]}"] = data
+        context.update(context2)
+
+    def _create_filters(self, context: dict):
+        filterdct = {}
+        #models.Comanda.objects.filter(user=)
+        if 'user' in context:
+            filterdct.update(user=context['user'])
+        elif len(context["stext"]) > 0:
+            if context["scrit"] == "nume":
+                filterdct.update(user__nume__contains=context["stext"])
+            elif context["scrit"] == "email":
+                filterdct.update(user__email__contains=context["stext"])
+            elif context["scrit"] == "tel":
+                filterdct.update(user__telefon__startswith=context["stext"])
+            elif context["scrit"] == "obs":
+                filterdct.update(text__contains=context["stext"])
+            # comanda
+            elif context["scrit"] == "numecmd":
+                filterdct.update(denumire__contains=context["stext"])
+            elif context["scrit"] == "nrcmd":
+                filterdct.update(numar_comanda__startswith=context["stext"])
+
+        filterdct.update(datetime__gte=context["datetime1"], datetime__lte=context["datetime2"])
+        return filterdct
+
+    def _order_query(self, context: dict, query):
+        supl = ""
+        rez = None
+        if context['oord'] == "desc": supl = "-"
+        if context["ocrit"] == "nume":
+            rez = query.order_by(supl+'user__nume', 'datetime__date')
+            # ordlst.update(key=lambda r: (r.user.nume, r.datetime.date()))
+        elif context["ocrit"] == "data":
+            rez = query.order_by(supl+'datetime__date', 'user__nume')
+            # ordlst.update(key=lambda r: (r.datetime.date(), r.user.nume))
+        elif context["ocrit"] == "ora":
+            rez = query.order_by(supl+'datetime__time', 'user__nume')
+            # ordlst.update(key=lambda r: (r.datetime.time(), r.user.nume))
+        if rez is None:  # dupa distanta
+            rez = list(query)
+            desc = supl == "-"
+            rez.sort(key=lambda info: (utils.getTime(info), info.user.nume), reverse=desc)
+        return rez
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        self._proces_request_to_context(request, context)
+        filterdct = self._create_filters(context)
+        tabledata = self.model.objects.filter(**filterdct)
+        tabledata = self._order_query(context, tabledata)
+        context.update(tabledata=tabledata)
+        return render(request, self.template_name, context)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        date = utils.getTime().date()
+        if 'date' in kwargs:
+            date = datetime.datetime.strptime(kwargs['date'], "%d.%m.%Y")
+        user = None
+        if 'username' in kwargs:
+            user = models.User.objects.get(username=kwargs['username'])
+        time1 = datetime.datetime.strptime("00:00:00", "%H:%M:%S").time()
+        time2 = datetime.datetime.strptime("23:59:00", "%H:%M:%S").time()
+        datetime1 = datetime.datetime.combine(date, time1, tzinfo=pytz.timezone(settings.TIME_ZONE))
+        datetime2 = datetime.datetime.combine(date, time2, tzinfo=pytz.timezone(settings.TIME_ZONE))
+        context.update(titlu=self.titlu, datetime1=datetime1, datetime2=datetime2)
+        if user is not None: context.update(user=user)
+        harta = models.OwnSettings.objects.all()[0].harta.adresa
+        context.update(harta=harta)
+        return context
+
+#region Inherited change model
+
+class IntrareActivity(BaseActivityView):
+    titlu = "Intrari"
+    model = models.Intrare
+
+class IesireActivity(BaseActivityView):
+    titlu = "Iesiri"
+    model = models.Iesire
+
+class ComandaActivity(BaseActivityView):
+    template_name = 'comenzi.html'
+    titlu = "Comenzi"
+    model = models.Comanda
+
+#endregion
+
 # region Users
 
 @user_passes_test(lambda user: user.role in ("Manager", "Admin"))
@@ -890,7 +1016,26 @@ class Utilizatori(TemplateView):
             context.update(users=users, isnothing=isnothing, crit=crit)
             return render(request, "users.html", context)
         else:
-            messages.success(request, ("NU sunteti autorizat sa vizualizati alte conturi!"))
+            messages.success(request, ("Nu sunteti autorizat sa vizualizati alte conturi!"))
             return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
 # endregion
+
+@method_decorator(login_required, name='dispatch')
+class Setari(TemplateView):
+    template_name = 'setari.html'
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        if 'modif' in request.GET:
+            context.update(modif=True)
+        return render(request, self.template_name, context)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        setare = models.OwnSettings.objects.all()[0]
+
+        arii = models.Forma.objects.all()
+        harti = models.Harta.objects.all()
+        context.update(setare=setare, arii=arii, harti=harti)
+        return context

@@ -29,6 +29,28 @@
 {% block scripts %}
 <script type="text/javascript">
 
+function createDateTime(datestr){
+    if(datestr == null || datestr.length === 0)
+        return ""
+    const now = new Date();
+    let elems = datestr.split("-");
+    let toktime = elems[1].split(":");
+    let tokdate = elems[0].split(".");
+    now.setHours(parseInt(toktime[0]));
+    now.setMinutes(parseInt(toktime[1]));
+    now.setDate(parseInt(tokdate[0]));
+
+    now.setMonth(parseInt(tokdate[1]));
+    now.setFullYear(parseInt(tokdate[2]));
+    //alert(now.toJSON())
+    //alert(now.toISOString())
+    //2022-08-22T04:40:00.553Z
+    rez = ""
+    rez += pad(now.getFullYear(), 4) + "-" + pad(now.getMonth(), 2) + "-" + pad(now.getDate(), 2);
+    rez += "T" + pad(now.getHours(), 2) + ":" + pad(now.getMinutes(), 2);
+    return rez;
+}
+
 function createDateTimeFromDate(now){
     rez = ""
     rez += pad(now.getFullYear(), 4) + "-" + pad(now.getMonth(), 2) + "-" + pad(now.getDate(), 2);
@@ -42,8 +64,9 @@ function pad(num, size) {
     return num;
 }
 
+{% load mytags %}
 date = new Date()
-document.getElementById('inputDate').value = createDateTimeFromDate(date)
+document.getElementById('inputDate').value = createDateTime("{{ now|ftime:"datetime" }}")
 
 </script>
 {% endblock %}

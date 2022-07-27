@@ -56,3 +56,11 @@ button.addEventListener(function() {
 
 nume, data, daca nu is in firma,
 
+/comenzi
+/comenzi/data/user
+/
+
+comenzi:
+    - perioada GET
+    -
+

@@ -29,8 +29,26 @@ class RowDataActivity:
         for comanda in self.comenzi:
             self.numecomenzi += comanda.denumire+"<br>"
 
+    class structDate:
+        datetime = datetime.datetime.strptime("01.01.2001 00:00:00", "%d.%m.%Y %H:%M:%S")
+        text = ""
+
     @property
-    def isLocationWarning(self) -> bool:
+    def intrare_notnone(self):
+        if self.intrare is not None: return self.intrare
+        return self.structDate
+
+    @property
+    def iesire_notnone(self):
+        if self.iesire is not None: return self.iesire
+        return self.structDate
+
+    def hasCmd(self, cmd: str) -> bool:
+        rez = self.comenzi.filter(numar_comanda__startswith=cmd).count()
+        return rez > 0
+
+    @property
+    def __isLocationWarning(self) -> bool:
         infos = [self.intrare, self.iesire]
         for info in infos:
             if info is not None and utils.locStr(info) != "In firma":
@@ -42,7 +60,11 @@ class RowDataActivity:
         return self.intrare is None or self.iesire is None
 
     @property
-    def hasWorked8Hours(self) -> bool:
+    def noneDataCompleted(self) -> bool:
+        return self.intrare is None and self.iesire is None
+
+    @property
+    def __hasWorked8Hours(self) -> bool:
         if not self.notAllDataCompleted:
             delta = self.iesire.datetime - self.intrare.datetime
             delta2 = datetime.timedelta(hours=8)
@@ -52,7 +74,13 @@ class RowDataActivity:
 
     @property
     def color(self):
-        if self.isLocationWarning: return 'class=\'table-info\''
+        if self.__isLocationWarning: return 'class=\'table-warning\''
+        if not self.__hasWorked8Hours: return 'class=\'table-info\''
+        if self.__now.date() != self.datetime.date():
+            if self.notAllDataCompleted: return 'class=\'table-secondary\''
+            return 'class=\'table-success\''
+        elif not self.notAllDataCompleted:
+            return 'class=\'table-success\''
         return ""
 
 
