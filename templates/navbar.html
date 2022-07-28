@@ -30,7 +30,7 @@
         {% if user.is_authenticated and request.user|role_at_least:"Manager" %}
         <li class="nav-item dropdown ms-4">
           <a class="nav-link dropdown-toggle" id="navbarDropdown2" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="fa-solid fa-table-list"></i> Raport extins
+            <i class="fa-solid fa-table-list"></i> Raport
           </a>
           <ul class="dropdown-menu fs-5" aria-labelledby="navbarDropdown2">
             <li><a class="dropdown-item" href="{% url 'intrare' %}"> <i class="fa-solid fa-person-walking-arrow-loop-left"></i> Intrari</a></li>
@@ -46,11 +46,11 @@
           <ul class="dropdown-menu fs-5" aria-labelledby="navbarDropdown3">
                 <li><a class="dropdown-item" href="{% url 'detalii' %}"> <i class="fa-solid fa-circle-info"></i> Detalii</a></li>
                 {% if user.is_authenticated and request.user|role_at_least:"Manager" %}
-                <li><a class="dropdown-item" href="{% url 'utilizatori' %}">Vezi Angajatii</a></li>
+                <li><a class="dropdown-item" href="{% url 'utilizatori' %}"> <i class="fa-solid fa-user"></i> Vezi Angajatii</a></li>
                 <li><a class="dropdown-item" href="{% url 'setari' %}"> <i class="fa-solid fa-gear"></i> Setari</a></li>
                 {% endif %}
                 <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="{% url 'mylogout' %}">Log out</a></li>
+                <li><a class="dropdown-item" href="{% url 'mylogout' %}"> <i class="fa-solid fa-right-from-bracket"></i> Log out</a></li>
           </ul>
         </li>
         <li class="nav-item ms-4">

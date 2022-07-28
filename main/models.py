@@ -9,8 +9,8 @@ from django.contrib.auth.models import AbstractUser
 from siteReport import settings
 
 class Forma(models.Model):
-    nume = models.CharField(blank=True, default="corp", max_length=15)
-    tip = models.CharField(blank=False, default="Triunghi", choices=[("Cerc", "Cerc")], max_length=15)
+    nume = models.CharField(blank=True, default="corp", max_length=30)
+    tip = models.CharField(blank=False, default="Cerc", choices=[("Cerc", "Cerc")], max_length=15)
     puncte = models.TextField(blank=False, default="0 0\n0 0")
     def getShape(self):
         model = None
@@ -25,6 +25,15 @@ class Forma(models.Model):
             s = str(pctstr).replace('\r', '').replace(',', ' ').split(' ')
             pcts.append([float(s[0]), float(s[1])])
         return model(*pcts)
+
+    @property
+    def centerStr(self):
+        return self.getShape().centerStr
+
+    @property
+    def pointStr(self):
+        return self.getShape().pointStr
+
     def __str__(self): return self.nume
 
     class Meta:

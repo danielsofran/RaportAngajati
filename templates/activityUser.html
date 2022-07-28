@@ -124,20 +124,20 @@
             <div class="row mb-3 fs-3">
                 <label for="inputOraIn" class="col-form-label fs-3 text-start">Ora intrarii</label>
                 <div class="col-sm-10">
-                  <input type="text" class="form-control fs-3" id="inputOraIn" value="{{ oraIn }}" name="orain">
+                  <input autocomplete="off" type="text" class="form-control fs-3" id="inputOraIn" value="{{ oraIn }}" name="orain">
                 </div>
             </div>
             <div class="row mb-3 fs-3">
                 <label for="inputOraOut" class="col-form-label fs-3 text-start">Ora plecarii</label>
                 <div class="col-sm-10">
-                  <input type="text" class="form-control fs-3" id="inputOraOut" value="{{ oraOut }}" name="oraout">
+                  <input autocomplete="off" type="text" class="form-control fs-3" id="inputOraOut" value="{{ oraOut }}" name="oraout">
                 </div>
             </div>
 
             <div class="row mb-3 fs-3">
                 <label for="inputLocIn" class="col-form-label fs-3 text-start">Locatie intrare (lat, long): {{ locStrIn }}</label>
                 <div class="d-flex flex-row col-sm-10">
-                  <input type="text" class="form-control fs-3 me-5" id="inputLocIn" value="{{ locIn }}" name="locin">
+                  <input autocomplete="off" type="text" class="form-control fs-3 me-5" id="inputLocIn" value="{{ locIn }}" name="locin">
                   <button type="button" class="btn btn-light btn-lg fs-3 me-3" onclick="loadMap('{{ locIn }}')" title="Arata pe harta"><i class="fa-solid fa-location-crosshairs"></i></button>
                   <button type="button" class="btn btn-light btn-lg fs-3" onclick="setCurentCoords('inputLocIn')" title="Seteaza pozitia curenta"><i class="fa-solid fa-magnifying-glass-location"></i></button>
                 </div>
@@ -145,7 +145,7 @@
             <div class="row mb-3 fs-3">
                 <label for="inputLocOut" class="col-form-label fs-3 text-start">Locatie plecare (lat, long): {{ locStrOut }}</label>
                 <div class="d-flex flex-row col-sm-10">
-                  <input type="text" class="form-control fs-3 me-5" id="inputLocOut" required value="{{ locOut }}" name="locout">
+                  <input autocomplete="off" type="text" class="form-control fs-3 me-5" id="inputLocOut" required value="{{ locOut }}" name="locout">
                   <button type="button" class="btn btn-light btn-lg fs-3 me-3" onclick="loadMap('{{ locOut }}')" title="Arata pe harta"><i class="fa-solid fa-location-crosshairs"></i></button>
                   <button type="button" class="btn btn-light btn-lg fs-3" onclick="setCurentCoords('inputLocOut')" title="Seteaza pozitia curenta"><i class="fa-solid fa-magnifying-glass-location"></i></button>
                 </div>
@@ -154,13 +154,13 @@
             <div class="row mb-3 fs-3">
                 <label for="inputNrRelocIn" class="col-form-label fs-3 text-start">Numar de relocari la intrare</label>
                 <div class="col-sm-10">
-                  <input type="number" class="form-control fs-3" id="inputNrRelocIn" required min="1" max="{{ nrrecalcpoz }}" value="{{ 1 }}">
+                  <input autocomplete="off" type="number" class="form-control fs-3" id="inputNrRelocIn" required min="1" max="{{ nrrecalcpoz }}" value="{{ 1 }}">
                 </div>
             </div>
             <div class="row mb-3 fs-3">
                 <label for="inputNrRelocOut" class="col-form-label fs-3 text-start">Numar de relocari la iesire</label>
                 <div class="col-sm-10">
-                  <input type="number" class="form-control fs-3" id="inputNrRelocOut" required min="1" max="{{ nrrecalcpoz }}" value="{{ 1 }}">
+                  <input autocomplete="off" type="number" class="form-control fs-3" id="inputNrRelocOut" required min="1" max="{{ nrrecalcpoz }}" value="{{ 1 }}">
                 </div>
             </div>
             {% endif %}
@@ -221,7 +221,7 @@
         <div class="d-none fs-2 pt-3 w-50" id="comandDiv">
             <div class="row mb-3 fs-3">
                 <label for="comandaDen" class="form-label fs-2" style="text-align: left !important;">Denumire</label>
-                <input class="form-control fs-3" list="datalistOptions" id="comandaDen" placeholder="Alege/Scrie denumirea produsului" required>
+                <input autocomplete="off" class="form-control fs-3" list="datalistOptions" id="comandaDen" placeholder="Alege/Scrie denumirea produsului" required>
                 <datalist id="datalistOptions">
                   <option value="Panou de gard">
                   <option value="Poarta">
@@ -231,7 +231,7 @@
             <div class="row mb-3 fs-3">
                 <label for="inputNrComanda" class="col-form-label fs-3 text-start">Numar comanda</label>
                 <div class="col-sm-10">
-                  <input type="text" class="form-control fs-3" id="inputNrComanda" required pattern="C[0-9]{1,}.[0-9]{1,}">
+                  <input autocomplete="off" type="text" class="form-control fs-3" id="inputNrComanda" required pattern="C[0-9]{1,}.[0-9]{1,}">
                 </div>
             </div>
             <div class="row mb-3 fs-3">
@@ -239,13 +239,13 @@
                     <button onclick="setCurentCoords('inputLoc')" title="Seteaza locatia curenta" class="btn btn-light fs-5"><i class="fa-solid fa-location-crosshairs"></i></button>
                 </label>
                 <div class="col-sm-10">
-                  <input type="text" class="form-control fs-3" id="inputLoc" required pattern="[0-9]{1,2}.[0-9]{2,},[\s ][0-9]{1,2}.[0-9]{2,}">
+                  <input autocomplete="off" type="text" class="form-control fs-3" id="inputLoc" required pattern="[0-9]{1,2}.[0-9]{2,},[\s ][0-9]{1,2}.[0-9]{2,}">
                 </div>
             </div>
             <div class="row mb-3 fs-3">
                 <label for="inputMom" class="col-form-label fs-3 text-start">Data si ora</label>
                 <div class="col-sm-10">
-                  <input type="datetime-local" class="form-control fs-3" id="inputMom" required pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}">
+                  <input autocomplete="off" type="datetime-local" class="form-control fs-3" id="inputMom" required pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}">
                 </div>
             </div>
             <div class="form-floating fs-4 mt-3">

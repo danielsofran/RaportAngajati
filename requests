@@ -58,9 +58,11 @@ nume, data, daca nu is in firma,
 
 /comenzi
 /comenzi/data/user
-/
 
-comenzi:
-    - perioada GET
-    -
-
+<QueryDict: {
+'nrrecalcpoz': ['3'],
+'secafterrecalc': ['60'],
+'disterror': ['10.0'],
+'mintol': ['5'],
+'harta': ['1'],
+'progr': ['L', 'Ma', 'Mi', 'J', 'V']}>

@@ -893,9 +893,11 @@ class ComandaActivity(BaseActivityView):
 
 #endregion
 
+#endregion
+
 # region Users
 
-@user_passes_test(lambda user: user.role in ("Manager", "Admin"))
+@user_passes_test(lambda user: user.is_authenticated and user.role in ("Manager", "Admin"))
 def adduser(request):
     if request.method == 'POST':
         username = request.POST['user']
@@ -922,7 +924,7 @@ def adduser(request):
     return render(request, 'adduser.html', {})
 
 
-@user_passes_test(lambda user: user.role in ("Manager", "Admin"))
+@user_passes_test(lambda user: user.is_authenticated and user.role in ("Manager", "Admin"))
 def deleteuser(request, username):
     try:
         data = models.User.objects.get(username=username)
@@ -1025,17 +1027,201 @@ class Utilizatori(TemplateView):
 class Setari(TemplateView):
     template_name = 'setari.html'
 
+    def __validate_post_setare(self, request):
+        keys = ("nrrecalcpoz", "secafterrecalc", "disterror", "mintol", "harta", "progr")
+        for key in keys:
+            if not key in request.POST:
+                messages.success(request, ("Date insuficiente!"))
+                return None
+        nr = int(request.POST[keys[0]])
+        if nr < 1 or nr > 10:
+            messages.success(request, ("Numar de localizari invalid!"))
+            return None
+        sec = int(request.POST[keys[1]])
+        if sec < 0 or sec > 2000:
+            messages.success(request, ("Numar de secunde invalid!"))
+            return None
+        dist = float(request.POST[keys[2]])
+        if dist < 0 or dist > 1000:
+            messages.success(request, ("Distanta invalida!"))
+            return None
+        mintol = int(request.POST[keys[3]])
+        if mintol < 0 or mintol >= 1440:
+            messages.success(request, ("Numar de minute tolerate invalid!"))
+            return None
+        hartaid = request.POST[keys[4]]
+        harta = None
+        try: harta = models.Harta.objects.get(pk=hartaid)
+        except:
+            messages.success(request, ("Harta invalida!"))
+            return None
+        progr = request.POST.getlist(keys[5])
+        if len(progr) == 0:
+            messages.success(request, ("Program invalid!"))
+            return None
+        progr = " ".join(progr)
+        vals = (nr, sec, dist, mintol, harta, progr)
+        context = {keys[i]: vals[i] for i, _ in enumerate(keys)}
+        return context
+
+    def __validate_post_harta(self, request):
+        keys = ("id", "nume", "adr")
+        for key in keys:
+            if not key in request.POST:
+                messages.success(request, ("Date insuficiente!"))
+                return None
+        nume = request.POST['nume']
+        if len(nume) == 0:
+            messages.success(request, ("Numa invalid!"))
+            return None
+        adresa = request.POST['adr']
+        if len(adresa) == 0:
+            messages.success(request, ("Adresa invalida!"))
+            return None
+        id = int(request.POST['id'])
+        try: models.Harta.objects.get(pk=id)
+        except:
+            messages.success(request, ("Harta invalida!"))
+            return None
+        return dict(zip(keys, (id, nume, adresa)))
+
+    def __validate_post_hartaadd(self, request):
+        keys = ("nume", "adr")
+        for key in keys:
+            if not key in request.POST:
+                messages.success(request, ("Date insuficiente!"))
+                return None
+        nume = request.POST['nume']
+        if len(nume) == 0:
+            messages.success(request, ("Numa invalid!"))
+            return None
+        adresa = request.POST['adr']
+        if len(adresa) == 0:
+            messages.success(request, ("Adresa invalida!"))
+            return None
+        return dict(zip(keys, (nume, adresa)))
+
+    def __validate_post_forma(self, request):
+        keys = ("id", "nume", "pozc", "pozp")
+        for key in keys:
+            if not key in request.POST:
+                messages.success(request, ("Date insuficiente!"))
+                return None
+        nume = request.POST['nume']
+        if len(nume) == 0:
+            messages.success(request, ("Numa invalid!"))
+            return None
+        pozc = request.POST['pozc']
+        if not utils.validLoc(pozc):
+            messages.success(request, ("Pozitie centru invalida!"))
+            return None
+        pozp = request.POST['pozp']
+        if not utils.validLoc(pozp):
+            messages.success(request, ("Pozitie punct invalida!"))
+            return None
+        id = int(request.POST['id'])
+        try: models.Forma.objects.get(pk=id)
+        except:
+            messages.success(request, ("Forma invalida!"))
+            return None
+        return dict(zip(keys, (id, nume, pozc, pozp)))
+
+    def __validate_post_formaadd(self, request):
+        keys = ("nume", "pozc", "pozp")
+        for key in keys:
+            if not key in request.POST:
+                messages.success(request, ("Date insuficiente!"))
+                return None
+        nume = request.POST['nume']
+        if len(nume) == 0:
+            messages.success(request, ("Numa invalid!"))
+            return None
+        pozc = request.POST['pozc']
+        if not utils.validLoc(pozc):
+            messages.success(request, ("Pozitie centru invalida!"))
+            return None
+        pozp = request.POST['pozp']
+        if not utils.validLoc(pozp):
+            messages.success(request, ("Pozitie punct invalida!"))
+            return None
+        return dict(zip(keys, (nume, pozc, pozp)))
+
+    def post(self, request, *args, **kwargs):
+        if request.POST['type'] == "setare":
+            context = self.__validate_post_setare(request)
+            if context is not None:
+                seatre = models.OwnSettings.objects.all()[0]
+                seatre.nrrecalcpoz = context['nrrecalcpoz']
+                seatre.secafterrecalc = context['secafterrecalc']
+                seatre.disterror = context['disterror']
+                seatre.min_tolerated = context['mintol']
+                seatre.program = context['progr']
+                seatre.harta = context['harta']
+                seatre.save(force_update=True)
+                messages.success(request, ("Setare modificata cu succes!"))
+        elif request.POST['type'] == 'harta':
+            context = self.__validate_post_harta(request)
+            if context is not None:
+                harta = models.Harta.objects.get(pk=context['id'])
+                harta.nume = context['nume']
+                harta.adresa = context['adr']
+                harta.save(force_update=True)
+                messages.success(request, ("Harta modificata cu succes!"))
+        elif request.POST['type'] == 'hartaadd':
+            context = self.__validate_post_hartaadd(request)
+            if context is not None:
+                models.Harta.objects.create(nume=context['nume'], adresa=context['adr'])
+                messages.success(request, (f"Harta {context['nume']} adaugata cu succes!"))
+        elif request.POST['type'] == 'forma':
+            context = self.__validate_post_forma(request)
+            if context is not None:
+                forma = models.Forma.objects.get(pk=context['id'])
+                forma.nume = context['nume']
+                rowc = str(context['pozc']).replace(" ", "").replace(",", ' ')
+                rowp = str(context['pozp']).replace(" ", "").replace(",", ' ')
+                forma.puncte = f"{rowc}\n{rowp}"
+                forma.save(force_update=True)
+                messages.success(request, ("Aria modificata cu succes!"))
+        elif request.POST['type'] == 'formaadd':
+            context = self.__validate_post_formaadd(request)
+            if context is not None:
+                rowc = str(context['pozc']).replace(" ", "").replace(",", ' ')
+                rowp = str(context['pozp']).replace(" ", "").replace(",", ' ')
+                models.Forma.objects.create(nume=context['nume'], puncte=f"{rowc}\n{rowp}")
+                messages.success(request, (f"Aria {context['nume']} adaugata cu succes!"))
+        return redirect('setari')
+
     def get(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
-        if 'modif' in request.GET:
-            context.update(modif=True)
+        # if 'modif' in request.GET: context.update(modif=True)
         return render(request, self.template_name, context)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         setare = models.OwnSettings.objects.all()[0]
-
         arii = models.Forma.objects.all()
         harti = models.Harta.objects.all()
         context.update(setare=setare, arii=arii, harti=harti)
         return context
+
+@user_passes_test(lambda user: user.is_authenticated and user.role in ("Manager", "Admin"))
+def stergeharta(request, hid):
+    try:
+        harta = models.Harta.objects.get(pk=hid)
+        nume = harta.nume
+        harta.delete()
+        messages.success(request, (f"Harta {nume} a fost stearsa!"))
+    except:
+        messages.success(request, ("Eroare!"))
+    return redirect('setari')
+
+@user_passes_test(lambda user: user.is_authenticated and user.role in ("Manager", "Admin"))
+def stergeforma(request, fid):
+    try:
+        forma = models.Forma.objects.get(pk=fid)
+        nume = forma.nume
+        forma.delete()
+        messages.success(request, (f"Aria {nume} a fost stearsa!"))
+    except:
+        messages.success(request, ("Eroare!"))
+    return redirect('setari')

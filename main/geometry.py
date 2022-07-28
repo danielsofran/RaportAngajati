@@ -407,8 +407,16 @@ class Cerc(Shape):
         return (self.__center[0], self.__center[1])
 
     @property
+    def centerStr(self):
+        return f"{self.__center[0]}, {self.__center[1]}"
+
+    @property
     def point(self):
         return (self.__point[0], self.__point[1])
+
+    @property
+    def pointStr(self):
+        return f"{self.__point[0]}, {self.__point[1]}"
 
     @property
     def raza(self):

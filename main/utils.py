@@ -123,6 +123,15 @@ def degToMeters(lat1, lon1, lat2, lon2) -> float:
     d = R * c
     return d * 1000
 
+def validLoc(loc: str):
+    if loc.count(',') != 1: return False
+    if loc.count('.') != 2: return False
+    for cif in loc:
+        if cif in ' ,.': continue
+        if cif >= '0' and cif <= '9': continue
+        return False
+    return True
+
 def validTel(tel: str):
     tel.replace(' ', '')
     if tel.__len__() < 10:

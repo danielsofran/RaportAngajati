@@ -173,7 +173,7 @@
         <div class="d-none fs-2 pt-3 w-50" id="comandDiv">
             <div class="row mb-3 fs-3">
                 <label for="comandaDen" class="form-label fs-2" style="text-align: left !important;">Denumire</label>
-                <input class="form-control fs-3" list="datalistOptions" id="comandaDen" placeholder="Alege/Scrie denumirea produsului" required>
+                <input autocomplete="off" class="form-control fs-3" list="datalistOptions" id="comandaDen" placeholder="Alege/Scrie denumirea produsului" required>
                 <datalist id="datalistOptions">
                   <option value="Panou de gard">
                   <option value="Poarta">
@@ -183,7 +183,7 @@
             <div class="row mb-3 fs-3">
                 <label for="inputNrComanda" class="col-form-label fs-3 text-start">Numar comanda</label>
                 <div class="col-sm-10">
-                  <input type="text" class="form-control fs-3" id="inputNrComanda" required>
+                  <input autocomplete="off" type="text" class="form-control fs-3" id="inputNrComanda" required>
                 </div>
             </div>
             <div class="form-floating fs-4 mt-3">
@@ -218,8 +218,8 @@
                 </div>
 {#                <div class="d-flex flex-row mb-3">#}
 {#                    <p class="me-3 form-label ms-3">Interval orar</p>#}
-{#                    <input type="text" class="form-control fs-2 w-15 me-5" value="{{ osin }}" pattern="[0-9]{2}:[0-9]{2}" name="osin" title="Va rugam respectati fromatul unei ore">#}
-{#                    <input type="text" class="form-control fs-2 w-15 me-5" value="{{ osout }}" pattern="[0-9]{2}:[0-9]{2}" name="osout" title="Va rugam respectati fromatul unei ore">#}
+{#                    <input autocomplete="off" type="text" class="form-control fs-2 w-15 me-5" value="{{ osin }}" pattern="[0-9]{2}:[0-9]{2}" name="osin" title="Va rugam respectati fromatul unei ore">#}
+{#                    <input autocomplete="off" type="text" class="form-control fs-2 w-15 me-5" value="{{ osout }}" pattern="[0-9]{2}:[0-9]{2}" name="osout" title="Va rugam respectati fromatul unei ore">#}
 {#                    <select class="form-select flex-shrink-1 fs-3 me-5 w-15" aria-label="Default select example" name="tiora" required>#}
 {#                      <option {% if tiora == "in" %}selected{% endif %} value="in">Intrare</option>#}
 {#                      <option {% if tiora == "out" %}selected{% endif %} value="out">Iesire</option>#}
@@ -241,23 +241,23 @@
                     </select>
                 </div>
                 <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="prezenta" id="exampleRadios1" value="pr" {% if prezenta == "pr" %} checked {% endif %}>
+                  <input autocomplete="off" class="form-check-input" type="radio" name="prezenta" id="exampleRadios1" value="pr" {% if prezenta == "pr" %} checked {% endif %}>
                   <label class="form-check-label" for="exampleRadios1">Prezenti</label>
                 </div>
                 <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="prezenta" id="exampleRadios2" value="abs" {% if prezenta == "abs" %} checked {% endif %}>
+                  <input autocomplete="off" class="form-check-input" type="radio" name="prezenta" id="exampleRadios2" value="abs" {% if prezenta == "abs" %} checked {% endif %}>
                   <label class="form-check-label" for="exampleRadios2">Absenti</label>
                 </div>
                 <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="prezenta" id="exampleRadios3" value="iec" {% if prezenta == "iec" %} checked {% endif %}>
+                  <input autocomplete="off" class="form-check-input" type="radio" name="prezenta" id="exampleRadios3" value="iec" {% if prezenta == "iec" %} checked {% endif %}>
                   <label class="form-check-label" for="exampleRadios3">Intrare/Iesire completate</label>
                 </div>
                 <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="prezenta" id="exampleRadios4" value="iei" {% if prezenta == "iei" %} checked {% endif %}>
+                  <input autocomplete="off" class="form-check-input" type="radio" name="prezenta" id="exampleRadios4" value="iei" {% if prezenta == "iei" %} checked {% endif %}>
                   <label class="form-check-label" for="exampleRadios4">Intrare/Iesire incomplete</label>
                 </div>
                 <div class="form-check mt-2">
-                  <input class="form-check-input" type="checkbox" value="1" id="flexCheckDefault" name="selobs" {% if selobs == "1" %} checked {% endif %}>
+                  <input autocomplete="off" class="form-check-input" type="checkbox" value="1" id="flexCheckDefault" name="selobs" {% if selobs == "1" %} checked {% endif %}>
                   <label class="form-check-label" for="flexCheckDefault">
                     Arata doar daca exista observatii
                   </label>

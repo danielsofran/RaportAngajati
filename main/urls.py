@@ -44,4 +44,6 @@ urlpatterns = [
     path("cont/<str:username>/delete", login_required(views.deleteuser), name="deleteuser"),
 
     path("setari", login_required(views.Setari.as_view()), name="setari"),
+    path("setari/delete_harta/<int:hid>", login_required(views.stergeharta), name="stergeharta"),
+    path("setari/delete_forma/<int:fid>", login_required(views.stergeforma), name="stergeforma"),
 ]
