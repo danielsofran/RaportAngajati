@@ -8,16 +8,16 @@
         {% if request.user|role_at_least:"Manager" %}
         <div class="row mb-5">
             <label for="inputDate1" class="text-nowrap me-3">Data inceput</label>
-            <input type="datetime-local" class="form-control fs-1" id="inputDate1" required pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" name="date1">
+            <input type="date" class="form-control fs-1" id="inputDate1" required pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" name="date1">
         </div>
         <div class="row mb-5">
             <label for="inputDate2" class="text-nowrap me-3">Data sfarsit</label>
-            <input type="datetime-local" class="form-control fs-1" id="inputDate2" required pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" name="date2">
+            <input type="date" class="form-control fs-1" id="inputDate2" required pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" name="date2">
         </div>
         {% else %}
         <div class="row mb-5">
             <label for="inputDate" class="text-nowrap me-3">Data</label>
-            <input type="datetime-local" class="form-control fs-1" id="inputDate" required pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" name="date">
+            <input type="date" class="form-control fs-1" id="inputDate" required pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" name="date">
         </div>
         {% endif %}
         <div class="row mb-5">
@@ -63,6 +63,21 @@ function createDateTimeFromDate(now){
     return rez;
 }
 
+function createDate(datestr){
+    if(datestr == null || datestr.length === 0)
+        return ""
+    const now = new Date();
+    let elems = datestr.split(".");
+    now.setDate(parseInt(elems[0]));
+
+    now.setMonth(parseInt(elems[1]));
+    now.setFullYear(parseInt(elems[2]));
+    //alert(now.toJSON())
+    //alert(now.toISOString())
+    //2022-08-22T04:40:00.553Z
+    return pad(now.getFullYear(), 4) + "-" + pad(now.getMonth(), 2) + "-" + pad(now.getDate(), 2);
+}
+
 function pad(num, size) {
     num = num.toString();
     while (num.length < size) num = "0" + num;
@@ -70,7 +85,7 @@ function pad(num, size) {
 }
 
 date = new Date()
-document.getElementById('inputDate2').value = createDateTime("{{ now|ftime:"datetime" }}")
+document.getElementById('inputDate2').value = createDate("{{ now|ftime:"date" }}")
 
 </script>
 {% endblock %}

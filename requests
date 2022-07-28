@@ -6,7 +6,11 @@ imagine?
 panou de gard
 poarta
 portita
-...
+scara
+balustrada
+stalpi
+mana curenta
+
 
 numar de comanda
 
@@ -66,3 +70,5 @@ nume, data, daca nu is in firma,
 'mintol': ['5'],
 'harta': ['1'],
 'progr': ['L', 'Ma', 'Mi', 'J', 'V']}>
+
+

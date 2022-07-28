@@ -105,7 +105,7 @@
         <div class="my-3 ms-5">
             <div class="d-flex flex-row justify-content-start">
                 <button type="button" class="btn mx-auto p-3 border fs-1 pe-5" style="background-color: aquamarine" onclick="ajuns()">Am ajuns la firma</button>
-                <div class="d-flex flex-row"><button id="inputModalCancelCome" type="button" data-bs-toggle="modal" data-bs-target="#modalCancelCome" class="btn btn-danger btn-square-md font-weight-bold fs-1 align-self-center my-0 px-4" > x </button></div>
+                <div class="d-flex flex-row"><button id="inputModalCancelCome" type="button" data-bs-toggle="modal" data-bs-target="#modalCancelCome" class="btn btn-danger btn-square-md font-weight-bold fs-1 align-self-center my-0 px-4" ><i class="fa-solid fa-xmark"></i></button></div>
             </div>
         </div>
 
@@ -126,8 +126,10 @@
 
         <div class="my-3 ms-5">
             <div class="d-flex flex-row">
-                <button type="button" class="btn mx-auto p-3 border fs-1 me-5" style="background-color: #ff452c" onclick="plecat()">Am plecat din firma</button>
-                <div class="d-flex flex-row"><button id="inputModalCancelLeft" type="button" data-bs-toggle="modal" data-bs-target="#modalCancelLeft" class="btn btn-danger btn-square-md font-weight-bold fs-1 align-self-center my-0 px-4"> x </button></div>
+                <button type="button" class="btn mx-auto p-3 border fs-1 me-5" style="background-color:
+#f06969
+" onclick="plecat()">Am plecat din firma</button>
+                <div class="d-flex flex-row"><button id="inputModalCancelLeft" type="button" data-bs-toggle="modal" data-bs-target="#modalCancelLeft" class="btn btn-danger btn-square-md font-weight-bold fs-1 align-self-center my-0 px-4"><i class="fa-solid fa-xmark"></i></button></div>
             </div>
         </div>
 
@@ -149,7 +151,7 @@
         <div class="my-3 ms-5">
             <div class="d-flex flex-row">
                 <button type="button" class="btn mx-auto p-3 border fs-1 me-5" style="background-color: aqua" onclick="toogleView('comandDiv')">Am terminat o comamda</button>
-{#                <div class="d-flex flex-row"><button onclick="toogleView('comandDiv')" class="btn btn-danger btn-square-md font-weight-bold fs-1 align-self-center my-0"> x </button></div>#}
+{#                <div class="d-flex flex-row"><button onclick="toogleView('comandDiv')" class="btn btn-danger btn-square-md font-weight-bold fs-1 align-self-center my-0"><i class="fa-solid fa-xmark"></i></button></div>#}
             </div>
             <div class="d-none fs-2 pt-3" id="comandDiv">
                 <div class="row mb-3 fs-3">
@@ -159,6 +161,10 @@
                       <option value="Panou de gard">
                       <option value="Poarta">
                       <option value="Portita">
+                      <option value="Scara">
+                      <option value="Balustrada">
+                      <option value="Stalpi">
+                      <option value="Mana curenta">
                 </datalist>
                 </div>
                 <div class="row mb-3 fs-3">

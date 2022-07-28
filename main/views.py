@@ -22,7 +22,7 @@ from .viewmodels import *
 
 # region Login
 def login_user(request):
-    if (request.method == "POST"):
+    if request.method == "POST":
         username = request.POST['username']
         password = request.POST['password']
 
@@ -59,6 +59,7 @@ def login_user(request):
         return HttpResponseRedirect(request.path_info)
 
     else:
+        messages.success(request, ("Atentie! Acest site este dedicat strict angajatilor."))
         return render(request, 'login.html', {})
 
 
@@ -78,12 +79,14 @@ def come(request):
         now = utils.getTime()
         SEC_RECALC_AFTER = 60
         NR_RECALC_POZ = 3
+        DIST_ERROR = 10
         try:
             setare = models.OwnSettings.objects.all()[0]
             SEC_RECALC_AFTER = setare.secafterrecalc
             NR_RECALC_POZ = setare.nrrecalcpoz
+            DIST_ERROR = setare.disterror
         except:
-            print("Nu exista setari")
+            print('Nu exista setari!')
         try:
             data = models.Iesire.objects.get(user=request.user, datetime__day=now.day)
             messages.success(request, ("Nu puteti inregistra intrarea din moment ce iesirea este salvata!"))
@@ -100,7 +103,7 @@ def come(request):
                                           datetime=now, nrcalcloc=1, text=utils.secureStr(request.GET['obs']))
             messages.success(request, ("Succes!"))
             messages.success(request, (
-                f"Daca considerati ca locatia nu este precisa(erori de peste 10-20m), puteti sa folositi butonul relocare de maxim {NR_RECALC_POZ} ori.\nTimpul limita pentru o relocare este de un minut dupa ultima relocare."))
+                f"Daca considerati ca locatia nu este precisa(erori de peste {DIST_ERROR}m), puteti sa folositi butonul relocare de maxim {NR_RECALC_POZ} ori.\nTimpul limita pentru o relocare este de un minut dupa ultima relocare."))
     else:
         print("POST in come")
     return redirect('home')
@@ -157,10 +160,12 @@ def left(request):
     now = utils.getTime()
     SEC_RECALC_AFTER = 60
     NR_RECALC_POZ = 3
+    DIST_ERROR = 10
     try:
         setare = models.OwnSettings.objects.all()[0]
         SEC_RECALC_AFTER = setare.secafterrecalc
         NR_RECALC_POZ = setare.nrrecalcpoz
+        DIST_ERROR = setare.disterror
     except:
         print("Nu exista setari")
     if models.Intrare.objects.filter(user=request.user, datetime__day=now.day).__len__() <= 0:
@@ -176,7 +181,7 @@ def left(request):
                                      datetime=now, nrcalcloc=1, text=utils.secureStr(request.GET['obs']))
         messages.success(request, ("Succes!"))
         messages.success(request, (
-            f"Daca considerati ca locatia nu este precisa(erori de peste 10-20m), puteti sa folositi butonul relocare de maxim {NR_RECALC_POZ} ori.\nTimpul limita pentru o relocare este de un minut dupa ultima relocare."))
+            f"Daca considerati ca locatia nu este precisa(erori de peste {DIST_ERROR}m), puteti sa folositi butonul relocare de maxim {NR_RECALC_POZ} ori.\nTimpul limita pentru o relocare este de un minut dupa ultima relocare."))
     return redirect('home')
 
 
@@ -1023,6 +1028,8 @@ class Utilizatori(TemplateView):
 
 # endregion
 
+#region Setari
+
 @method_decorator(login_required, name='dispatch')
 class Setari(TemplateView):
     template_name = 'setari.html'
@@ -1225,3 +1232,5 @@ def stergeforma(request, fid):
     except:
         messages.success(request, ("Eroare!"))
     return redirect('setari')
+
+#endregion

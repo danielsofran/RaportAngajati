@@ -2,7 +2,7 @@
 
 {% block content %}
     <h1 class="fs-1 text-centered m-5">Login</h1>
-    <form class="m-5 me-auto " style="max-inline-size: 80%;max-width: 500px;" method="POST">
+    <form class="m-5 me-auto " style="max-inline-size: 80%; max-width: 500px;" method="POST">
         {% csrf_token %}
       <div class="mb-3">
         <label for="exampleInputEmail1" class="form-label">Nume de utilizator / Email / Numar de telefon</label>
@@ -13,6 +13,6 @@
         <label for="exampleInputPassword1" class="form-label">Parola</label>
         <input type="password" class="form-control me-5" id="exampleInputPassword1" name="password" required>
       </div>
-      <button type="submit" class="btn btn-primary">Log in</button>
+      <button type="submit" class="btn btn-primary fs-3">Login</button>
     </form>
 {% endblock %}
