@@ -167,12 +167,12 @@
             <p class="mt-3 mb-1">Observatie la intrare</p>
             <div class="form-floating fs-4 me-5">
 
-              <textarea class="form-control fs-4" placeholder="Scrieti observatia/motivarea aici" id="inputObsIn" style="height: 100px" name="obsin">{{ obsIn }}</textarea>
+              <textarea maxlength="200" class="form-control fs-4" placeholder="Scrieti observatia/motivarea aici" id="inputObsIn" style="height: 100px" name="obsin">{{ obsIn }}</textarea>
 {#              <label for="inputObsIn">Observatie la intrare</label>#}
             </div>
             <p class="mt-3 mb-1">Observatie la iesire</p>
             <div class="form-floating fs-4 me-5">
-              <textarea class="form-control fs-4" placeholder="Scrieti observatia/motivarea aici" id="inputObsOut" style="height: 100px" name="obsout">{{ obsOut }}</textarea>
+              <textarea maxlength="200" class="form-control fs-4" placeholder="Scrieti observatia/motivarea aici" id="inputObsOut" style="height: 100px" name="obsout">{{ obsOut }}</textarea>
 {#              <label for="inputObsOut">Observatie la plecare</label>#}
             </div>
             <div class="d-flex flex-row justify-content-around mt-2 fs-5">
@@ -253,7 +253,7 @@
                 </div>
             </div>
             <div class="form-floating fs-4 mt-3">
-              <textarea class="form-control fs-4" placeholder="Scrieti observatia/motivarea aici" id="comandObs" style="height: 100px"></textarea>
+              <textarea maxlength="200" class="form-control fs-4" placeholder="Scrieti observatia/motivarea aici" id="comandObs" style="height: 100px"></textarea>
               <label for="comandObs">Observatie</label>
               <div class="d-flex flex-row justify-content-around mt-1 fs-5">
                   <button onclick="toogleView('comandDiv')" class="btn btn-danger font-weight-bold fs-2 align-self-center my-0" > Anuleaza </button>

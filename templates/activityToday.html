@@ -121,7 +121,7 @@
         <div class="my-3 w-50">
             <p class="me-5 text-nowrap"> Observatie la intrare: </p>
             <div class="form-floating">
-              <textarea disabled class="form-control fs-4" id="floatingTextarea2" style="height: 100px">{{ obsIn|safe }}</textarea>
+              <textarea maxlength="200" disabled class="form-control fs-4" id="floatingTextarea2" style="height: 100px">{{ obsIn|safe }}</textarea>
             </div>
         </div>
     {% endif %}
@@ -129,7 +129,7 @@
         <div class="my-3 w-50">
             <p class="me-5 text-nowrap"> Observatie la iesire: </p>
             <div class="form-floating">
-              <textarea disabled class="form-control fs-4" id="floatingTextarea2" style="height: 100px">{{ obsOut|safe }}</textarea>
+              <textarea maxlength="200" disabled class="form-control fs-4" id="floatingTextarea2" style="height: 100px">{{ obsOut|safe }}</textarea>
             </div>
         </div>
     {% endif %}
@@ -191,7 +191,7 @@
                 </div>
             </div>
             <div class="form-floating fs-4 mt-3">
-              <textarea class="form-control fs-4" placeholder="Scrieti observatia/motivarea aici" id="comandObs" style="height: 100px"></textarea>
+              <textarea maxlength="200" class="form-control fs-4" placeholder="Scrieti observatia/motivarea aici" id="comandObs" style="height: 100px"></textarea>
               <label for="comandObs">Observatie</label>
               <div class="d-flex flex-row justify-content-around mt-1 fs-5">
                   <button type="reset" onclick="toogleView('comandDiv')" class="btn btn-danger font-weight-bold fs-2 align-self-center my-0" > Anuleaza </button>
