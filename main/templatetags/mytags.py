@@ -78,3 +78,7 @@ def name_of_day(datetime: datetime.datetime) -> str:
 @register.filter(name='strloc')
 def strloc(info: models.Info) -> str:
     return utils.locStr(info)
+
+@register.filter(name='strobs')
+def strloc(obs: str) -> str:
+    return obs.replace("; ", "\n")

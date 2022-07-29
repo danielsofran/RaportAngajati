@@ -2,17 +2,39 @@
 
 {% block content %}
     <h1 class="fs-1 text-centered m-5">Login</h1>
-    <form class="m-5 me-auto " style="max-inline-size: 80%; max-width: 500px;" method="POST">
+    <form class="m-5 me-auto fs-2" style="max-inline-size: 80%; max-width: 700px;" method="POST">
         {% csrf_token %}
       <div class="mb-3">
-        <label for="exampleInputEmail1" class="form-label">Nume de utilizator / Email / Numar de telefon</label>
-        <input type="text" class="form-control me-5" id="exampleInputEmail1" aria-describedby="userHelp" name="username" required>
-        <div id="userHelp" class="form-text"> Introduceti numele de utilizator sau email ul</div>
+        <label for="exampleInputEmail1" class="form-label fs-2">Nume de utilizator</label>
+        <input type="text" class="form-control me-5 fs-3" id="exampleInputEmail1" aria-describedby="userHelp" name="username" required>
+        <div id="userHelp" class="form-text fs-5"> Introduceti numele de utilizator, numele, email-ul sau telefonul contului dvs</div>
       </div>
       <div class="mb-3">
-        <label for="exampleInputPassword1" class="form-label">Parola</label>
-        <input type="password" class="form-control me-5" id="exampleInputPassword1" name="password" required>
+        <label for="inputPwd" class="form-label fs-2">Parola</label>
+        <!--<input type="password" class="form-control me-5 fs-3" id="exampleInputPassword1" name="password" required>-->
+        <div class="d-flex flex-row">
+          <input autocomplete="on" type="password" id='inputPwd' class="form-control fs-3 me-5" name="password" required>
+          <button type="button" onclick="toogleViewPwd()" class="fs-3 border-0" style="background-color: transparent" id="btnPwd"> <i class="fa-solid fa-eye"></i> </button>
+        </div>
       </div>
-      <button type="submit" class="btn btn-primary fs-3">Login</button>
+      <button type="submit" class="btn btn-primary fs-2">Login</button>
     </form>
+{% endblock %}
+
+{% block scripts %}
+<script>
+
+function toogleViewPwd(){
+    var x = document.getElementById("inputPwd");
+    var btn = document.getElementById("btnPwd");
+    if (x.type === "password") {
+      x.type = "text";
+      btn.innerHTML = "<i class='fa-solid fa-eye-slash'></i>";
+    } else {
+      x.type = "password";
+      btn.innerHTML = "<i class='fa-solid fa-eye'></i>";
+    }
+}
+
+</script>
 {% endblock %}

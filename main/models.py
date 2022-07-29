@@ -1,12 +1,14 @@
-import datetime, pytz
-from . import geometry
+import datetime
+import pytz
 
-# Create your models here.
-
-from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.db import models
 
 from siteReport import settings
+from . import geometry
+
+
+# Create your models here.
 
 class Forma(models.Model):
     nume = models.CharField(blank=True, default="corp", max_length=30)

@@ -1,10 +1,9 @@
-import decimal
-import math
 from abc import ABC, abstractmethod
+from math import sqrt
 
 import numpy
 from numpy import dot, array
-from math import sqrt
+
 
 class Shape(ABC):
     @abstractmethod

@@ -103,9 +103,9 @@
     {# BUTOANE #}
     <div class="d-inline-flex flex-column text-center overflow-hidden align-start pe-5">
         <div class="my-3 ms-5">
-            <div class="d-flex flex-row justify-content-start">
-                <button type="button" class="btn mx-auto p-3 border fs-1 pe-5" style="background-color: aquamarine" onclick="ajuns()">Am ajuns la firma</button>
-                <div class="d-flex flex-row"><button id="inputModalCancelCome" type="button" data-bs-toggle="modal" data-bs-target="#modalCancelCome" class="btn btn-danger btn-square-md font-weight-bold fs-1 align-self-center my-0 px-4" ><i class="fa-solid fa-xmark"></i></button></div>
+            <div class="d-flex flex-row justify-content-between">
+                <button type="button" class="btn p-3 border fs-1 pe-5" style="background-color: aquamarine" onclick="ajuns()">Am ajuns </button>
+                <button id="inputModalCancelCome" type="button" data-bs-toggle="modal" data-bs-target="#modalCancelCome" class="btn btn-danger btn-square-md font-weight-bold fs-1 align-self-center my-0 px-4 py-3 me-5" >Anuleaza <i class="fa-solid fa-xmark"></i></button>
             </div>
         </div>
 
@@ -116,8 +116,8 @@
             <div class="d-none form-floating fs-4 mt-3" id="comeObsDiv">
               <textarea maxlength="200" class="form-control fs-4" placeholder="Scrieti observatia/motivarea aici" id="comeObs" style="height: 100px" required></textarea>
               <label for="comeObs">Observatie</label>
-              <div class="d-flex flex-row justify-content-end mt-1 fs-5">
-                  <button onclick="ajuns('cutext')" class="btn btn-primary font-weight-bold fs-3 align-self-center my-0 me-3">Trimite si confirma venirea</button>
+              <div class="d-flex flex-row justify-content-around mt-1 fs-5">
+                  <button onclick="ajuns('cutext')" class="btn btn-primary font-weight-bold fs-3 align-self-center my-0 me-3">Trimite</button>
                   <button onclick="toogleView('comeObsDiv')" class="btn btn-danger btn-square-md font-weight-bold fs-2 align-self-center my-0" > Anuleaza </button>
               </div>
 
@@ -125,11 +125,11 @@
         </div>
 
         <div class="my-3 ms-5">
-            <div class="d-flex flex-row">
-                <button type="button" class="btn mx-auto p-3 border fs-1 me-5" style="background-color:
+            <div class="d-flex flex-row justify-content-between">
+                <button type="button" class="btn p-3 border fs-1" style="background-color:
 #f06969
-" onclick="plecat()">Am plecat din firma</button>
-                <div class="d-flex flex-row"><button id="inputModalCancelLeft" type="button" data-bs-toggle="modal" data-bs-target="#modalCancelLeft" class="btn btn-danger btn-square-md font-weight-bold fs-1 align-self-center my-0 px-4"><i class="fa-solid fa-xmark"></i></button></div>
+" onclick="plecat()">Am plecat</button>
+                <button id="inputModalCancelLeft" type="button" data-bs-toggle="modal" data-bs-target="#modalCancelLeft" class="btn btn-danger btn-square-md font-weight-bold fs-1 align-self-center px-4 py-3 me-5">Anuleaza <i class="fa-solid fa-xmark"></i></button>
             </div>
         </div>
 
@@ -140,8 +140,8 @@
             <div class="d-none form-floating fs-4 mt-3" id="leftObsDiv">
               <textarea maxlength="200" class="form-control fs-4" placeholder="Scrieti observatia/motivarea aici" id="leftObs" style="height: 100px" required></textarea>
               <label for="leftObs">Observatie</label>
-              <div class="d-flex flex-row justify-content-end mt-1 fs-5">
-                  <button onclick="plecat('cutext')" class="btn btn-primary font-weight-bold fs-3 align-self-center my-0 me-3">Trimite si confirma venirea</button>
+              <div class="d-flex flex-row justify-content-around mt-1 fs-5">
+                  <button onclick="plecat('cutext')" class="btn btn-primary font-weight-bold fs-3 align-self-center my-0 me-3">Trimite</button>
                   <button onclick="toogleView('leftObsDiv')" class="btn btn-danger btn-square-md font-weight-bold fs-2 align-self-center my-0" > Anuleaza </button>
               </div>
 
@@ -176,14 +176,17 @@
                 <div class="form-floating fs-4 mt-3">
                   <textarea maxlength="200" class="form-control fs-4" placeholder="Scrieti observatia/motivarea aici" id="comandObs" style="height: 100px"></textarea>
                   <label for="comandObs">Observatie</label>
-                  <div class="d-flex flex-row justify-content-start mt-1 fs-5">
-                      <button onclick="comanda()" class="btn btn-primary font-weight-bold fs-3 align-self-center my-0 me-3">Trimite si confirma venirea</button>
+                  <div class="d-flex flex-row justify-content-around mt-1 fs-5">
+                      <button onclick="comanda()" class="btn btn-primary font-weight-bold fs-3 align-self-center my-0 me-3">Trimite</button>
                       <button onclick="toogleView('comandDiv')" class="btn btn-danger btn-square-md font-weight-bold fs-2 align-self-center my-0" > Anuleaza </button>
                   </div>
                 </div>
             </div>
         </div>
 
+        <div class="my-3 ms-5 ms-auto">
+            <a class="btn btn-primary fs-1 mx-auto me-5 p-3 border" href="{% url 'actToday' %}">Vezi activitatea de astazi</a>
+        </div>
     </div>
     </div>
 {% endblock %}
@@ -191,16 +194,18 @@
 {% block scripts %}
 <script>
 
-idsmodals = ['modalCancelCome', 'modalCancelLeft']
-idsinputs = ['inputModalCancelCome', 'inputModalCancelLeft']
+window.addEventListener('load', ()=>{
+    idsmodals = ['modalCancelCome', 'modalCancelLeft']
+    idsinputs = ['inputModalCancelCome', 'inputModalCancelLeft']
 
-for(let i=0;i<idsmodals.length;++i) {
-    myModal = document.getElementById(idsmodals[i])
-    myInput = document.getElementById(idsinputs[i])
-    myModal.addEventListener('shown.bs.modal', function () {
-        myInput.focus()
-    })
-}
+    for(let i=0;i<idsmodals.length;++i) {
+        myModal = document.getElementById(idsmodals[i])
+        myInput = document.getElementById(idsinputs[i])
+        myModal.addEventListener('shown.bs.modal', function () {
+            myInput.focus()
+        })
+    }
+}, false)
 
 function toogleView(domname){
     elem = document.getElementById(domname);
@@ -291,6 +296,17 @@ function processposition(url, text=""){
         adress = url + `?lat=${position.coords.latitude}&long=${position.coords.longitude}&obs=${text}`;
         window.location.href = adress;
     });
+    //getLocation((position1) => {
+    //    getLocation((position2) => {
+    //        getLocation((position3) => {
+    //            position3.coords.latitude = (position1.coords.latitude + position2.coords.latitude + position3.coords.latitude) / 3.0;
+    //            position3.coords.longitude = (position1.coords.longitude + position2.coords.longitude + position3.coords.longitude) / 3.0;
+    //            text = text.replace(/\n\r?/g, '; ');
+    //            adress = url + `?lat=${position3.coords.latitude}&long=${position3.coords.longitude}&obs=${text}`;
+    //            window.location.href = adress;
+    //        });
+    //    });
+    //});
 }
 
 function comanda(){

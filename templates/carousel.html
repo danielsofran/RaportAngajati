@@ -1,0 +1,24 @@
+<div id="carouselExampleCaptions{{ carousel.ownid }}" class="carousel carousel-dark slide" data-bs-ride="carousel">
+  <div class="carousel-inner">
+    {% for item in carousel.items %}
+    <div class="carousel-item {% if item.index == 0 %}active{% endif %}">
+      <img src="{{ item.src }}" class="{{ item.classes }}" alt="{{ item.alt }}">
+      <div class="carousel-caption d-none d-md-block">
+        {{ item.html|safe }}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions{{ carousel.ownid }}" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Anterior</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions{{ carousel.ownid }}" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Urmator</span>
+  </button>
+</div>
+
+<script type="text/javascript">
+    //document.querySelector(".carousel > .carousel-inner > .carousel-item").classList.add("active")
+</script>

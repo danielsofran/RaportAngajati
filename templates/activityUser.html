@@ -265,47 +265,47 @@
 </div>
 {% endblock %}
 
-{#{% if %}#}
-
 {% block scripts %}
 <script type="text/javascript">
 
-document.getElementById('btnSaveEdit').addEventListener("click", function(){
-    document.forms['myform'].submit()
-})
+window.addEventListener('load', ()=>{
+    document.getElementById('btnSaveEdit').addEventListener("click", function(){
+        document.forms['myform'].submit()
+    })
 
-document.getElementById('modalCancelComand').addEventListener('show.bs.modal', function (event) {
-  var button = event.relatedTarget
-  var recipient = button.getAttribute('data-bs-nr')
-  var butonContinua = document.getElementById('btnCancelComand')
-  butonContinua.onclick = () => {window.location.href = "{% url 'comanda_cancel'%}?nr="+recipient};
-})
+    document.getElementById('modalCancelComand').addEventListener('show.bs.modal', function (event) {
+      var button = event.relatedTarget
+      var recipient = button.getAttribute('data-bs-nr')
+      var butonContinua = document.getElementById('btnCancelComand')
+      butonContinua.onclick = () => {window.location.href = "{% url 'comanda_cancel'%}?nr="+recipient};
+    })
 
-document.getElementById('modalEditComand').addEventListener('show.bs.modal', function (event) {
-  // Button that triggered the modal
-  var button = event.relatedTarget
-  var butonSave = document.getElementById('btnEditComand')
+    document.getElementById('modalEditComand').addEventListener('show.bs.modal', function (event) {
+      // Button that triggered the modal
+      var button = event.relatedTarget
+      var butonSave = document.getElementById('btnEditComand')
 
-  let den = document.getElementById("comandaDen").value.trim()
-  let nr = document.getElementById("inputNrComanda").value.trim()
-  let obs = document.getElementById("comandObs").value
-  let datetime = document.getElementById("inputMom").value
-  let coordElem = document.getElementById("inputLoc")
-  if(!coordElem.value.toString().includes(",")) {
-      alert("Locatie invalida!")
-  }
-  let strcoord = coordElem.value.split(',')
-  let coord = strcoord[0].trim() + "," + strcoord[1].trim()
+      let den = document.getElementById("comandaDen").value.trim()
+      let nr = document.getElementById("inputNrComanda").value.trim()
+      let obs = document.getElementById("comandObs").value
+      let datetime = document.getElementById("inputMom").value
+      let coordElem = document.getElementById("inputLoc")
+      if(!coordElem.value.toString().includes(",")) {
+          alert("Locatie invalida!")
+      }
+      let strcoord = coordElem.value.split(',')
+      let coord = strcoord[0].trim() + "," + strcoord[1].trim()
 
-  var recipient = button.getAttribute('data-bs-oldnr')
-  if(recipient !== ""){
-      butonSave.onclick = () => {window.location.href = `{% url 'comanda_edit' %}?oldnr=${recipient}&nr=${nr}&den=${den}&obs=${obs}&datetime=${datetime}&loc=${coord}`};
-  } else {
-      let user = "{{ ownuser.username }}"
-      //alert(user)
-      butonSave.onclick = () => {window.location.href = `{% url 'comanda_edit' %}?user=${user}&nr=${nr}&den=${den}&obs=${obs}&datetime=${datetime}&loc=${coord}`};
-  }
-})
+      var recipient = button.getAttribute('data-bs-oldnr')
+      if(recipient !== ""){
+          butonSave.onclick = () => {window.location.href = `{% url 'comanda_edit' %}?oldnr=${recipient}&nr=${nr}&den=${den}&obs=${obs}&datetime=${datetime}&loc=${coord}`};
+      } else {
+          let user = "{{ ownuser.username }}"
+          //alert(user)
+          butonSave.onclick = () => {window.location.href = `{% url 'comanda_edit' %}?user=${user}&nr=${nr}&den=${den}&obs=${obs}&datetime=${datetime}&loc=${coord}`};
+      }
+    })
+}, false)
 
 function toogleView(domname){
     elem = document.getElementById(domname);
@@ -382,9 +382,21 @@ function getLocation(callback){
 
 function processposition(url, text=""){
     getLocation((position) => {
+        text = text.replace(/\n\r?/g, '; ');
         adress = url + `?lat=${position.coords.latitude}&long=${position.coords.longitude}&obs=${text}`;
         window.location.href = adress;
     });
+    //getLocation((position1) => {
+    //    getLocation((position2) => {
+    //        getLocation((position3) => {
+    //            position3.coords.latitude = (position1.coords.latitude + position2.coords.latitude + position3.coords.latitude) / 3.0;
+    //            position3.coords.longitude = (position1.coords.longitude + position2.coords.longitude + position3.coords.longitude) / 3.0;
+    //            text = text.replace(/\n\r?/g, '; ');
+    //            adress = url + `?lat=${position3.coords.latitude}&long=${position3.coords.longitude}&obs=${text}`;
+    //            window.location.href = adress;
+    //        });
+    //    });
+    //});
 }
 
 function showEdit(den, nr, text, coords, datetime){

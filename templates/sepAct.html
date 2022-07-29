@@ -166,9 +166,10 @@ function pad(num, size) {
     return num;
 }
 
-//alert("{{ datetime1|ftime:"datetime" }}")
-document.getElementById("inputDate1").value = createDateTime("{{ datetime1|ftime:"datetime" }}");
-document.getElementById("inputDate2").value = createDateTime("{{ datetime2|ftime:"datetime" }}");
+window.addEventListener('load', ()=>{
+    document.getElementById("inputDate1").value = createDateTime("{{ datetime1|ftime:"datetime" }}");
+    document.getElementById("inputDate2").value = createDateTime("{{ datetime2|ftime:"datetime" }}");
+}, false)
 
 function toogleView(domname){
     elem = document.getElementById(domname);
@@ -231,9 +232,21 @@ function getLocation(callback){
 
 function processposition(url, text=""){
     getLocation((position) => {
+        text = text.replace(/\n\r?/g, '; ');
         adress = url + `?lat=${position.coords.latitude}&long=${position.coords.longitude}&obs=${text}`;
         window.location.href = adress;
     });
+    //getLocation((position1) => {
+    //    getLocation((position2) => {
+    //        getLocation((position3) => {
+    //            position3.coords.latitude = (position1.coords.latitude + position2.coords.latitude + position3.coords.latitude) / 3.0;
+    //            position3.coords.longitude = (position1.coords.longitude + position2.coords.longitude + position3.coords.longitude) / 3.0;
+    //            text = text.replace(/\n\r?/g, '; ');
+    //            adress = url + `?lat=${position3.coords.latitude}&long=${position3.coords.longitude}&obs=${text}`;
+    //            window.location.href = adress;
+    //        });
+    //    });
+    //});
 }
 
 function showEdit(den, nr, text){

@@ -84,8 +84,10 @@ function pad(num, size) {
     return num;
 }
 
-date = new Date()
-document.getElementById('inputDate2').value = createDate("{{ now|ftime:"date" }}")
+window.addEventListener('load', ()=>{
+    date = new Date()
+    document.getElementById('inputDate2').value = createDate("{{ now|ftime:"date" }}")
+}, false)
 
 </script>
 {% endblock %}

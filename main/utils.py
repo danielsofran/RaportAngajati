@@ -1,15 +1,16 @@
 import datetime
 import math
 
-from django import utils
-import pytz
 import haversine as hs
-from haversine import Unit
-from django.utils.timezone import activate, localtime
+import pytz
+from django import utils
 from django.contrib import messages
+from django.utils.timezone import activate
+from haversine import Unit
 
-from . import models
 from siteReport import settings
+from . import models
+
 
 def getTime(info = None):
     now = None

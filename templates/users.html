@@ -70,13 +70,17 @@
 
 {% block scripts %}
 <script type="text/javascript">
-ch1 = document.getElementById("ch1")
-ch2 = document.getElementById("ch2")
-ch3 = document.getElementById("ch3")
-{% if not isnothing %}
-{% if ch1 == False %} ch1.removeAttribute('checked') {% endif %}
-{% if ch2 == False %} ch2.removeAttribute('checked') {% endif %}
-{% if ch3 == False %} ch3.removeAttribute('checked') {% endif %}
-{% endif %}
+
+window.addEventListener('load', ()=>{
+    ch1 = document.getElementById("ch1")
+    ch2 = document.getElementById("ch2")
+    ch3 = document.getElementById("ch3")
+    {% if not isnothing %}
+    {% if ch1 == False %} ch1.removeAttribute('checked') {% endif %}
+    {% if ch2 == False %} ch2.removeAttribute('checked') {% endif %}
+    {% if ch3 == False %} ch3.removeAttribute('checked') {% endif %}
+    {% endif %}
+}, false)
+
 </script>
 {% endblock %}

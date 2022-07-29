@@ -121,7 +121,7 @@
         <div class="my-3 w-50">
             <p class="me-5 text-nowrap"> Observatie la intrare: </p>
             <div class="form-floating">
-              <textarea maxlength="200" disabled class="form-control fs-4" id="floatingTextarea2" style="height: 100px">{{ obsIn|safe }}</textarea>
+              <textarea maxlength="200" disabled class="form-control fs-4" id="floatingTextarea2" style="height: 100px">{{ obsIn|strobs }}</textarea>
             </div>
         </div>
     {% endif %}
@@ -129,7 +129,7 @@
         <div class="my-3 w-50">
             <p class="me-5 text-nowrap"> Observatie la iesire: </p>
             <div class="form-floating">
-              <textarea maxlength="200" disabled class="form-control fs-4" id="floatingTextarea2" style="height: 100px">{{ obsOut|safe }}</textarea>
+              <textarea maxlength="200" disabled class="form-control fs-4" id="floatingTextarea2" style="height: 100px">{{ obsOut|strobs }}</textarea>
             </div>
         </div>
     {% endif %}
@@ -294,31 +294,33 @@
 {% block scripts %}
 <script>
 
-var modalCancelComand = document.getElementById('modalCancelComand')
-modalCancelComand.addEventListener('show.bs.modal', function (event) {
-  var button = event.relatedTarget
-  var recipient = button.getAttribute('data-bs-nr')
-  var butonContinua = document.getElementById('btnCancelComand')
-  butonContinua.onclick = () => {window.location.href = "{% url 'comanda_cancel' %}?nr="+recipient};
-})
+window.addEventListener('load', () =>{
+    var modalCancelComand = document.getElementById('modalCancelComand')
+    modalCancelComand.addEventListener('show.bs.modal', function (event) {
+      var button = event.relatedTarget
+      var recipient = button.getAttribute('data-bs-nr')
+      var butonContinua = document.getElementById('btnCancelComand')
+      butonContinua.onclick = () => {window.location.href = "{% url 'comanda_cancel' %}?nr="+recipient};
+    })
 
-var modalEditComand = document.getElementById('modalEditComand')
-modalEditComand.addEventListener('show.bs.modal', function (event) {
-  // Button that triggered the modal
-  var button = event.relatedTarget
-  // Extract info from data-bs-* attributes
-  var recipient = button.getAttribute('data-bs-oldnr')
-  // If necessary, you could initiate an AJAX request here
-  // and then do the updating in a callback.
-  //
-  // Update the modal's content.
-  var butonSave = document.getElementById('btnEditComand')
-  den = document.getElementById("comandaDen").value
-  nr = document.getElementById("inputNrComanda").value
-  obs = document.getElementById("comandObs").value
+    var modalEditComand = document.getElementById('modalEditComand')
+    modalEditComand.addEventListener('show.bs.modal', function (event) {
+      // Button that triggered the modal
+      var button = event.relatedTarget
+      // Extract info from data-bs-* attributes
+      var recipient = button.getAttribute('data-bs-oldnr')
+      // If necessary, you could initiate an AJAX request here
+      // and then do the updating in a callback.
+      //
+      // Update the modal's content.
+      var butonSave = document.getElementById('btnEditComand')
+      den = document.getElementById("comandaDen").value
+      nr = document.getElementById("inputNrComanda").value
+      obs = document.getElementById("comandObs").value
 
-  butonSave.onclick = () => {window.location.href = `{% url 'comanda_edit' %}?oldnr=${recipient}&nr=${nr}&den=${den}&obs=${obs}`};
-})
+      butonSave.onclick = () => {window.location.href = `{% url 'comanda_edit' %}?oldnr=${recipient}&nr=${nr}&den=${den}&obs=${obs}`};
+    })
+}, false)
 
 function toogleView(domname){
     elem = document.getElementById(domname);
@@ -381,9 +383,21 @@ function getLocation(callback){
 
 function processposition(url, text=""){
     getLocation((position) => {
+        text = text.replace(/\n\r?/g, '; ');
         adress = url + `?lat=${position.coords.latitude}&long=${position.coords.longitude}&obs=${text}`;
         window.location.href = adress;
     });
+    //getLocation((position1) => {
+    //    getLocation((position2) => {
+    //        getLocation((position3) => {
+    //            position3.coords.latitude = (position1.coords.latitude + position2.coords.latitude + position3.coords.latitude) / 3.0;
+    //            position3.coords.longitude = (position1.coords.longitude + position2.coords.longitude + position3.coords.longitude) / 3.0;
+    //            text = text.replace(/\n\r?/g, '; ');
+    //            adress = url + `?lat=${position3.coords.latitude}&long=${position3.coords.longitude}&obs=${text}`;
+    //            window.location.href = adress;
+    //        });
+    //    });
+    //});
 }
 
 function showEdit(den, nr, text){

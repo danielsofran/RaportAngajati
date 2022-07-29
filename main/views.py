@@ -1,20 +1,15 @@
-import datetime
-
 import pytz
-from django.contrib.auth.models import Group
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib import messages
-from django.http import HttpResponseRedirect, QueryDict
+from django.contrib.auth import login, logout, get_user_model
 from django.contrib.auth.decorators import user_passes_test, login_required
+from django.contrib.auth.models import Group
+from django.http import HttpResponseRedirect
+from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
-from django.views.generic import View, TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import TemplateView
 
-import main.templatetags.mytags
-from . import models
-from . import utils
-from .utils import MyException
 from siteReport import settings
+from .utils import MyException
 from .viewmodels import *
 
 
@@ -29,7 +24,7 @@ def login_user(request):
         user = None
 
         try:
-            user = get_user_model().objects.get(username=username, password=password)
+            user = models.User.objects.get(username=username, password=password)
         except:
             pass
 
@@ -38,7 +33,7 @@ def login_user(request):
             return redirect('home')
 
         try:
-            user = get_user_model().objects.get(email=username, password=password)
+            user = models.User.objects.get(nume=username, password=password)
         except:
             pass
 
@@ -47,7 +42,16 @@ def login_user(request):
             return redirect('home')
 
         try:
-            user = get_user_model().objects.get(telefon=username, password=password)
+            user = models.User.objects.get(email=username, password=password)
+        except:
+            pass
+
+        if user is not None:
+            login(request, user)
+            return redirect('home')
+
+        try:
+            user = models.User.objects.get(telefon=username, password=password)
         except:
             pass
 
@@ -57,6 +61,9 @@ def login_user(request):
 
         messages.success(request, ("Date de autentificare invalide!"))
         return HttpResponseRedirect(request.path_info)
+
+    elif request.user.is_authenticated:
+        return redirect('home')
 
     else:
         messages.success(request, ("Atentie! Acest site este dedicat strict angajatilor."))
@@ -102,8 +109,7 @@ def come(request):
             models.Intrare.objects.create(user=request.user, latitude=request.GET['lat'], longitude=request.GET['long'],
                                           datetime=now, nrcalcloc=1, text=utils.secureStr(request.GET['obs']))
             messages.success(request, ("Succes!"))
-            messages.success(request, (
-                f"Daca considerati ca locatia nu este precisa(erori de peste {DIST_ERROR}m), puteti sa folositi butonul relocare de maxim {NR_RECALC_POZ} ori.\nTimpul limita pentru o relocare este de un minut dupa ultima relocare."))
+            #messages.success(request, (f"Daca considerati ca locatia nu este precisa(erori de peste {DIST_ERROR}m), puteti sa folositi butonul relocare de maxim {NR_RECALC_POZ} ori.\nTimpul limita pentru o relocare este de un minut dupa ultima relocare."))
     else:
         print("POST in come")
     return redirect('home')
@@ -180,8 +186,7 @@ def left(request):
         models.Iesire.objects.create(user=request.user, latitude=request.GET['lat'], longitude=request.GET['long'],
                                      datetime=now, nrcalcloc=1, text=utils.secureStr(request.GET['obs']))
         messages.success(request, ("Succes!"))
-        messages.success(request, (
-            f"Daca considerati ca locatia nu este precisa(erori de peste {DIST_ERROR}m), puteti sa folositi butonul relocare de maxim {NR_RECALC_POZ} ori.\nTimpul limita pentru o relocare este de un minut dupa ultima relocare."))
+        #messages.success(request, (f"Daca considerati ca locatia nu este precisa(erori de peste {DIST_ERROR}m), puteti sa folositi butonul relocare de maxim {NR_RECALC_POZ} ori.\nTimpul limita pentru o relocare este de un minut dupa ultima relocare."))
     return redirect('home')
 
 
@@ -242,6 +247,9 @@ def recalc_left(request):
 
 def comandaFinish(request):
     if request.method == "GET":
+        if 'nrcom' not in request.GET or len(request.GET['nrcom']):
+            messages.success(request, ("Numar comanda invalid!"))
+            return redirect('home')
         now = utils.getTime()
         try:
             models.Intrare.objects.get(user=request.user, datetime__day=now.day, datetime__lte=now)
@@ -252,18 +260,17 @@ def comandaFinish(request):
             models.Iesire.objects.get(user=request.user, datetime__day=now.day)
             messages.success(request, ("Nu puteti termina o comanda daca ati inregistrat iesirea!"))
             return redirect('home')
-        except:
-            pass
+        except: pass
         try:
             models.Comanda.objects.get(numar_comanda=request.GET['nrcom'])
             messages.success(request, ("Aceasta comanda exista deja!"))
             return redirect('home')
-        except:
-            models.Comanda.objects.create(user=request.user, latitude=request.GET['lat'],
-                                          longitude=request.GET['long'], datetime=now,
-                                          nrcalcloc=1, text=utils.secureStr(request.GET['obs']),
-                                          numar_comanda=request.GET['nrcom'], denumire=request.GET['den'])
-            messages.success(request, ("Succes! Finalizarea a fost inregistrata!"))
+        except: pass
+        models.Comanda.objects.create(user=request.user, latitude=request.GET['lat'],
+                                      longitude=request.GET['long'], datetime=now,
+                                      nrcalcloc=1, text=utils.secureStr(request.GET['obs']),
+                                      numar_comanda=request.GET['nrcom'], denumire=request.GET['den'])
+        messages.success(request, ("Succes! Finalizarea a fost inregistrata!"))
     else:
         raise ValueError("POST in comand finish")
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
@@ -357,6 +364,9 @@ def comandaCancel(request):
 @method_decorator(login_required, name='dispatch')
 class HomeView(TemplateView):
     template_name = 'home.html'
+
+def home(request):
+    return render(request, 'home.html', {})
 
 
 # endregion
@@ -923,7 +933,7 @@ def adduser(request):
             return redirect('adduser')
         except:
             pass
-        models.User.objects.create(username=username, nume=nume, email=email, telefon=tel, password=pwd, role=role)
+        models.User.objects.create(username=username, nume=nume, email=email, telefon=tel, password=pwd, role=role, is_active=True)
         messages.success(request, ("Contul a fost creeat cu succes!"))
         return redirect('detaliiuser', username=username)
     return render(request, 'adduser.html', {})
@@ -1232,5 +1242,21 @@ def stergeforma(request, fid):
     except:
         messages.success(request, ("Eroare!"))
     return redirect('setari')
+
+#endregion
+
+#region About
+
+def about(request):
+    context = {}
+    setare=models.OwnSettings.objects.all()[0]
+    carousellogin = Carousel()
+    carousellogin.addItem("https://i.ibb.co/3k3RYQZ/login.png")
+    carousellogin.addItem("https://i.ibb.co/WvjBx2D/loginnume.png")
+    carousellogin.addItem("https://i.ibb.co/fXyKMNr/loginemail.png")
+    carousellogin.addItem("https://i.ibb.co/xGKyp3R/logintel.png")
+    carousellogin.addItem("https://i.ibb.co/sH8nbXT/loginusername.png")
+    context.update(carousellogin=carousellogin, setare=setare)
+    return render(request, 'about.html', context)
 
 #endregion

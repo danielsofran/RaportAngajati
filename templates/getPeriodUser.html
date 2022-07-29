@@ -80,7 +80,9 @@ function pad(num, size) {
 }
 
 {% load mytags %}
-document.getElementById('inputDate').value = createDate("{{ now|ftime:"date" }}")
+window.addEventListener('load', ()=>{
+    document.getElementById('inputDate').value = createDate("{{ now|ftime:"date" }}")
+}, false)
 
 </script>
 {% endblock %}

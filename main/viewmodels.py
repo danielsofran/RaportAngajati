@@ -49,7 +49,7 @@ class RowDataActivity:
 
     @property
     def __isLocationWarning(self) -> bool:
-        infos = [self.intrare, self.iesire]
+        infos = [self.intrare]
         for info in infos:
             if info is not None and utils.locStr(info) != "In firma":
                 return True
@@ -89,4 +89,22 @@ class RowDataActivity:
                self.user.nume == other.user.nume and self.datetime < other.datetime
 
 
+class Carousel:
+    maxid = 1
+
+    class Item:
+        def __init__(self, src, html="", classes="d-block w-100", alt="", index=0):
+            self.index = index
+            self.src = src
+            self.html = html
+            self.classes = classes
+            self.alt = alt
+
+    def __init__(self):
+        self.ownid = Carousel.maxid
+        Carousel.maxid += 1
+        self.items = []
+
+    def addItem(self, src, html="", classes="d-block w-100", alt=""):
+        self.items.append(self.Item(src, html, classes, alt, len(self.items)))
 
