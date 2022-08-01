@@ -32,6 +32,24 @@
         </div>
       </div>
     </div>
+<div class="modal fade" id="modalSaveEdit" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel8" aria-hidden="true">
+      <div class="modal-dialog me-auto">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title fs-2" id="staticBackdropLabel8">Atentie!</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body fs-4">
+            Sigur doriti sa salvati modificarile?<br>
+            Nu puteti anula aceasta actiune.
+          </div>
+          <div class="modal-footer justify-content-around">
+            <button type="button" class="btn btn-danger fs-3" data-bs-dismiss="modal">Anuleaza</button>
+            <button type="button" class="btn btn-success fs-3" id="btnSaveEdit">Salveaza</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
 <div class="container-fluid m-5 fs-1 w-auto">
     <h1 class="my-5" style="font-size: 200%">Detalii cont</h1>
@@ -66,7 +84,7 @@
         {% if userdata != request.user and request.user|role_at_least:"Manager" %}<button data-bs-toggle="modal" data-bs-target="#modalDelete" class="btn btn-danger fs-1 me-5"> Sterge cont </button>{% endif %}
     </div>
     <div id="divDetalii" class="d-none mt-5 fs-2 w-50">
-        <form method="POST">
+        <form method="POST" name="myform">
             {% csrf_token %}
             <div class="mb-3 row">
               <label for="inUsername" class="col-sm-2 col-form-label pe-3">User</label>
@@ -117,7 +135,7 @@
             <div class="mb-3 row">
                 <div class="d-flex flex-row justify-content-around">
                     <button type="reset" onclick="toogleViewModif()" class="btn btn-danger fs-3" >Anuleaza</button>
-                    <button type="submit" class="btn btn-success fs-3" >Salveaza</button>
+                    <button type="button" class="btn btn-success fs-3" data-bs-toggle="modal" data-bs-target="#modalSaveEdit" >Salveaza</button>
                 </div>
             </div>
         </form>
@@ -128,6 +146,12 @@
 
 {% block scripts %}
 <script>
+
+window.addEventListener('load', ()=> {
+    document.getElementById('btnSaveEdit').addEventListener("click", function () {
+        document.forms['myform'].submit()
+    })
+})
 
 function toogleView(domname){
     elem = document.getElementById(domname);

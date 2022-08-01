@@ -61,7 +61,7 @@
             <div class="d-flex flex-row">
                 <label for="inputSetareReloc" class="form-label col-form-label text-nowrap me-5">Numarul de localizari disponibile</label>
                 <div class="col-sm-10">
-                    <input autocomplete="off" type="number" min="1" max="10" class="form-control fs-3 w-auto text-center" id="inputSetareReloc" required value="{{ setare.nrrecalcpoz }}" name="nrrecalcpoz">
+                    <input autocomplete="off" type="number" min="1" max="10" step="1" class="form-control fs-3 w-auto text-center" id="inputSetareReloc" required value="{{ setare.nrrecalcpoz }}" name="nrrecalcpoz">
                 </div>
             </div>
         </div>
@@ -69,7 +69,7 @@
             <div class="d-flex flex-row">
                 <label for="inputSetareSecReloc" class="form-label col-form-label text-nowrap me-5">Numarul de secunde dupa care este disponibila o relocare</label>
                 <div class="col-sm-10">
-                    <input autocomplete="off" type="number" min="1" max="2000" class="form-control fs-3 w-auto text-center" id="inputSetareSecReloc" required value="{{ setare.secafterrecalc }}" name="secafterrecalc">
+                    <input autocomplete="off" type="number" min="1" max="2000" step="1" class="form-control fs-3 w-auto text-center" id="inputSetareSecReloc" required value="{{ setare.secafterrecalc }}" name="secafterrecalc">
                 </div>
             </div>
         </div>
@@ -85,7 +85,7 @@
             <div class="d-flex flex-row">
                 <label for="inputSetareMinTol" class="form-label col-form-label text-nowrap me-5">Numarul de minute tolerate in calculul celor 8 ore dintre intrare si iesire</label>
                 <div class="col-sm-10">
-                    <input autocomplete="off" type="number" min="0" max="1440" class="form-control fs-3 w-auto text-center" id="inputSetareMinTol" required value="{{ setare.min_tolerated }}" name="mintol">
+                    <input autocomplete="off" type="number" min="0" max="1440" step="1" class="form-control fs-3 w-auto text-center" id="inputSetareMinTol" required value="{{ setare.min_tolerated }}" name="mintol">
                 </div>
             </div>
         </div>
@@ -249,22 +249,25 @@
 {% block scripts %}
 <script>
 
-document.getElementById('modalSaveEdit').addEventListener('show.bs.modal', function (event) {
-    var button = event.relatedTarget
-    var recipient = button.getAttribute('data-bs-form')
-    var btnSave = document.getElementById('btnSaveEdit')
-    btnSave.addEventListener('click', function (){
-        document.forms[recipient].submit()
+window.addEventListener("load", ()=>{
+    document.getElementById('modalSaveEdit').addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget
+        var recipient = button.getAttribute('data-bs-form')
+        var btnSave = document.getElementById('btnSaveEdit')
+        btnSave.addEventListener('click', function (){
+            document.forms[recipient].submit()
+        })
     })
-})
 
-document.getElementById('modalAccessLink').addEventListener('show.bs.modal', function (event) {
-  var button = event.relatedTarget
-  var recipient = button.getAttribute('data-bs-ownlink')
-  document.getElementById('txtReplaceModal').innerText = button.getAttribute('data-bs-owntext');
-  var butonContinua = document.getElementById('btnAccessLink')
-  butonContinua.onclick = () => {window.location.href = recipient };
-})
+    document.getElementById('modalAccessLink').addEventListener('show.bs.modal', function (event) {
+      var button = event.relatedTarget
+      var recipient = button.getAttribute('data-bs-ownlink')
+      document.getElementById('txtReplaceModal').innerText = button.getAttribute('data-bs-owntext');
+      var butonContinua = document.getElementById('btnAccessLink')
+      butonContinua.onclick = () => {window.location.href = recipient };
+    })
+}, false)
+
 
 function toogleView(domname){
     elem = document.getElementById(domname);

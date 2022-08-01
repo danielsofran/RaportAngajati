@@ -87,7 +87,19 @@ img{
                   </ul>
                 </div>
             </li>
-            <li><a href="#conturi" class="link-dark rounded text-decoration-none">Conturi</a></li>
+            <li class="mb-1">
+                <button class="btn btn-toggle align-items-center rounded collapsed fs-2" data-bs-toggle="collapse" data-bs-target="#dashboard-collapse5" aria-expanded="false">
+                  Conturi <i class="fa-solid fa-angle-down"></i>
+                </button>
+                <div class="collapse fs-3" id="dashboard-collapse5" style="">
+                  <ul class="btn-toggle-nav fw-normal pb-1 fs-2 text-decoration-none">
+                    <li><a href="#contDetalii" class="link-dark rounded text-decoration-none">Detalii</a></li>
+                    <li><a href="#contView" class="link-dark rounded text-decoration-none">Vizualizare</a></li>
+{#                    <li><a href="#contModif" class="link-dark rounded text-decoration-none">Modificare/Ștergere</a></li>#}
+{#                    <li><a href="#contAdd" class="link-dark rounded text-decoration-none">Adăugare</a></li>#}
+                  </ul>
+                </div>
+            </li>
             <li><a href="#setari" class="link-dark rounded text-decoration-none">Setări</a></li>
           </ul>
         </div>
@@ -194,7 +206,7 @@ img{
         <li>Numărul de comandă</li>
         <li>Observaţia</li>
     </ul>
-    <p><span class="badge bg-danger rounded-pill">!</span> La schimbarea comenzii, ora se actualizează automat!</p>
+    <p><span class="badge bg-danger rounded-pill">!</span> La schimbarea comenzii, ora și locația se actualizează automat!</p>
 
     <h3 class="mb-3"> Activitatea pe mai multe zile</h3>
     <h4 class="fs-2" style="margin-top: 2px !important;"><i class="fa-solid fa-minus fs-5"></i>Ultimele 3 zile</h4>
@@ -356,6 +368,67 @@ img{
     </ul>
     <p><span class="badge bg-primary rounded-pill">!</span> Dacă observați că tabelul este greu de vizualizat, vă rugăm folosiți opțiunile <i class="fa-solid fa-magnifying-glass-plus text-primary"></i>Zoom in, respectiv <i class="fa-solid fa-magnifying-glass-minus text-primary"></i>Zoom out ale browser-ului.</p>
     <h3 id="rapFilter">Filtrare</h3>
-    <p> </p>
+    <p> Datele din tabel pot fi filtrate după: </p>
+    <ol>
+        <li>Căutare textuală, după textul introdus în bara de căutare, care respectă unul din criteriile:
+            <ul>
+                <li>Nume: activitățile al căror nume de utilizator complet conție textul căutat </li>
+                <li>Email: activitățile al căror email conție textul căutat</li>
+                <li>Telefon: activitățile al căror telefon începe cu textul căutat</li>
+                <li>Observație: activitățile ale căror observații conție textul căutat</li>
+                <hr class="dropdown-divider mt-3 mb-3">
+                <li title="Apare doar la comenzi">Nume comandă: comenzile ale căror nume de utilizator conțin textul căutat</li>
+                <li title="Apare doar la comenzi">Număr comandă: comenzile ale căror număr de comandă începe cu textul căutat</li>
+            </ul>
+        </li>
+        <li>Interval de timp, selectând activitățile care au avut loc în intervalul dată-timp precizat</li>
+        <li>Ordonare, după următoarele criterii:
+            <ul>
+                <li>Nume: numele complet al angajatului, iar apoi după moment</li>
+                <li>Data: data la care a avut loc activitatea, iar apoi după numele angajatului</li>
+                <li>Ora: ora la care a avut loc activitatea, iar apoi după numele angajatului</li>
+                <li>Distanța față de firmă: distanța dintre firmă și locul înregistrat al activității, iar apoi după numele angajatului</li>
+            </ul>
+            în mod:
+            <ul>
+                <li>Crescător</li>
+                <li>Descrescător</li>
+            </ul>
+        </li>
+    </ol>
+    <p>O altă opțiune, nu neapărat de filtrare, dar care se activează/dezactivează de pe butonul <span class="badge bg-primary">Filtrează </span>, este căsuța <span class="badge text-dark border">Arată numele zilei săptămânii </span>, care adaugă o coloană suplimentară în tabel. </p>
+
+    {# CONT #}
+    <h2>Cont</h2>
+    <h3 id="contDetalii">Detalii cont propriu</h3>
+    <p>Această pagină conține un tabel în care sunt incluse:</p>
+    <ul>
+        <li>Numele de utilizator</li>
+        <li>Nume complet</li>
+        <li>Email</li>
+        <li>Telefon</li>
+        <li>Statut</li>
+    </ul>
+    <p>Totodată, această pagină conține un butonul <span class="badge bg-primary">Modificare</span>, folosit pentru schimbarea datelor contului dumneavoastră. Ca Manager/Administrator, puteți să schimbați toate detaliile contului, dar nu puteți deveni Administrator dacă sunteți Manager.</p>
+    <p>Dacă acțiunea este posibilă, este afișat și butonul <span class="badge bg-danger">Șterge cont</span>.
+    <h3 id="contView"> Vizualizare conturi</h3>
+    <p>Toate conturile pot fi vizualizate de pe pagina <strong>Cont <i class="fa-solid fa-arrow-right"></i> Vezi Angajații</strong>. Tot pe această pagină este disponibil butonul <span class="badge bg-primary">Adaugă cont</span>. </p>
+    <p>Conturile pot fi filtrate după Nume de utilizator, Nume, Telefon sau Email.</p>
+    <p> Butonul <span class="badge bg-info">Modificare</span>, referior la Activitatea de azi, este o scurtătură către activitatea angajatului, și permite vizualizarea sa.</p>
+    <p> Butonul <span class="badge bg-primary">Link</span>, referitor la Cont, deschide o pagin[ similar[ cu detaliile contului propriu, care poate fi <strong>modificat sau șters</strong>.</p>
+
+    {# SETARI #}
+    <h2 id="setari">Setări</h2>
+    <h3>Setări generale</h3>
+    <ul>
+        <li><strong>Numărul de localizări</strong>: reprezintă numărul de ori în care utilizatorul de poate localiza. După prima localizare, utilizatorii pot să folosească funcția de <span class="badge bg-light text-dark">Relocare</span>, fără a actualiza ora, din cauza unor posibile erori de calcul a locației cauzat de numărul variabil de sateliți GPS.</li>
+        <li><strong>Numărul de secunde</strong>: Numărul de secunde după care este disponibilă o relocare. De exemplu, după înregistrarea unei activități, dacă trec mai multe secunde decât cele din setarea curentă, funcția de relocare nu mai este disponibilă.</li>
+        <li><strong>Distanța</strong>: Distanța în metrii acceptată ca eroare a calculului de locație. </li>
+        <li><strong>Numărul de minute tolerate</strong>: Numărul de minute tolerate în calculul celor 8 ore dintre intrare și ieșire - este folosit doar la determinarea culorii unei linii din tabel.</li>
+        <li><strong>Harta</strong>: Reprezintă numele hărții dintre cele salvate care este folosită la afișarea locației pe hartă de către butoanele <div class="btn btn-light fs-5"><i class="fa-solid fa-location-crosshairs"></i></div></li>
+        <li><strong>Program</strong>: Zilele de program. Aceste date ajută la afișarea activităților, având în vedere că zilele care nu sunt în program nu sunt luate în considerare. De exemplu, la un program <strong>L Ma Mi J V</strong>, dacă ziua curentă este Luni, atunci <span class="text-decoration-underline"> Ieri</span> va fi Vineri. </li>
+    </ul>
+    <p><span class="badge bg-danger rounded-pill">!</span> Dintre toate numerele de mai sus, doar <span>Distanța</span> poate fi un număr rațional. Restul numerelor <span class="text-danger text-decoration-underline fw-bold">trebuie să fie naturale</span>!</p>
+    <p></p>
 </div>
 {% endblock %}

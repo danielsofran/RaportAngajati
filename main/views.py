@@ -657,6 +657,9 @@ class ActUserFromPathView(ActFromPathView):
     def get(self, request, *args, **kwargs):
         if request.user.role in ("Manager", "Admin"):
             user = models.User.objects.get(username=kwargs['username'])
+            if request.user.role == "Manager" and user.role == "Admin":
+                messages.success(request, ("Nu aveti acces la activitatile acestui cont!"))
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
             kwargs['ownuser'] = user
             kwargs['user'] = user
             context = self.get_context_data(**kwargs)
@@ -988,8 +991,11 @@ def deleteuser(request, username):
     except:
         messages.success(request, ("Utilizatorul nu a fost gasit!"))
         return HttpResponseRedirect(request.path_info)
-    data.delete()
-    messages.success(request, ("Acest cont a fost sters!"))
+    if data.role in ("Manager", "Admin") and request.user.role == "Manager":
+        messages.success(request, ("Nu puteti sterge acest cont!"))
+    else:
+        data.delete()
+        messages.success(request, ("Acest cont a fost sters!"))
     return redirect('utilizatori')
 
 
@@ -1017,7 +1023,7 @@ def detalii(request, username=None):
                 if username is not None and (request.user.role == "Manager" or request.user.role == "Admin"):
                     user.nume = request.POST['nume']
                     user.role = request.POST['role']
-                    user.groups.all().delete()
+                    user.groups.clear()
                     group = Group.objects.get(name=user.role)
                     user.groups.add(group)
                     user.save(force_update=True)
@@ -1096,7 +1102,8 @@ class Setari(TemplateView):
         if nr < 1 or nr > 10:
             messages.success(request, ("Numar de localizari invalid!"))
             return None
-        sec = int(request.POST[keys[1]])
+        try: sec = int(request.POST[keys[1]])
+        except: sec = int(float(request.POST[keys[1]]))
         if sec < 0 or sec > 2000:
             messages.success(request, ("Numar de secunde invalid!"))
             return None
@@ -1104,7 +1111,8 @@ class Setari(TemplateView):
         if dist < 0 or dist > 1000:
             messages.success(request, ("Distanta invalida!"))
             return None
-        mintol = int(request.POST[keys[3]])
+        try: mintol = int(request.POST[keys[3]])
+        except: mintol = int(float(request.POST[keys[3]]))
         if mintol < 0 or mintol >= 1440:
             messages.success(request, ("Numar de minute tolerate invalid!"))
             return None
