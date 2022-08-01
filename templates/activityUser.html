@@ -116,7 +116,8 @@
         <div class="d-flex flex-row me-5 my-3">
             <button class="btn btn-outline-danger fs-2 me-5" onclick="clearFields('In')"> Sterge intrarea </button>
             <button class="btn btn-outline-danger fs-2 me-5" onclick="clearFields('Out')"> Sterge iesirea </button>
-            <button class="btn btn-outline-info fs-2 me-5" onclick="location.reload()"> Anuleaza </button>
+            <button class="btn btn-outline-danger fs-2 me-5" onclick="clearFields('InOut')"> Sterge intrarea si iesirea </button>
+{#            <button class="btn btn-outline-info fs-2 me-5" onclick="location.reload()" title="Reincarca"> Anuleaza </button>#}
         </div>
     <form name="myform" method="post">
         {% csrf_token %}
@@ -445,7 +446,16 @@ function clearFields(str){
         document.getElementById('inputOraIn').value = ""
         document.getElementById('inputLocIn').value = ""
         document.getElementById('inputObsIn').value = ""
-    } else if(str === "Out") {
+    }
+    else if(str === "Out") {
+        document.getElementById('inputOraOut').value = ""
+        document.getElementById('inputLocOut').value = ""
+        document.getElementById('inputObsOut').value = ""
+    }
+    else if(str === "InOut") {
+        document.getElementById('inputOraIn').value = ""
+        document.getElementById('inputLocIn').value = ""
+        document.getElementById('inputObsIn').value = ""
         document.getElementById('inputOraOut').value = ""
         document.getElementById('inputLocOut').value = ""
         document.getElementById('inputObsOut').value = ""

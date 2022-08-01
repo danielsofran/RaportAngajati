@@ -135,7 +135,7 @@
     {% endif %}
     {% if comenzi|length > 0 %}
         <div class="my-3 mt-5 w-50">
-        <div class="d-flex flex-row">
+        <div class="d-flex flex-row" id="showDivComenzi">
             <p class="me-5 text-nowrap"> Comenzi finalizate: {{ nrcomenzi }} </p>
             <button onclick="arataascunde()" id="btnShowHide" class="btn btn-primary btn-square-md font-weight-bold fs-3 align-self-center my-0 px-4" > Ascunde </button>
         </div>
@@ -210,7 +210,7 @@
             <form method="get">
                 <div class="d-flex flex-row mb-3">
                     <p class="me-3 form-label">Cauta</p>
-                    <input type="search" class="form-control fs-2" name="stext" value="{{ stext }}">
+                    <input type="search" class="form-control fs-2" name="stext" value="{{ stext }}" placeholder="Caută">
                     <p class="me-3 form-label ms-3">dupa</p>
                     <select class="form-select flex-shrink-1 fs-3 me-5 w-50" aria-label="Default select example" name="scrit" required>
                       <option {% if scrit == "nume" %}selected{% endif %} value="nume">Nume Prenume</option>

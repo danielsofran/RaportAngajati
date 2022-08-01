@@ -93,11 +93,10 @@ class Carousel:
     maxid = 1
 
     class Item:
-        def __init__(self, src, html="", classes="d-block w-100", alt="", index=0):
+        def __init__(self, src, html="", alt="", index=0):
             self.index = index
             self.src = src
             self.html = html
-            self.classes = classes
             self.alt = alt
 
     def __init__(self):
@@ -105,6 +104,6 @@ class Carousel:
         Carousel.maxid += 1
         self.items = []
 
-    def addItem(self, src, html="", classes="d-block w-100", alt=""):
-        self.items.append(self.Item(src, html, classes, alt, len(self.items)))
+    def addItem(self, src, html="", alt=""):
+        self.items.append(self.Item(src, html, alt, len(self.items)))
 

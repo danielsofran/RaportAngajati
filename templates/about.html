@@ -20,6 +20,10 @@ h3{
 .w-90{
     width: 90%;
 }
+img{
+    display: block;
+    width: 90vw;
+}
 </style>
 {% endblock %}
 
@@ -69,6 +73,10 @@ h3{
         <li class="fs-3"> Activarea locaţiei</li>
         <li class="fs-3"> Acceptarea cererii permisiunii de a accesa locaţia <span class="badge rounded-pill bg-danger">!</span></li>
     </ul>
+    <div class="d-flex flex-row justify-content-around">
+        <div class="me-3 my-auto"><img src="https://i.ibb.co/0sD0m6s/loc-Desktop.png" class="w-auto h-auto"></div>
+        <div class="ms-3 my-auto"><img src="https://i.ibb.co/DzHg8Nz/loc-Mobile.jpg" class="w-50"></div>
+    </div>
     <p class="mt-4"><span class="badge bg-danger fs-2 me-3">Atenţie!</span> Dacă permisiunea la locaţie nu este acordată, datele nu vor fi înregistrate. </p>
 
     <h1>Instrucţiuni</h1>
@@ -94,7 +102,7 @@ h3{
         <li>Butonul <span class="badge bg-danger">Anulează <i class="fa-solid fa-xmark"></i></span> din dreapta butonului <span class="badge bg-danger" style="opacity: 85%">Am plecat </span> anulează înregistrarea unei plecări de la locul de muncă. </li>
         <li>Butonul <span class="badge bg-warning">Am ajuns, fac o observaie</span> înregistrează ora, locaţia curentă şi observaţia făcută, salvând-o ca ieşire/plecare la locul de muncă.<br><span class="badge bg-primary rounded-pill">!</span> Anularea acestei acţuni se face folosind butonul <span class="badge bg-danger">Anulează <i class="fa-solid fa-xmark"></i></span> din dreapta butonului <span class="badge bg-danger" style="opacity: 85%">Am plecat </span></li>
         <hr class="dropdown-divider mt-4 mb-4">
-        <li>Butonul <span class="badge bg-primary" style="opacity: 85%">Vezi activitatea de astăzi</span> vă va trimite pe pagina activităţilor din ziua curentă.<br>Vă puteţi întoarce pe pagina <strong>Acasă</strong> apăsând butonul <i class="fa-solid fa-arrow-left"></i> sau <i class="fa-solid fa-house"></i>.</li>
+        <li>Butonul <span class="badge bg-primary" style="opacity: 85%">Vezi activitatea de astăzi</span> vă va trimite pe pagina activităţilor din ziua curentă.<br>Vă puteţi întoarce pe pagina <strong>Acasă</strong> apăsând butonul <i class="fa-solid fa-angle-left"></i> al browser-ului sau butonul <strong>Undo</strong> al telefonului, sau butonul <strong><i class="fa-solid fa-house"></i> Acasă</strong> din meniul de opțiuni.</li>
     </ul><hr class="dropdown-divider mt-4 mb-4">
     <p>Butonul <span class="badge bg-info">Am terminat o comandă</span> deschide un formular în partea de jos a paginii.<br>Câmpurile obligarorii din formular sunt:</p>
     <ul>

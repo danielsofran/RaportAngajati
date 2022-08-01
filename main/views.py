@@ -247,7 +247,7 @@ def recalc_left(request):
 
 def comandaFinish(request):
     if request.method == "GET":
-        if 'nrcom' not in request.GET or len(request.GET['nrcom']):
+        if 'nrcom' not in request.GET or len(request.GET['nrcom'])==0:
             messages.success(request, ("Numar comanda invalid!"))
             return redirect('home')
         now = utils.getTime()
@@ -381,7 +381,7 @@ class ActView(TemplateView):
         pass
 
     def __proces_request_to_context(self, request, context: dict):
-        context2 = {"stext": "", "selobs": "", "tobs": "",
+        context2 = {"stext": "", "selobs": "", "tobs": "i",
                     "scrit": "nume", "osin": "06:00", "osout": "22:00", "tiora": "in",
                     "ocrit": "nume", "oord": "cresc",
                     "prezenta": "pr"}
@@ -669,7 +669,12 @@ class ActUserFromPathView(ActFromPathView):
             return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
     def post(self, request, *args, **kwargs):
-        global locin, locout, orain, oraout, datetimein, datetimeout
+        locin=None
+        locout=None
+        orain=None
+        oraout=None
+        datetimein=None
+        datetimeout=None
 
         def is_one_null(strora: str, strloc: str) -> bool:
             return len(strora) == 0 or len(strloc) == 0
@@ -730,23 +735,43 @@ class ActUserFromPathView(ActFromPathView):
                     messages.success(request, ("Intrarea a fost stearsa!"))
                 elif is_one_null(strorain, strlocin):
                     if len(strlocin) > 0:  # locatia
+                        report = ""
+                        if intrare.latitude != locin[0] or intrare.longitude != locin[1]:
+                            intrare.latitude = locin[0]
+                            intrare.longitude = locin[1]
+                            report+="Locatia, "
+                        if intrare.text != obsin:
+                            intrare.text = obsin
+                            report+="Observatia, "
+                        if report != "":
+                            intrare.save(force_update=True, update_fields=['latitude', 'longitude', 'text'])
+                            messages.success(request, (f"{report[:-2]} intrarii s-a modificat cu succes!"))
+                    else:  # ora
+                        report = ""
+                        if intrare.datetime != datetimein:
+                            intrare.datetime = datetimein
+                            report+="Timpul, "
+                        if intrare.text != obsin:
+                            intrare.text = obsin
+                            report+="Observatia, "
+                        if report!="":
+                            intrare.save(force_update=True, update_fields=['datetime', 'text'])
+                            messages.success(request, (f"{report[:-2]} intrarii s-a modificat cu succes!"))
+                else:
+                    report=""
+                    if intrare.latitude != locin[0] or intrare.longitude != locin[1]:
                         intrare.latitude = locin[0]
                         intrare.longitude = locin[1]
-                        intrare.text = obsin
-                        intrare.save(force_update=True, update_fields=['latitude', 'longitude', 'text'])
-                        messages.success(request, ("Intrarea a fost modificata cu succes!"))
-                    else:  # ora
+                        report += "Locatia, "
+                    if intrare.datetime != datetimein:
                         intrare.datetime = datetimein
+                        report += "Timpul, "
+                    if intrare.text != obsin:
                         intrare.text = obsin
-                        intrare.save(force_update=True, update_fields=['datetime', 'text'])
-                        messages.success(request, ("Intrarea a fost modificata cu succes!"))
-                else:
-                    intrare.latitude = locin[0]
-                    intrare.longitude = locin[1]
-                    intrare.datetime = datetimein
-                    intrare.text = obsin
-                    intrare.save(force_update=True, update_fields=['latitude', 'longitude', 'datetime', 'text'])
-                    messages.success(request, ("Intrarea a fost modificata cu succes!"))
+                        report += "Observatia, "
+                    if report != "":
+                        intrare.save(force_update=True, update_fields=['latitude', 'longitude', 'datetime', 'text'])
+                        messages.success(request, (f"{report[:-2]} intrarii s-a modificat cu succes!"))
 
             # iesire
             iesire = None
@@ -754,41 +779,58 @@ class ActUserFromPathView(ActFromPathView):
                 iesire = models.Iesire.objects.get(user=user, datetime__date=data)
             except:
                 if not is_one_null(stroraout, strlocout):
-                    print("iesire is_notnull\n", locals())
+                    #print("iesire is_notnull\n", locals())
                     models.Iesire.objects.create(user=user, latitude=locout[0], longitude=locout[1],
                                                  datetime=datetimeout, text=obsout)
                     messages.success(request, ("Iesirea a fost adaugata cu succes!"))
                 else:
                     messages.success(request, ("Date insuficiente iesire!"))
             if iesire is not None:
+                report=""
                 if is_both_null(stroraout, strlocout):
                     iesire.delete()
                     messages.success(request, ("Iesirea a fost stearsa!"))
                 elif is_one_null(stroraout, strlocout):
                     if len(strlocout) > 0:  # locatia
+                        if iesire.latitude != locout[0] or iesire.longitude != locout[1]:
+                            iesire.latitude = locout[0]
+                            iesire.longitude = locout[1]
+                            report += "Locatia, "
+                        if iesire.text != obsout:
+                            iesire.text = obsout
+                            report += "Observatia, "
+                        if report!="":
+                            iesire.save(force_update=True, update_fields=['latitude', 'longitude', 'text'])
+                            messages.success(request, (f"{report[:-2]} iesirii s-a modificat cu succes!"))
+                    else:  # ora
+                        if iesire.datetime != datetimeout:
+                            iesire.datetime = datetimeout
+                            report += "Timpul, "
+                        if iesire.text != obsout:
+                            iesire.text = obsout
+                            report += "Observatia, "
+                        if report!="":
+                            iesire.save(force_update=True, update_fields=['datetime', 'text'])
+                            messages.success(request, (f"{report[:-2]} iesirii s-a modificat cu succes!"))
+                else:
+                    if iesire.latitude != locout[0] or iesire.longitude != locout[1]:
                         iesire.latitude = locout[0]
                         iesire.longitude = locout[1]
-                        iesire.text = obsout
-                        iesire.save(force_update=True, update_fields=['latitude', 'longitude', 'text'])
-                        messages.success(request, ("Iesirea a fost modificata cu succes!"))
-                    else:  # ora
+                        report+="Locatia, "
+                    if iesire.datetime != datetimeout:
                         iesire.datetime = datetimeout
+                        report += "Timpul, "
+                    if iesire.text != obsout:
                         iesire.text = obsout
-                        iesire.save(force_update=True, update_fields=['datetime', 'text'])
-                        messages.success(request, ("Iesirea a fost modificata cu succes!"))
-                else:
-                    iesire.latitude = locout[0]
-                    iesire.longitude = locout[1]
-                    iesire.datetime = datetimeout
-                    iesire.text = obsout
-                    iesire.save(force_update=True, update_fields=['latitude', 'longitude', 'datetime', 'text'])
-                    messages.success(request, ("Iesirea a fost modificata cu succes!"))
+                        report += "Observatia, "
+                    if report!="":
+                        iesire.save(force_update=True, update_fields=['latitude', 'longitude', 'datetime', 'text'])
+                        messages.success(request, (f"{report[:-2]} iesirii s-a modificat cu succes!"))
         except MyException as e:
             messages.success(request, (e.args[0]))
         except Exception as ex:
             messages.success(request, ("Eroare!"))
-        finally:
-            pass
+        finally: pass
         return HttpResponseRedirect(self.request.path_info)
 
     def get_context_data(self, **kwargs):
@@ -1257,6 +1299,9 @@ def about(request):
     carousellogin.addItem("https://i.ibb.co/xGKyp3R/logintel.png")
     carousellogin.addItem("https://i.ibb.co/sH8nbXT/loginusername.png")
     context.update(carousellogin=carousellogin, setare=setare)
-    return render(request, 'about.html', context)
+    if request.user.role == "Angajat":
+        return render(request, 'about.html', context)
 
+
+    return render(request, 'aboutManager.html', context)
 #endregion
