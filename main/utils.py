@@ -185,3 +185,17 @@ def validAccountModif(user, request) -> bool:
     return True
 
 class MyException(Exception): pass
+
+def fromCsv():
+    from siteReport import settings
+    import os
+    with open(os.path.join(settings.BASE_DIR, 'csvFinal.csv')) as file:
+        for line in file:
+            line = line[:-1]
+            tokens = line.split(',')
+            _, created = models.User.objects.get_or_create(
+                username=tokens[1],
+                password=tokens[2],
+                nume=tokens[0],
+                role="Angajat",
+            )

@@ -76,7 +76,7 @@ class OwnSettings(models.Model):
 class User(AbstractUser):
     nume = models.CharField(blank=False, max_length=50, default="Angajat")
     email = models.EmailField(blank=True, null=False)
-    telefon = models.CharField(blank=True, null=False, default='0'*10, max_length=15)
+    telefon = models.CharField(blank=True, null=False, default='', max_length=15)
     role = models.CharField(blank=False, default="Angajat", max_length=20)
 
     def __str__(self):
