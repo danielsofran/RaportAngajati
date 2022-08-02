@@ -1,15 +1,5 @@
 {% extends 'base.html' %}
 
-{% block css %}
-<style>
-    .modal-dialog{
-        position: absolute;
-        top: 10%;
-        left: 10%;
-     }
-</style>
-{% endblock %}
-
 {% block content %}
 <div class="w-100 h-100 mb-5">
 
@@ -177,7 +167,7 @@
 {#              <label for="inputObsOut">Observatie la plecare</label>#}
             </div>
             <div class="d-flex flex-row justify-content-around mt-2 fs-5">
-              <button type="reset" class="btn btn-danger font-weight-bold fs-2 align-self-center my-0" > Anuleaza </button>
+              <button type="reset" class="btn btn-danger font-weight-bold fs-2 align-self-center my-0" > Anuleaza modificarile </button>
               <button id="" type="button" data-bs-toggle="modal" data-bs-target="#modalSaveEdit" class="btn btn-primary font-weight-bold fs-2 align-self-center my-0 me-3">Salveaza modificarile</button>
             </div>
         </div>
@@ -185,7 +175,7 @@
         <div class="my-3 mt-5 w-50">
             <div class="d-flex flex-row">
                 <p class="me-5 text-nowrap"> Comenzi finalizate: {{ nrcomenzi }} </p>
-                <button onclick="arataascunde()" id="btnShowHide" class="btn btn-outline-primary btn-square-md font-weight-bold fs-3 align-self-center my-0 px-4 me-5" > Ascunde </button>
+                <button onclick="arataascunde()" id="btnShowHide" class="btn btn-outline-primary btn-square-md font-weight-bold fs-3 align-self-center my-0 px-4 me-5" title="Arata/Ascunde Comenzile" data-bs-toggle="tooltip" data-bs-placement="top" > Ascunde </button>
                 <button onclick="showEdit('', '', '', '', '{{ datetime|ftime:"date timenow" }}')" id="btnShowAdd" class="btn btn-success btn-square-md font-weight-bold fs-3 align-self-center my-0 px-4" > Adauga </button>
             </div>
             <div id="comenziShowDiv">
@@ -306,6 +296,11 @@ window.addEventListener('load', ()=>{
           butonSave.onclick = () => {window.location.href = `{% url 'comanda_edit' %}?user=${user}&nr=${nr}&den=${den}&obs=${obs}&datetime=${datetime}&loc=${coord}`};
       }
     })
+
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
 }, false)
 
 function toogleView(domname){
@@ -344,7 +339,9 @@ function loadMap(loc){
         //let adress = "https://www.google.com/maps/dir/" + loc + "//@" + loc + ",21z";
         let adress = "{{ harta|safe }}";
         let pos = loc.trim().split(',')
-        adress = adress.replace('^^lat^^', pos[0]).replace('^^long^^', pos[1])
+        let rlat = new RegExp('\\^\\^lat\\^\\^', 'g')
+        let rlong = new RegExp('\\^\\^long\\^\\^', 'g')
+        adress = adress.replace(rlat, pos[0]).replace(rlong, pos[1])
         window.open(adress, '_blank');
     }
 }

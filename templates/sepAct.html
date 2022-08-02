@@ -47,7 +47,7 @@
     </div>
 <div class="container-fluid m-5 fs-1">
     <h1 class="mb-3 ms-5"> {{ titlu }} </h1>
-    <button id='btnSHS' title="Arata / Ascunde filtrarea" onclick="arataascunde('filter', 'btnSHS')" class="btn btn-outline-secondary btn-square-md font-weight-bold fs-3 align-self-center my-0 px-4 ms-5">Ascunde</button>
+    <button id='btnSHS' title="Arata / Ascunde filtrarea" onclick="arataascunde('filter', 'btnSHS')" class="btn btn-outline-secondary btn-square-md font-weight-bold fs-3 align-self-center my-0 px-4 ms-5" data-bs-toggle="tooltip" data-bs-placement="bottom">Ascunde</button>
     <div class="m-5 fs-3" id="filter">
     <div class="fs-3 mt-5 mx-5 mb-3">
     <form method="get">
@@ -169,6 +169,11 @@ function pad(num, size) {
 window.addEventListener('load', ()=>{
     document.getElementById("inputDate1").value = createDateTime("{{ datetime1|ftime:"datetime" }}");
     document.getElementById("inputDate2").value = createDateTime("{{ datetime2|ftime:"datetime" }}");
+
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
 }, false)
 
 function toogleView(domname){
@@ -200,7 +205,9 @@ function loadMap(loc){
         //let adress = "https://www.google.com/maps/dir/" + loc + "//@" + loc + ",21z";
         let adress = "{{ harta|safe }}";
         let pos = loc.trim().split(',')
-        adress = adress.replace('^^lat^^', pos[0]).replace('^^long^^', pos[1])
+        let rlat = new RegExp('\\^\\^lat\\^\\^', 'g')
+        let rlong = new RegExp('\\^\\^long\\^\\^', 'g')
+        adress = adress.replace(rlat, pos[0]).replace(rlong, pos[1])
         window.open(adress, '_blank');
     }
 }

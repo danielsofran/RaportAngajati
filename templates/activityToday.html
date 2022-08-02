@@ -2,14 +2,11 @@
 
 {% block css %}
 <style>
-    .modal-dialog{
-        position: absolute;
-        top: 10%;
-        left: 10%;
-     }
-
     .w-15{
         width: 15%;
+    }
+    .w-90{
+        width: 90vw;
     }
 
 </style>
@@ -118,7 +115,7 @@
             {% if request.user|is_recent:"Out" %}<div class="fs-1 ms-2"> <button onclick="processposition('{% url 'left_recalc' %}')" class="btn btn-light btn-lg" >Relocare</button> </div>{% endif %}
         </div>
     {% if obsIn != "" %}
-        <div class="my-3 w-50">
+        <div class="my-3 w-90">
             <p class="me-5 text-nowrap"> Observatie la intrare: </p>
             <div class="form-floating">
               <textarea maxlength="200" disabled class="form-control fs-4" id="floatingTextarea2" style="height: 100px">{{ obsIn|strobs }}</textarea>
@@ -126,7 +123,7 @@
         </div>
     {% endif %}
     {% if obsOut != "" %}
-        <div class="my-3 w-50">
+        <div class="my-3 w-90">
             <p class="me-5 text-nowrap"> Observatie la iesire: </p>
             <div class="form-floating">
               <textarea maxlength="200" disabled class="form-control fs-4" id="floatingTextarea2" style="height: 100px">{{ obsOut|strobs }}</textarea>
@@ -134,7 +131,7 @@
         </div>
     {% endif %}
     {% if comenzi|length > 0 %}
-        <div class="my-3 mt-5 w-50">
+        <div class="my-3 mt-5 w-90">
         <div class="d-flex flex-row" id="showDivComenzi">
             <p class="me-5 text-nowrap"> Comenzi finalizate: {{ nrcomenzi }} </p>
             <button onclick="arataascunde()" id="btnShowHide" class="btn btn-primary btn-square-md font-weight-bold fs-3 align-self-center my-0 px-4" > Ascunde </button>
@@ -159,9 +156,11 @@
                       <li class="list-group-item">Observatie: {{ comanda.text }} </li>
                     </div>
                     <div class="d-flex justify-content-around">
+                    {% if showcmdedit %}
                       <button type="button" data-bs-toggle="modal" data-bs-target="#modalCancelComand" data-bs-nr="{{ comanda.numar_comanda }}" class="btn btn-danger btn-square-md font-weight-bold fs-2 my-0"> Anuleaza </button>
                       <button type="button" class="btn btn-primary btn-square-md font-weight-bold fs-2 my-0"
                               onclick="showEdit('{{ comanda.denumire }}','{{ comanda.numar_comanda }}', '{{ comanda.text }}')">Editeaza</button>
+                    {% endif %}
                     </div>
                   </div>
                 </div>
@@ -170,7 +169,7 @@
             </div>
         </div>
 
-        <div class="d-none fs-2 pt-3 w-50" id="comandDiv">
+        <div class="d-none fs-2 pt-3 w-90" id="comandDiv">
             <div class="row mb-3 fs-3">
                 <label for="comandaDen" class="form-label fs-2" style="text-align: left !important;">Denumire</label>
                 <input autocomplete="off" class="form-control fs-3" list="datalistOptions" id="comandaDen" placeholder="Alege/Scrie denumirea produsului" required>
@@ -204,7 +203,7 @@
     {% else %} <!-- Table View -->
         <div class="mt-5">
             {% if request.user|role_at_least:"Manager" %}
-            <button id='btnSHS' title="Arata / Ascunde filtrarea" onclick="arataascunde('filter', 'btnSHS')" class="btn btn-outline-secondary btn-square-md font-weight-bold fs-3 align-self-center my-0 px-4 ms-5">Ascunde</button>
+            <button id='btnSHS' data-bs-toggle="tooltip" data-bs-placement="bottom" title="Arata / Ascunde filtrarea" onclick="arataascunde('filter', 'btnSHS')" class="btn btn-outline-secondary btn-square-md font-weight-bold fs-3 align-self-center my-0 px-4 ms-5">Ascunde</button>
             <div class="m-5 fs-3" id="filter">
             <div class="fs-3 mt-5 mx-5 mb-3">
             <form method="get">
@@ -320,6 +319,11 @@ window.addEventListener('load', () =>{
 
       butonSave.onclick = () => {window.location.href = `{% url 'comanda_edit' %}?oldnr=${recipient}&nr=${nr}&den=${den}&obs=${obs}`};
     })
+
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
 }, false)
 
 function toogleView(domname){
@@ -351,7 +355,9 @@ function loadMap(loc){
         //let adress = "https://www.google.com/maps/dir/" + loc + "//@" + loc + ",21z";
         let adress = "{{ harta|safe }}";
         let pos = loc.trim().split(',')
-        adress = adress.replace('^^lat^^', pos[0]).replace('^^long^^', pos[1])
+        let rlat = new RegExp('\\^\\^lat\\^\\^', 'g')
+        let rlong = new RegExp('\\^\\^long\\^\\^', 'g')
+        adress = adress.replace(rlat, pos[0]).replace(rlong, pos[1])
         window.open(adress, '_blank');
     }
 }

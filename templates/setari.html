@@ -8,6 +8,9 @@
     .w-85{
         width: 85%;
     }
+    .w-45{
+        width: 45%;
+    }
     .w-fpx{
         width: 450px;
     }
@@ -42,8 +45,10 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body fs-4">
+              <div id="divReplaceModal">
               <span id="txtReplaceModal"></span> va fi stearsa!<br>
             Sigur doriti sa continuati?
+              </div>
           </div>
           <div class="modal-footer justify-content-around">
             <button type="button" class="btn btn-danger fs-3" data-bs-dismiss="modal">Anuleaza</button>
@@ -157,11 +162,12 @@
                 <input type="text" class="form-control fs-3 w-15 me-5" id="inputHartaNumeX{{ harta.id }}" required value="{{ harta.nume }}" name="nume">
 
                 <label for="inputHartaAdrX{{ harta.id }}" class="form-label col-form-label text-nowrap me-3">Link</label>
-                <input type="text" pattern=".*\^\^lat\^\^.*\^\^long\^\^" class="form-control fs-6 w-50 me-3" id="inputHartaAdrX{{ harta.id }}" required value="{{ harta.adresa|safe }}" name="adr">
+                <input type="text" pattern=".*\^\^lat\^\^.*\^\^long\^\^" class="form-control fs-6 w-45 me-3" id="inputHartaAdrX{{ harta.id }}" required value="{{ harta.adresa|safe }}" name="adr">
 
-                <button type="button" data-bs-toggle="modal" data-bs-target="#modalSaveEdit" data-bs-form="harta{{ harta.id }}" class="btn btn-success fs-3 me-3"><i class="fa-solid fa-check"></i></button>
-                <button type="reset" class="btn btn-primary fs-3 me-3"><i class="fa-solid fa-arrow-rotate-left"></i></button>
-                <button type="button" data-bs-toggle="modal" data-bs-target="#modalAccessLink" data-bs-owntext="Harta {{ harta.nume }}" data-bs-ownlink="{% url 'stergeharta' hid=harta.id %}" class="btn btn-danger fs-3 px-3"><i class="fa-solid fa-xmark"></i></button>
+                <button type="button" data-bs-toggle="modal" data-bs-target="#modalSaveEdit" data-bs-form="harta{{ harta.id }}" class="btn btn-success fs-3 me-3" title="Salveaza modificarile"><i class="fa-solid fa-check"></i></button>
+                <button type="reset" class="btn btn-primary fs-3 me-3" title="Reseteaza"><i class="fa-solid fa-arrow-rotate-left"></i></button>
+                <button type="button" data-bs-toggle="modal" data-bs-target="#modalAccessLink" data-bs-owntext="Harta {{ harta.nume }}" data-bs-ownlink="{% url 'stergeharta' hid=harta.id %}" class="btn btn-danger fs-3 px-3 me-3" title="Sterge"><i class="fa-solid fa-xmark"></i></button>
+                <button type="button" data-bs-toggle="modal" data-bs-target="#modalAccessLink" data-bs-ownhtml="Se va incarca o harta cu coordonatele <strong>47.15, 24.5</strong> (Bistrita).<br>Daca linkul este invalid, harta nu se va deschide." data-bs-ownfct="createlink('inputHartaAdrX{{ harta.id }}')" data-bs-isnewlink class="btn btn-info fs-3 me-3" title="Test"><i class="fa-solid fa-file-circle-question"></i></button>
             </div>
         </div>
         </form>
@@ -174,11 +180,12 @@
                 <input type="text" class="form-control fs-3 w-15 me-5" id="inputHartaNumeX" required placeholder="Nume Harta" name="nume">
 
                 <label for="inputHartaAdrX" class="form-label col-form-label text-nowrap me-3">Link</label>
-                <input autocomplete="off" type="text" pattern=".*\^\^lat\^\^.*\^\^long\^\^" class="form-control fs-6 w-50 me-3" id="inputHartaAdrX" required placeholder="Link catre harta" name="adr">
+                <input autocomplete="off" type="text" pattern=".*\^\^lat\^\^.*\^\^long\^\^" class="form-control fs-6 w-45 me-3" id="inputHartaAdrX" required placeholder="Link catre harta" name="adr">
 
-                <button type="button" data-bs-toggle="modal" data-bs-target="#modalSaveEdit" data-bs-form="addharta" class="btn btn-success fs-3 me-3"><i class="fa-solid fa-check"></i></button>
-                <button type="reset" class="btn btn-primary fs-3 me-3"><i class="fa-solid fa-arrow-rotate-left"></i></button>
-                <button type="button" onclick="toogleView('addHarta')" class="btn btn-danger fs-3 px-3"><i class="fa-solid fa-xmark"></i></button>
+                <button type="button" data-bs-toggle="modal" data-bs-target="#modalSaveEdit" data-bs-form="addharta" class="btn btn-success fs-3 me-3" title="Salveaza"><i class="fa-solid fa-check"></i></button>
+                <button type="reset" class="btn btn-primary fs-3 me-3" title="Reseteaza"><i class="fa-solid fa-arrow-rotate-left"></i></button>
+                <button type="button" onclick="toogleView('addHarta')" class="btn btn-danger fs-3 px-3 me-3" title="Anuleaza"><i class="fa-solid fa-xmark"></i></button>
+                <button type="button" data-bs-toggle="modal" data-bs-target="#modalAccessLink" data-bs-ownhtml="Se va incarca o harta cu coordonatele <strong>47.15, 24.5</strong> (Bistrita).<br>Daca linkul este invalid, harta nu se va deschide." data-bs-ownfct="createlink('inputHartaAdrX')" class="btn btn-info fs-3 me-3" title="Test"><i class="fa-solid fa-file-circle-question"></i></button>
             </div>
         </div>
         </form>
@@ -187,7 +194,7 @@
         <h1 class="me-5" style="font-size: 150%"> Arii pe harta </h1>
         <div> <button type="button" onclick="toogleView('addForma')" class="btn btn-outline-success ms-5 fs-3"> Adauga</button></div>
     </div>
-    <div class="fs-3 pt-3 w-100 me-5">
+    <div class="fs-3 pt-3 w-75 me-5">
     <ul class="list-group me-5 me-5 pe-5">
         {% for forma in arii %}
         <li class="list-group-item p-3">
@@ -195,17 +202,17 @@
         <input type="hidden" value="forma" name="type">
         <input type="hidden" value="{{ forma.id }}" name="id">
             <div class="d-flex flex-row mb-3">
-                <p class="me-3">Nume</p>
-                <input class="form-control w-25 fs-3" type="text" name="nume" value="{{ forma.nume }}" required>
+                <p class="me-5 pe-5 text-nowrap">Nume</p>
+                <input class="form-control fs-3" type="text" name="nume" value="{{ forma.nume }}" required>
             </div>
             <div class="d-flex flex-row mb-3">
-                <p class="me-3">Pozitie centru</p>
-                <input class="form-control w-25 fs-3" type="text" name="pozc" value="{{ forma.centerStr }}" required>
+                <p class="me-3 text-nowrap">Pozitie centru</p>
+                <input class="form-control fs-3" type="text" name="pozc" value="{{ forma.centerStr }}" required>
                 <div class="mx-10"></div>
             </div>
             <div class="d-flex flex-row mb-3">
-                <p class="me-3">Pozitie punct de pe cerc</p>
-                <input class="form-control w-25 fs-3" type="text" name="pozp" value="{{ forma.pointStr }}" required>
+                <p class="me-3 text-nowrap">Pozitie punct de pe cerc</p>
+                <input class="form-control fs-3" type="text" name="pozp" value="{{ forma.pointStr }}" required>
                 <div class="mx-10"></div>
             </div>
             <div class="d-flex flex-row me-5 pe-5 justify-content-around">
@@ -220,17 +227,17 @@
         <form method="post" name="formaadd"> {% csrf_token %}
         <input type="hidden" value="formaadd" name="type">
             <div class="d-flex flex-row mb-3">
-                <p class="me-3">Nume</p>
-                <input class="form-control w-25 fs-3" type="text" name="nume" placeholder="Denumire locatie" required>
+                <p class="me-5 pe-5 text-nowrap">Nume</p>
+                <input class="form-control fs-3" type="text" name="nume" placeholder="Denumire locatie" required>
             </div>
             <div class="d-flex flex-row mb-3">
-                <p class="me-3">Pozitie centru</p>
-                <input class="form-control w-25 fs-3" type="text" name="pozc" placeholder="Latitudine, Longitudine" required>
+                <p class="me-3 text-nowrap">Pozitie centru</p>
+                <input class="form-control fs-3" type="text" name="pozc" placeholder="Latitudine, Longitudine" required>
                 <div class="mx-10"></div>
             </div>
             <div class="d-flex flex-row mb-3">
-                <p class="me-3">Pozitie punct de pe cerc</p>
-                <input class="form-control w-25 fs-3" type="text" name="pozp" placeholder="Latitudine, Longitudine" required>
+                <p class="me-3 text-nowrap">Pozitie punct de pe cerc</p>
+                <input class="form-control fs-3" type="text" name="pozp" placeholder="Latitudine, Longitudine" required>
                 <div class="mx-10"></div>
             </div>
             <div class="d-flex flex-row me-5 pe-5 justify-content-around">
@@ -261,10 +268,16 @@ window.addEventListener("load", ()=>{
 
     document.getElementById('modalAccessLink').addEventListener('show.bs.modal', function (event) {
       var button = event.relatedTarget
-      var recipient = button.getAttribute('data-bs-ownlink')
+      var recipient;
+      if(button.hasAttribute("data-bs-ownlink"))
+          recipient = button.getAttribute('data-bs-ownlink')
+      else recipient = eval(button.getAttribute('data-bs-ownfct'))
       document.getElementById('txtReplaceModal').innerText = button.getAttribute('data-bs-owntext');
+      if(button.hasAttribute('data-bs-ownhtml'))
+        document.getElementById('divReplaceModal').innerHTML = button.getAttribute('data-bs-ownhtml');
       var butonContinua = document.getElementById('btnAccessLink')
-      butonContinua.onclick = () => {window.location.href = recipient };
+      if(button.hasAttribute('data-bs-isnewlink')) butonContinua.onclick = () => {window.open(recipient, "_blank"); }
+      else butonContinua.onclick = () => {window.location.href = recipient };
     })
 }, false)
 
@@ -278,6 +291,16 @@ function toogleView(domname){
     else{
         elem.classList.add("d-none")
     }
+}
+
+function createlink(idlink){
+    // 47.15, 24.5
+    let lat = "47.15", long = "24.5";
+    let adress = document.getElementById(idlink).value
+    let rlat = new RegExp('\\^\\^lat\\^\\^', 'g')
+    let rlong = new RegExp('\\^\\^long\\^\\^', 'g')
+    adress = adress.replace(rlat, lat).replace(rlong, long)
+    return adress;
 }
 
 </script>

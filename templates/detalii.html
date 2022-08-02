@@ -2,11 +2,9 @@
 
 {% block css %}
 <style>
-    .modal-dialog{
-        position: absolute;
-        top: 10%;
-        left: 10%;
-     }
+.w-90{
+    width: 90vw;
+}
 </style>
 {% endblock %}
 
@@ -53,7 +51,7 @@
 
 <div class="container-fluid m-5 fs-1 w-auto">
     <h1 class="my-5" style="font-size: 200%">Detalii cont</h1>
-    <table class="table table-striped table-hover w-50">
+    <table class="table table-striped table-hover w-90">
       <tr>
           <th> <span class="fw-normal"> Nume de utilizator:</span><br> {{ userdata.username }}</th>
       </tr>
@@ -80,10 +78,10 @@
       </tr>
     </table>
     <div class="d-flex flex-row mt-5">
-        <button class="btn btn-primary fs-1 me-5" onclick="toogleViewModif()"> Modifica cont </button>
+        <button class="btn btn-primary fs-1 me-5 text-nowrap" onclick="toogleViewModif()"> Modifica cont </button>
         {% if userdata != request.user and request.user|role_at_least:"Manager" %}<button data-bs-toggle="modal" data-bs-target="#modalDelete" class="btn btn-danger fs-1 me-5"> Sterge cont </button>{% endif %}
     </div>
-    <div id="divDetalii" class="d-none mt-5 fs-2 w-50">
+    <div id="divDetalii" class="d-none mt-5 fs-2 w-90">
         <form method="POST" name="myform">
             {% csrf_token %}
             <div class="mb-3 row">

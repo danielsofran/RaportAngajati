@@ -2,7 +2,7 @@
 
 {% block css %}
 <style>
-h1,h2,h3,h4,h5,h6{
+h1,h2,h3,h4{
     margin-right: 5rem;
     margin-top: 3rem;
 }
@@ -24,19 +24,45 @@ img{
     display: block;
     width: 90vw;
 }
+#btn-back-to-top {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  display: block;
+}
 </style>
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+window.addEventListener('load', ()=>{
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+}, false)
+</script>
 {% endblock %}
 
 {# <i class="fa-solid fa-angle-down"></i> #}
 
 {% block content %}
 
+<a
+        href="#cuprins"
+        class="btn btn-outline-primary rounded-circle btn-floating btn-lg"
+        id="btn-back-to-top"
+        title="Sari la cuprins"
+        data-bs-toggle="tooltip" data-bs-placement="right"
+        >
+  <i class="fa-solid fa-arrow-up"></i>
+</a>
 
 <div class="d-block w-100 fs-3 m-5 p-5 pt-0">
     <h1>Informaţii</h1>
     <div class="flex-shrink-0 p-5 pb-0 bg-white w-auto">
     <p class="d-flex align-items-center pb-3 mb-3 text-decoration-none border-bottom">
-      <span class="fs-1 fw-semibold">Cuprins</span>
+      <span class="fs-1 fw-semibold" id="cuprins">Cuprins</span>
     </p>
     <ul class="list-unstyled ps-0 fs-2">
       <li class="mb-2">
@@ -100,7 +126,21 @@ img{
                   </ul>
                 </div>
             </li>
-            <li><a href="#setari" class="link-dark rounded text-decoration-none">Setări</a></li>
+            <li class="mb-1">
+                <button class="btn btn-toggle align-items-center rounded collapsed fs-2" data-bs-toggle="collapse" data-bs-target="#dashboard-collapse6" aria-expanded="false">
+                  Setări <i class="fa-solid fa-angle-down"></i>
+                </button>
+                <div class="collapse fs-3" id="dashboard-collapse6" style="">
+                  <ul class="btn-toggle-nav fw-normal pb-1 fs-2 text-decoration-none">
+                    <li><a href="#setariGeneral" class="link-dark rounded text-decoration-none">Generale</a></li>
+                    <li><a href="#setariHarti" class="link-dark rounded text-decoration-none">Hărţi</a></li>
+                    <li><a href="#setariArii" class="link-dark rounded text-decoration-none">Arii pe hartă</a></li>
+                  </ul>
+                </div>
+            </li>
+            <li><a href="#ftime" class="link-dark rounded text-decoration-none">Format data şi ora</a></li>
+            <li><a href="#help" class="link-dark rounded text-decoration-none">Ajutor</a></li>
+{#            <li><a href="#setari" class="link-dark rounded text-decoration-none">Setări</a></li>#}
           </ul>
         </div>
       </li>
@@ -141,16 +181,16 @@ img{
     <h2 id="acasa"> Pagina Acasă</h2>
     <ul class="mt-4">
         <li>Butonul <span class="badge bg-success">Am ajuns </span> înregistrează ora şi locaţia curentă şi o salvează ca intrare/sosire/venire la locul de muncă.</li>
-        <li>Butonul <span class="badge bg-danger">Anulează <i class="fa-solid fa-xmark"></i></span> din dreapta butonului <span class="badge bg-success" style="opacity: 50%">Am ajuns </span> anulează înregistrarea unei sosiri la locul de muncă. </li>
+        <li>Butonul <span class="badge bg-danger"><i class="fa-solid fa-xmark"></i></span> din dreapta butonului <span class="badge bg-success" style="opacity: 50%">Am ajuns </span> anulează înregistrarea unei sosiri la locul de muncă. </li>
         <li>Butonul <span class="badge bg-warning">Am ajuns, fac o observaie</span> înregistrează ora, locaţia curentă şi observaţia făcută, salvând-o ca intrare/sosire/venire la locul de muncă.<br>
-            <span class="badge bg-primary rounded-pill">!</span> Anularea acestei acţuni se face folosind butonul <span class="badge bg-danger">Anulează <i class="fa-solid fa-xmark"></i></span> din dreapta butonului <span class="badge bg-success" style="opacity: 50%">Am ajuns </span><br>
+            <span class="badge bg-primary rounded-pill">!</span> Anularea acestei acţuni se face folosind butonul <span class="badge bg-danger"><i class="fa-solid fa-xmark"></i></span> din dreapta butonului <span class="badge bg-success" style="opacity: 50%">Am ajuns </span><br>
             <span class="badge bg-danger rounded-pill">!</span> Nu puteți edita observația dacă nu anulați activitatea!
         </li>
         <hr class="dropdown-divider mt-4 mb-4">
         <li>Butonul <span class="badge bg-danger" style="opacity: 85%">Am plecat </span> înregistrează ora şi locaţia curentă şi o salvează ca ieşire/plecare de la locul de muncă.</li>
-        <li>Butonul <span class="badge bg-danger">Anulează <i class="fa-solid fa-xmark"></i></span> din dreapta butonului <span class="badge bg-danger" style="opacity: 85%">Am plecat </span> anulează înregistrarea unei plecări de la locul de muncă. </li>
+        <li>Butonul <span class="badge bg-danger"><i class="fa-solid fa-xmark"></i></span> din dreapta butonului <span class="badge bg-danger" style="opacity: 85%">Am plecat </span> anulează înregistrarea unei plecări de la locul de muncă. </li>
         <li>Butonul <span class="badge bg-warning">Am ajuns, fac o observaie</span> înregistrează ora, locaţia curentă şi observaţia făcută, salvând-o ca ieşire/plecare la locul de muncă.<br>
-            <span class="badge bg-primary rounded-pill">!</span> Anularea acestei acţuni se face folosind butonul <span class="badge bg-danger">Anulează <i class="fa-solid fa-xmark"></i></span> din dreapta butonului <span class="badge bg-danger" style="opacity: 85%">Am plecat </span><br>
+            <span class="badge bg-primary rounded-pill">!</span> Anularea acestei acţuni se face folosind butonul <span class="badge bg-danger"><i class="fa-solid fa-xmark"></i></span> din dreapta butonului <span class="badge bg-danger" style="opacity: 85%">Am plecat </span><br>
             <span class="badge bg-danger rounded-pill">!</span> Nu puteți edita observația dacă nu anulați activitatea!
         </li>
         <hr class="dropdown-divider mt-4 mb-4">
@@ -349,7 +389,7 @@ img{
     <p>Ștergerea unei comenzi se face prin apăsarea butonului <span class="badge bg-danger">Anulează</span>, din cadrul unei comenzi, urmată de confirmare prin apăsarea butonului <span class="badge bg-warning">Continuă</span>. </p>
     <p>Modificarea unei comeni se face apăsând butonul <span class="badge bg-primary">Editează</span> din cadrul unei comenzi. Astfel, în partea de jos a pagini, după restul comenzilor, va apărea un formular conținând datele comenzii. </p>
     <p>Adăugarea unei comenzi se face apăsând butonul <span class="badge bg-success">Adaugă</span>, de la începutul listei de comenzi. Acesta va deschide un formular similar celui de editare, dar fără date. </p>
-    <p><span class="badge bg-primary rounded-pill">!</span> În caz că formularul deschis nu poate fi observat, vă rugăm să dați scroll înspre finalul paginii! </p>
+    <p><span class="badge bg-primary rounded-pill">!</span> În caz că formularul deschis nu poate fi observat, vă rugăm să derulaţi înspre finalul paginii! </p>
     <p><span class="badge bg-danger rounded-pill">!</span> Dacă schimbați data activității, după salvare pagina va afișa o activitate inexistentă! Vă rugăm să reselectați data activitații de pe o altă pagină! </p>
     <h3 id="actAdd">Adăugarea unei activități</h3>
     <p> Adăugarea unei activități se realizează din meniul <strong>Activități <i class="fa-solid fa-arrow-right"></i> Adaugă o activitate</strong>. Această opțiune din meniul derulant va deschide o pagină în care va trebui să selectați user-ul și data asociate activității respective. Ulterior completării acestor date, se va deschide o pagină similară celei de editare a unei activități, fără date completate.</p>
@@ -412,23 +452,82 @@ img{
     <p>Totodată, această pagină conține un butonul <span class="badge bg-primary">Modificare</span>, folosit pentru schimbarea datelor contului dumneavoastră. Ca Manager/Administrator, puteți să schimbați toate detaliile contului, dar nu puteți deveni Administrator dacă sunteți Manager.</p>
     <p>Dacă acțiunea este posibilă, este afișat și butonul <span class="badge bg-danger">Șterge cont</span>.
     <h3 id="contView"> Vizualizare conturi</h3>
-    <p>Toate conturile pot fi vizualizate de pe pagina <strong>Cont <i class="fa-solid fa-arrow-right"></i> Vezi Angajații</strong>. Tot pe această pagină este disponibil butonul <span class="badge bg-primary">Adaugă cont</span>. </p>
+    <p>Toate conturile pot fi vizualizate de pe pagina <strong>Cont <i class="fa-solid fa-arrow-right"></i> Vezi Angajații</strong>. Tot pe această pagină este disponibil butonul <span class="badge bg-success">Adaugă cont</span>. </p>
     <p>Conturile pot fi filtrate după Nume de utilizator, Nume, Telefon sau Email.</p>
     <p> Butonul <span class="badge bg-info">Modificare</span>, referior la Activitatea de azi, este o scurtătură către activitatea angajatului, și permite vizualizarea sa.</p>
-    <p> Butonul <span class="badge bg-primary">Link</span>, referitor la Cont, deschide o pagin[ similar[ cu detaliile contului propriu, care poate fi <strong>modificat sau șters</strong>.</p>
+    <p> Butonul <span class="badge bg-primary">Link</span>, referitor la Cont, deschide o pagină similară cu detaliile contului propriu, care poate fi <strong>modificat sau șters</strong>.</p>
 
     {# SETARI #}
     <h2 id="setari">Setări</h2>
-    <h3>Setări generale</h3>
+    <h3 id="setariGeneral">Setări generale</h3>
     <ul>
         <li><strong>Numărul de localizări</strong>: reprezintă numărul de ori în care utilizatorul de poate localiza. După prima localizare, utilizatorii pot să folosească funcția de <span class="badge bg-light text-dark">Relocare</span>, fără a actualiza ora, din cauza unor posibile erori de calcul a locației cauzat de numărul variabil de sateliți GPS.</li>
         <li><strong>Numărul de secunde</strong>: Numărul de secunde după care este disponibilă o relocare. De exemplu, după înregistrarea unei activități, dacă trec mai multe secunde decât cele din setarea curentă, funcția de relocare nu mai este disponibilă.</li>
         <li><strong>Distanța</strong>: Distanța în metrii acceptată ca eroare a calculului de locație. </li>
         <li><strong>Numărul de minute tolerate</strong>: Numărul de minute tolerate în calculul celor 8 ore dintre intrare și ieșire - este folosit doar la determinarea culorii unei linii din tabel.</li>
-        <li><strong>Harta</strong>: Reprezintă numele hărții dintre cele salvate care este folosită la afișarea locației pe hartă de către butoanele <div class="btn btn-light fs-5"><i class="fa-solid fa-location-crosshairs"></i></div></li>
+        <li><strong>Harta</strong>: Reprezintă numele hărții dintre cele salvate care este folosită la afișarea locației pe hartă de către butoanele de localizare <div class="btn btn-light fs-5"><i class="fa-solid fa-location-crosshairs"></i></div></li>
         <li><strong>Program</strong>: Zilele de program. Aceste date ajută la afișarea activităților, având în vedere că zilele care nu sunt în program nu sunt luate în considerare. De exemplu, la un program <strong>L Ma Mi J V</strong>, dacă ziua curentă este Luni, atunci <span class="text-decoration-underline"> Ieri</span> va fi Vineri. </li>
     </ul>
     <p><span class="badge bg-danger rounded-pill">!</span> Dintre toate numerele de mai sus, doar <span>Distanța</span> poate fi un număr rațional. Restul numerelor <span class="text-danger text-decoration-underline fw-bold">trebuie să fie naturale</span>!</p>
-    <p></p>
+    <p><span class="badge bg-primary rounded-pill">!</span> Puteţi vizualiza şi activităţile din alte zile din afara programului prin selectarea unei perioade cărei date de început şi de sfârşit corespund. </p>
+
+    <h3 id="setariHarti">Hărţi</h3>
+    <p>Hărţile reprezintă modalitatea de vizualizare a coordonatelor înregistrate. Chiar dacă aveţi înregistrate mai multe hărţi, puteţi folosi doar una singură, iar această setare a fost prezentată în cadrul setărilor generale. Butoanele pentru modificarea setului de hărţi sunt:</p>
+    <ul>
+        <li>Butonul <button class="btn btn-success"><i class="fa-solid fa-check"></i></button>: salvează modificările efectuate asupra hărţii de pe rândul curent, necesită confirmare</li>
+        <li>Butonul <button class="btn btn-primary"><i class="fa-solid fa-arrow-rotate-left"></i></button>: resetează datele completate pe rândul curent, dacă acestea nu au fost salvate</li>
+        <li>Butonul <button class="btn btn-danger"><i class="fa-solid fa-xmark"></i></button>: şterge harta pe rândul curent, necesită confirmare</li>
+        <li>Butonul <button class="btn btn-info"><i class="fa-solid fa-file-circle-question"></i></button>: testează harta, încărcând într-o pagină nouă coordonatele <strong>47.15, 24.5</strong>, sau <strong>Str. Simion Mândrescu 21-19, Bistrița</strong></li>
+        <li>Butonul <button class="btn btn-outline-success fs-4">Adaugă</button>: creează un rând nou, în care puteţi completa datele unei noi hărţi, <strong>salvarea</strong> ei reprezentând apăsarea butonului <button class="btn btn-success"><i class="fa-solid fa-check"></i></button>. Dacă nu observaţi acest rând, vă rugăm să derulaţi pagina în jos! </li>
+    </ul>
+    <p><span class="badge bg-danger rounded-pill">!</span> În cazul în care butonul <button class="btn btn-info"><i class="fa-solid fa-file-circle-question"></i></button> încarcă altă adresă, vă rugăm să apăsaţi butonul Refresh <i class="fa-solid fa-rotate-left"></i> al browser-ului!
+    <p><span class="badge bg-primary rounded-pill">!</span> Salvarea unei noi hărţi trebuie finalizată prin apăsarea butonului <button class="btn btn-success"><i class="fa-solid fa-check"></i></button></p>
+    <p>Câtă vreme Numele hărţii este unul orientativ, <strong>linkul</strong> este foarte important. Logica acestuia este urmatoarea: </p>
+    <ul>
+        <li><strong>Link</strong>: o adresă url <strong>validă</strong>, în care <strong>^^lat^^</strong> şi <strong>^^long^^</strong> vor fi înlocuite</li>
+        <li><strong>^^lat^^</strong>: reprezintă latitudinea care va fi înlocuită cu latitudinea coordonatei care va fi afişate pe hartă</li>
+        <li><strong>^^long^^</strong>: reprezintă longitudinea care va fi înlocuită cu longitudinea coordonatei care va fi afişate pe hartă</li>
+    </ul>
+    <p>De exemplu, dacă link-ul este <a href="#setari">https://www.latlong.net/c/?lat=<span style="color: #6e00b0">^^lat^^</span>&long=<span style="color: #6e00b0">^^long^^</span></a>, iar coordonatele sunt <strong>47.15, 24.5</strong>, atunci linkul va deveni <a href="https://www.latlong.net/c/?lat=47.15&long=24.5" target="_blank" title="Test">https://www.latlong.net/c/?lat=<span style="color: #6e00b0">47.15</span>&long=<span style="color: #6e00b0">24.5</span></a>, iar browser-ul va încărca acest link într-o filă nouă.</p>
+    <p><span class="badge bg-danger rounded-pill">!</span> Este posibil ca din cauza unor actualizări, harta <strong>Google Maps</strong> să nu mai funcţioneze cu linkul actual şi să necesite o <strong>modificare a linkului</strong>! Dacă nu doriţi să descoperiţi noul link folosit de Google Maps, puteţi folosi altă hartă.</p>
+    <h3 id="setariArii">Arii pe hartă</h3>
+    <p>Ariile pe hartă reprezintă cercurile ale căror reuniune reprezintă suprafaţa firmei. Din cauza posibilelor erori de calcul a locaţiei, acestea includ arii puţin mai extinse decât strict suprafaţa firmei.</p>
+    <p>Similar cu secţiunea <strong>Hărţi</strong>, şi această secţiune conţine butoanele
+        <button class="btn btn-success fs-5">Modifică <i class="fa-solid fa-check"></i></button>, <button class="btn btn-primary fs-5"><i class="fa-solid fa-arrow-rotate-left"></i> Reîncarcă</button>, <button class="btn btn-danger fs-5">Şterge <i class="fa-solid fa-xmark"></i></button>, respectiv
+        <button class="btn btn-outline-success fs-5"> Adaugă</button>, cu comportamente similare celor din secţiunea precedentă. </p>
+    <p>Datele stocate de o arie sunt:</p>
+    <ul>
+        <li>Nume: cu valoare orientativă</li>
+        <li>Poziţie centru: coordonatele centrului cercului care descrie o arie</li>
+        <li>Poziţie punct de pe cerc: coordonatele unui punct de pe cercul descris de arie</li>
+    </ul>
+    <p><strong>Observaţie!</strong> Distanţa dinre poziţia centrului şi poziţia punctului de pe cerc reprezintă raza cercului.</p>
+    <p>Poziţiile vor fi introduse în formatul <strong class="text-decoration-underline">latitudine, longitudine</strong> <strong class="text-danger">fără să conţină alte caractere în afară de spaţii!</strong></p>
+    <p><span class="badge bg-danger rounded-pill">!</span> Aria adăugată cu butonul <button class="btn btn-outline-success fs-5"> Adaugă</button> va apărea în partea de jos a paginii, vă rugăm să derulaţi pagina în jos pentru a o completa!</p>
+
+    <h2 id="ftime">Formatul datei şi a orei</h2>
+    <p>Data şi ora din formulare depind direct de setările sistemului de operare, însemnând că au vizualizări diferite pe sisteme diferite. Pentru a schimba acest aspect, este necesar să shimbaţi formatul default al datei(<a target="_blank" href="https://winbuzzer.com/2021/08/20/how-to-change-date-and-time-format-in-windows-10-xcxwbt/">Link pentru Windows</a>). </p>
+    <p>În plus, formatul orei este <strong>AM/PM</strong>, iar timpul afişat în acesta poate produce confuzii. Reamintim că:</p>
+    <ul>
+        <li><strong>12:00 AM</strong> reprezintă ora <strong>00:00</strong>, adică miezul nopţii</li>
+        <li>07:00 AM reprezintă ora 07:00</li>
+        <li>11:59 AM reprezintă ora 11:59, marcând sfârşitul dimineţii</li>
+        <li><strong>12:00 PM</strong> reprezintă ora <strong>12:00</strong>, adică amiaza</li>
+        <li>07:00 PM reprezintă ora 19:00</li>
+        <li>11:59 PM reprezintă ora 23:59, marcând sfârşitul zilei</li>
+    </ul>
+
+    <h2 id="help">Ajutor</h2>
+    <p> Recomandăm ca navigarea pe această pagină să se bazeze pe următoarele componente:</p>
+    <ul>
+        <li><strong>Cuprins</strong>, care conţine legături către fiecare capitol şi subcapitol al cuprinsului</li>
+        <li><strong>Butonul <a href="#cuprins" class="btn btn-outline-primary rounded-circle btn-floating btn-lg" title="Sari la cuprins" data-bs-toggle="tooltip" data-bs-placement="right"><i class="fa-solid fa-arrow-up"></i></a></strong> din partea stânga jos, care permite navigarea directă către cuprins, fără să fie necesară derularea întregii pagini</li>
+    </ul>
 </div>
+<footer id="sticky-footer" class="flex-shrink-0 py-4 bg-dark text-white-50">
+    <div class="container text-center">
+        <h5 class="fs-1" style="font-size: 300%">Mulţumim pentru susţinerea dumneavoastră!</h5>
+        <p> Dacă apar erori, vă rugăm să ne contactaţi. </p>
+    </div>
+</footer>
 {% endblock %}

@@ -47,8 +47,8 @@
                 <th> Email </th>
                 <th> Telefon </th>
                 <th> Statut </th>
-                <th> Activitatea de azi </th>
                 <th> Cont </th>
+                <th> Activitatea de azi </th>
             </tr>
         </thead>
         <tbody>
@@ -59,8 +59,8 @@
                 <th> {{ user.email }}</th>
                 <th> {{ user.telefon }}</th>
                 <th> {{ user.role }}</th>
-                <th> <a href="{% url 'actUserFromPath' datein=now|ftime:"date" dateout=now|ftime:"date" username=user.username%}" class="btn btn-outline-info">Modificare</a> </th>
                 <th> <a class="btn btn-outline-primary" href="{% url 'detaliiuser' username=user.username %}">Link</a></th>
+                <th> <a href="{% url 'actUserFromPath' datein=now|ftime:"date" dateout=now|ftime:"date" username=user.username%}" class="btn btn-outline-info">Modificare activitate</a> </th>
             </tr>
             {% endfor %}
         </tbody>

@@ -419,6 +419,8 @@ class ActView(TemplateView):
             dataout = self._getPeriod(**context)[1].strftime("%d.%m.%Y")
             if datain == dataout:
                 context.update(data=datain)
+                if datain == utils.getTime().strftime("%d.%m.%Y"):
+                    context.update(showcmdedit=True)
             else:
                 context.update(datain=datain, dataout=dataout, data=None)
             return render(request, self.template_name, context)
@@ -1276,9 +1278,13 @@ def stergeharta(request, hid):
     try:
         harta = models.Harta.objects.get(pk=hid)
         nume = harta.nume
+        setare = models.OwnSettings.objects.all()[0]
+        if harta.id == setare.harta.id:
+            messages.success(request, (f"Harta {nume} este setata ca fiind harta curenta! Va rugam sa selectati alta harta daca doriti sa o stergeti pe aceasta!"))
+            return redirect('setari')
         harta.delete()
         messages.success(request, (f"Harta {nume} a fost stearsa!"))
-    except:
+    except Exception as ex:
         messages.success(request, ("Eroare!"))
     return redirect('setari')
 

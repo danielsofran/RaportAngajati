@@ -2,7 +2,7 @@
   <div class="carousel-inner">
     {% for item in carousel.items %}
     <div class="carousel-item {% if item.index == 0 %}active{% endif %}">
-      <img src="{{ item.src }}" alt="{{ item.alt }}">
+        <a href="{{ item.src }}" target="_blank" title="Click pentru vizualizarea imaginii"> <img src="{{ item.src }}" alt="{{ item.alt }}"></a>
       <div class="carousel-caption d-none d-md-block">
         {{ item.html|safe }}
       </div>
@@ -18,7 +18,3 @@
     <span class="visually-hidden">Urmator</span>
   </button>
 </div>
-
-<script type="text/javascript">
-    //document.querySelector(".carousel > .carousel-inner > .carousel-item").classList.add("active")
-</script>

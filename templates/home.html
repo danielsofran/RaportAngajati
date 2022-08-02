@@ -1,15 +1,5 @@
 {% extends 'base.html' %}
 
-{% block css %}
-<style>
-    .modal-dialog{
-        position: absolute;
-        top: 10%;
-        left: 10%;
-     }
-</style>
-{% endblock %}
-
 {% block content %}
     <div class="vw-100 vh-100 mb-5">
 
@@ -101,11 +91,11 @@
     </div>
 
     {# BUTOANE #}
-    <div class="d-inline-flex flex-column text-center overflow-hidden align-start pe-5">
+    <div class="d-inline-flex flex-column text-center overflow-hidden align-start pe-0">
         <div class="my-3 ms-5">
-            <div class="d-flex flex-row justify-content-between">
-                <button type="button" class="btn p-3 border fs-1 pe-5" style="background-color: aquamarine" onclick="ajuns()">Am ajuns </button>
-                <button id="inputModalCancelCome" type="button" data-bs-toggle="modal" data-bs-target="#modalCancelCome" class="btn btn-danger btn-square-md font-weight-bold fs-1 align-self-center my-0 px-4 py-3 me-5" >Anuleaza <i class="fa-solid fa-xmark"></i></button>
+            <div class="d-flex flex-row justify-content-center">
+                <button type="button" class="btn p-3 border fs-1 me-3" style="background-color: aquamarine" onclick="ajuns()">Am ajuns </button>
+                <button id="inputModalCancelCome" type="button" data-bs-toggle="modal" data-bs-target="#modalCancelCome" class="btn btn-danger btn-square-md font-weight-bold fs-1 align-self-center my-0 px-3 py-3 me-5" ><i class="fa-solid fa-xmark"></i></button>
             </div>
         </div>
 
@@ -125,11 +115,9 @@
         </div>
 
         <div class="my-3 ms-5">
-            <div class="d-flex flex-row justify-content-between">
-                <button type="button" class="btn p-3 border fs-1" style="background-color:
-#f06969
-" onclick="plecat()">Am plecat</button>
-                <button id="inputModalCancelLeft" type="button" data-bs-toggle="modal" data-bs-target="#modalCancelLeft" class="btn btn-danger btn-square-md font-weight-bold fs-1 align-self-center px-4 py-3 me-5">Anuleaza <i class="fa-solid fa-xmark"></i></button>
+            <div class="d-flex flex-row justify-content-center">
+                <button type="button" class="btn p-3 border fs-1 me-3" style="background-color:#f06969" onclick="plecat()">Am plecat</button>
+                <button id="inputModalCancelLeft" type="button" data-bs-toggle="modal" data-bs-target="#modalCancelLeft" class="btn btn-danger btn-square-md font-weight-bold fs-1 align-self-center px-3 py-3 me-5"><i class="fa-solid fa-xmark"></i></button>
             </div>
         </div>
 
@@ -185,7 +173,7 @@
         </div>
 
         <div class="my-3 ms-5 ms-auto">
-            <a class="btn btn-primary fs-1 mx-auto me-5 p-3 border" href="{% url 'actToday' %}">Vezi activitatea de astazi</a>
+            <a class="btn btn-primary fs-2 mx-auto me-5 p-3 border" href="{% url 'actToday' %}">Vezi activitatea de astazi</a>
         </div>
     </div>
     </div>
@@ -223,7 +211,9 @@ function loadMap(loc){
         //let adress = "https://www.google.com/maps/dir/" + loc + "//@" + loc + "47.1796062,24.1704734,21z";
         let adress = "{{ harta|safe }}";
         let pos = loc.trim().split(',')
-        adress = adress.replace('^^lat^^', pos[0]).replace('^^long^^', pos[1])
+        let rlat = new RegExp('\\^\\^lat\\^\\^', 'g')
+        let rlong = new RegExp('\\^\\^long\\^\\^', 'g')
+        adress = adress.replace(rlat, pos[0]).replace(rlong, pos[1])
         window.open(adress, '_blank');
     }
 }

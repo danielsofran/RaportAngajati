@@ -87,7 +87,7 @@ class User(AbstractUser):
         verbose_name_plural='Utilizatori'
 
 class Info(models.Model):
-    user = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING)
+    user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
     latitude = models.DecimalField(blank=True, max_digits=11, decimal_places=8)
     longitude = models.DecimalField(blank=True, max_digits=11, decimal_places=8)
     nrcalcloc = models.IntegerField(blank=True, default=1, verbose_name="Numarul de relocari")
