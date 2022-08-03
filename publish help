@@ -1,0 +1,33 @@
+https://certbot.eff.org/instructions?ws=apache&os=pip -> http to https
+
+In addition to certfile and keyfile you need to add ca-certs as well. Without passing ca-certs, I was getting Trust anchor for certification path not found. on Android devices.
+
+Sample command:
+/usr/bin/python3 /usr/local/bin/gunicorn --bind 0.0.0.0:443 wsgi:app --workers=8 --access-logfile=/root/app/logs/access.log --error-logfile=/root/app/logs/error.log --certfile=/root/app/certificate.crt --keyfile=/root/app/private.key --ca-certs=/root/app/ca_bundle.crt --daemon
+
+https://www.youtube.com/watch?v=Sa_kQheCnds
+cam la 1/4 incepe
+
+cont hostmaster:
+username: suporttehnicangajati
+parola: iamamaster
+
+Generating public/private rsa key pair.
+Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
+Your identification has been saved in /home4/megatita/.ssh/id_rsa.
+Your public key has been saved in /home4/megatita/.ssh/id_rsa.pub.
+The key fingerprint is:
+SHA256:OZsjVBDs42FpA3/P6rnq0IDQ68zo36EAVsqb3EqYs3c
+The key's randomart image is:
++---[RSA 2048]----+
+|     .o.         |
+| .  . ..         |
+|. .. + ..        |
+|..oo  X...       |
+|.+o .+.=So       |
+|=*+  +.  +o      |
+|=*+...o +.       |
+|oo+ E....o       |
+|.+.+ ooo+.       |
++----[SHA256]-----+
