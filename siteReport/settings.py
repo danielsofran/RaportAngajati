@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-vyy*k=*t10r9*m(5%d_%w*)af=2oi3vbzm=rb0^bxzj&-q-d9t'
+SECRET_KEY = 'vyy*k=*t10r9*m(5%d_%w*)af=2oi3vbzm=rb0^bxzj&-q-d9t'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -128,8 +128,10 @@ AUTH_USER_MODEL = 'main.User'
 TIME_ZONE = 'Europe/Bucharest'
 
 
-# NR_RECALC_POZ = 3
-#
-# SEC_RECALC_AFTER = 60
-#
-# FIRMA_SHAPE = [[],[],[]]
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = True
+# SECURE_HSTS_SECONDS = 60
+# SECURE_HSTS_PRELOAD = True
+# SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+
+# SECURE_SSL_REDIRECT = True

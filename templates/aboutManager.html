@@ -99,6 +99,7 @@ window.addEventListener('load', ()=>{
                     <li><a href="#actFilter" class="link-dark rounded text-decoration-none">Filtrare</a></li>
                     <li><a href="#actModif" class="link-dark rounded text-decoration-none">Modificare/Ștergere</a></li>
                     <li><a href="#actAdd" class="link-dark rounded text-decoration-none">Adăugare</a></li>
+                    <li><a href="#actCmd" class="link-dark rounded text-decoration-none">Informaţii <span class="text-danger">importante</span> despre comenzi</a></li>
                   </ul>
                 </div>
             </li>
@@ -354,7 +355,8 @@ window.addEventListener('load', ()=>{
         </li>
     </ol>
     <p><span class="badge bg-danger rounded-pill">!</span> Aceste filtre se aplică simultan! </p>
-    <p><span class="badge bg-primary rounded-pill">!</span> Filtrarea poate fi ascunsă, pentru o vizualizare mai bună a datelor tabelului, folosind butonul <span class="badge bg-secondary">Atată/Ascunde</span>
+    <p><span class="badge bg-primary rounded-pill">!</span> Filtrarea poate fi ascunsă, pentru o vizualizare mai bună a datelor tabelului, folosind butonul <span class="badge bg-secondary">Atată/Ascunde</span></p>
+    <p><span class="badge bg-primary rounded-pill">!</span> Pentru a şterge filtrul de căutare, ştergeţi textul din bara de căutare iar apoi apăsaţi butonul <span class="badge bg-primary">Filtrează</span></p>
     <p>În aceeași manieră, se poate stabili o ordine în care să fie afișate liniile tabelului. Opțiunile sunt:</p>
     <ol>
         <li> Criteriul de ordonare:
@@ -398,6 +400,8 @@ window.addEventListener('load', ()=>{
     <p> În acest context, editare înseamnă salvare. </p>
     <p> Anularea acestei acțiuni presupune pur și simplu părăsirea paginii, dacă nu ați apăsat butonul <span class="badge bg-primary">Salvează modificările</span>. Astfel datele nu vor fi salvate. </p>
     <p> Anularea poate fi efectuată apăsând butonul <i class="fa-solid fa-angle-left"></i> al browser-ului sau accesând o altă opțiune din meniul de opțiuni. </p>
+    <h3 id="actCmd">Informaţii importante despre comenzi</h3>
+    <p> Comenzile au un număr <strong>unic</strong> într-un an! Dat fiind acest fapt, un singur angajat poate finaliza un număr de comandă, deoarece dacă ceilalţi vor încerca, li se va afişa mesajul <strong>Număr de comandă duplicat!</strong></p>
 
     {# RAPORT #}
     <h2 id="raport">Raport</h2>
