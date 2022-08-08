@@ -84,6 +84,41 @@
         </div>
       </div>
     </div>
+    <div class="modal fade" id="modalCancelLucru" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel8" aria-hidden="true">
+      <div class="modal-dialog me-auto">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title fs-2" id="staticBackdropLabel8">Atentie!</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body fs-4">
+            Lucrarea va fi anulata!<br>
+            Sigur doriti sa continuati?
+          </div>
+          <div class="modal-footer justify-content-around">
+            <button type="button" class="btn btn-danger fs-3" data-bs-dismiss="modal">Anuleaza</button>
+            <button type="button" class="btn btn-warning fs-3" id="btnCancelLucru">Continua</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="modalEditLucru" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel9" aria-hidden="true">
+      <div class="modal-dialog me-auto">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title fs-2" id="staticBackdropLabel9">Atentie!</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body fs-4">
+            Sigur doriti sa editati lucrarea?
+          </div>
+          <div class="modal-footer justify-content-around">
+            <button type="button" class="btn btn-danger fs-3" data-bs-dismiss="modal">Anuleaza</button>
+            <button type="button" class="btn btn-success fs-3" id="btnEditLucru">Salveaza</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     {# STATS #}
     {% load mytags %}
@@ -198,8 +233,72 @@
               </div>
             </div>
         </div>
+    {% endif %}
+    {% if lucrari|length > 0 %}
+        <div class="my-3 mt-5 w-90">
+        <div class="d-flex flex-row" id="showDivLucrari">
+            <p class="me-5 text-nowrap"> Lucrari finalizate: {{ nrlucrari }} </p>
+            <button onclick="arataascunde('lucrariShowDiv', 'btnShowHideLucru')" id="btnShowHideLucru" class="btn btn-primary btn-square-md font-weight-bold fs-3 align-self-center my-0 px-4" > Ascunde </button>
+        </div>
+            <div id="lucrariShowDiv">
+            {% for lucru in lucrari %}
+                <div class="my-3">
+                <div class="card fs-3 my-1">
+                  <div class="card-header fw-bold">
+                    {{ lucru.denumire }}
+                  </div>
+                  <div class="card-body">
+                    <div class="list-group list-group-flush">
+                      <li class="list-group-item">Ora: {{ lucru.getStrTime }}</li>
+                      <li class="list-group-item">
+                          <div class="d-flex flex-row">
+                              <p class="me-3">Locatie: {{ lucru|strloc }}</p>
+                              <button class="btn btn-light fs-3" onclick="loadMap('{{ lucru.getCoords|safe }}')"><i class="fa-solid fa-location-crosshairs"></i></button>
+                          </div>
+                      </li>
+                      <li class="list-group-item">Observatie: {{ lucru.text }} </li>
+                    </div>
+                    <div class="d-flex justify-content-around">
+                    {% if showcmdedit %}
+                      <button type="button" data-bs-toggle="modal" data-bs-target="#modalCancelLucru" data-bs-id="{{ lucru.id }}" class="btn btn-danger btn-square-md font-weight-bold fs-2 my-0"> Anuleaza </button>
+                      <button type="button" class="btn btn-primary btn-square-md font-weight-bold fs-2 my-0"
+                              onclick="showEditLucru('{{ lucru.denumire }}', '{{ lucru.text }}', {{ lucru.id }})">Editeaza</button>
+                    {% endif %}
+                    </div>
+                  </div>
+                </div>
+                </div>
+            {% endfor %}
+            </div>
+        </div>
+
+        <div class="d-none fs-2 pt-3 w-90" id="lucruDiv">
+            <div class="row mb-3 fs-3">
+                <label for="lucruDen" class="form-label fs-2" style="text-align: left !important;">Denumire</label>
+                <input class="form-control fs-3" list="datalistOptions3" id="lucruDen" placeholder="Scrie denumirea lucrului" required>
+                <datalist id="datalistOptions3">
+                  <option value="Panou de gard">
+                  <option value="Poarta">
+                  <option value="Portita">
+                  <option value="Scara">
+                  <option value="Balustrada">
+                  <option value="Stalpi">
+                  <option value="Mana curenta">
+                </datalist>
+            </div>
+            <div class="form-floating fs-4 mt-3">
+              <textarea maxlength="200" class="form-control fs-4" placeholder="Scrieti observatia/motivarea aici" id="lucruObs" style="height: 100px"></textarea>
+              <label for="lucruObs">Observatie</label>
+              <div class="d-flex flex-row justify-content-around mt-1 fs-5">
+                  <button type="reset" onclick="toogleView('lucruDiv')" class="btn btn-danger font-weight-bold fs-2 align-self-center my-0" > Anuleaza </button>
+                  <button id="btnEditShowModalLucru" type="button" data-bs-toggle="modal" data-bs-target="#modalEditLucru" class="btn btn-primary font-weight-bold fs-2 align-self-center my-0 me-3">Salveaza</button>
+              </div>
+            </div>
+        </div>
     </div>
 {% endif %}
+    </div>
+
     {% else %} <!-- Table View -->
         <div class="mt-5">
             {% if request.user|role_at_least:"Manager" %}
@@ -236,7 +335,7 @@
                       <option {% if ocrit == "datetimeout" %}selected{% endif %} value="datetimeout">Data si ora iesirii</option>
                       <option {% if ocrit == "timein" %}selected{% endif %} value="timein">Ora intrarii</option>
                       <option {% if ocrit == "timeout" %}selected{% endif %} value="timeout">Ora iesirii</option>
-                      <option {% if ocrit == "nrcom" %}selected{% endif %} value="nrcom">Numar de comenzi</option>
+                      <option {% if ocrit == "nrcom" %}selected{% endif %} value="nrcom">Numar de lucrari</option>
                     </select>
                     <select class="form-select flex-shrink-1 fs-3 me-5 w-25" aria-label="Default select example" name="oord" required>
                       <option {% if oord == "cresc" %}selected{% endif %} value="cresc">Crescator</option>
@@ -288,8 +387,6 @@
 </div>
 {% endblock %}
 
-{#{% if %}#}
-
 {% block scripts %}
 <script>
 
@@ -317,7 +414,44 @@ window.addEventListener('load', () =>{
       nr = document.getElementById("inputNrComanda").value
       obs = document.getElementById("comandObs").value
 
-      butonSave.onclick = () => {window.location.href = `{% url 'comanda_edit' %}?oldnr=${recipient}&nr=${nr}&den=${den}&obs=${obs}`};
+      butonSave.onclick = () => {
+          getLocation((position) =>{
+              let loc = `${position.coords.latitude},${position.coords.longitude}`
+              window.location.href = `{% url 'comanda_edit' %}?oldnr=${recipient}&nr=${nr}&den=${den}&obs=${obs}&loc=${loc}`
+          })
+      };
+    })
+
+    var modalCancelLucru = document.getElementById('modalCancelLucru')
+    modalCancelLucru.addEventListener('show.bs.modal', function (event) {
+      var button = event.relatedTarget
+      var recipient = button.getAttribute('data-bs-id')
+      alert(recipient)
+      var butonContinua = document.getElementById('btnCancelLucru')
+      butonContinua.onclick = () => {window.location.href = "{% url 'lucru_cancel' %}?id="+recipient};
+    })
+
+    var modalEditLucru = document.getElementById('modalEditLucru')
+    modalEditLucru.addEventListener('show.bs.modal', function (event) {
+      // Button that triggered the modal
+      var button = event.relatedTarget
+      // Extract info from data-bs-* attributes
+      var recipient = button.getAttribute('data-bs-id')
+        alert(recipient)
+      // If necessary, you could initiate an AJAX request here
+      // and then do the updating in a callback.
+      //
+      // Update the modal's content.
+      var butonSave = document.getElementById('btnEditLucru')
+      den = document.getElementById("lucruDen").value
+      obs = document.getElementById("lucruObs").value
+
+      butonSave.onclick = () => {
+          getLocation((position) =>{
+              let loc = `${position.coords.latitude},${position.coords.longitude}`
+              window.location.href = `{% url 'lucru_edit' %}?id=${recipient}&den=${den}&obs=${obs}&loc=${loc}`
+          })
+      };
     })
 
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
@@ -413,6 +547,14 @@ function showEdit(den, nr, text){
     document.getElementById('comandObs').value = text.replace('; ', '\n');
     window.location.href = window.location.href.replace(/#.*/g, "") + "#comandDiv";
     document.getElementById('btnEditShowModal').setAttribute("data-bs-oldnr", nr);
+}
+
+function showEditLucru(den, text, id){
+    toogleView('lucruDiv');
+    document.getElementById('lucruDen').value = den;
+    document.getElementById('lucruObs').value = text.replace('; ', '\n');
+    window.location.href = window.location.href.replace(/#.*/g, "") + "#lucruDiv";
+    document.getElementById('btnEditShowModalLucru').setAttribute("data-bs-id", id);
 }
 
 function fallbackCopyTextToClipboard(text) {

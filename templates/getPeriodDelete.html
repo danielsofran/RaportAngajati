@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% load mytags %}
+    <div class="modal fade" id="modalDelete" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel6" aria-hidden="true">
+      <div class="modal-dialog me-auto">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title fs-2" id="staticBackdropLabel6">Atentie!</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body fs-4">
+            Toate activitatile angajatilor dinaintea datei selectate vor fi sterse!<br>
+            Aceasta actiune va elibera memorie pe server. <br>
+            Sigur doriti sa continuati?
+          </div>
+          <div class="modal-footer justify-content-around">
+            <button type="button" class="btn btn-danger fs-3" data-bs-dismiss="modal">Anuleaza</button>
+            <button type="button" class="btn btn-warning fs-3" id="btnDelete">Continua</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container m-5 p-5 fs-1">
+    <form method="post" name="myform">
+        {% csrf_token %}
+        <div class="row mb-5">
+            <label for="inputDate" class="text-nowrap me-3">Sterge activitatile dinaintea datei </label>
+            <input type="datetime-local" class="form-control fs-1" id="inputDate" required pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" name="date" value="{{ now|ftime:"datetime" }}">
+        </div>
+        <div class="row mb-5">
+            <div class="d-flex flex-row justify-content-around">
+                <button type="button" data-bs-toggle="modal" data-bs-target="#modalDelete" class="btn btn-danger fs-1">Sterge</button>
+            </div>
+        </div>
+    </form>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+
+window.addEventListener('load', ()=>{
+    document.getElementById('btnDelete').addEventListener('click', ()=>{
+        document.forms["myform"].submit()
+    })
+}, false)
+
+function createDateTime(datestr){
+    if(datestr == null || datestr.length === 0)
+        return ""
+    const now = new Date();
+    let elems = datestr.split("-");
+    let toktime = elems[1].split(":");
+    let tokdate = elems[0].split(".");
+    now.setHours(parseInt(toktime[0]));
+    now.setMinutes(parseInt(toktime[1]));
+    now.setDate(parseInt(tokdate[0]));
+
+    now.setMonth(parseInt(tokdate[1]));
+    now.setFullYear(parseInt(tokdate[2]));
+    //alert(now.toJSON())
+    //alert(now.toISOString())
+    //2022-08-22T04:40:00.553Z
+    rez = ""
+    rez += pad(now.getFullYear(), 4) + "-" + pad(now.getMonth(), 2) + "-" + pad(now.getDate(), 2);
+    rez += "T" + pad(now.getHours(), 2) + ":" + pad(now.getMinutes(), 2);
+    return rez;
+}
+
+function createDateTimeFromDate(now){
+    //utc_time = now.getTime() + (now.getTimezoneOffset() * 60000)
+    //now = new Date(utc_time)
+    rez = ""
+    rez += pad(now.getFullYear(), 4) + "-" + pad(now.getMonth(), 2) + "-" + pad(now.getDate(), 2);
+    rez += "T" + pad(now.getHours(), 2) + ":" + pad(now.getMinutes(), 2);
+    return rez;
+}
+
+function createDate(datestr){
+    if(datestr == null || datestr.length === 0)
+        return ""
+    const now = new Date();
+    let elems = datestr.split(".");
+    now.setDate(parseInt(elems[0]));
+
+    now.setMonth(parseInt(elems[1]));
+    now.setFullYear(parseInt(elems[2]));
+    //alert(now.toJSON())
+    //alert(now.toISOString())
+    //2022-08-22T04:40:00.553Z
+    return pad(now.getFullYear(), 4) + "-" + pad(now.getMonth(), 2) + "-" + pad(now.getDate(), 2);
+}
+
+function pad(num, size) {
+    num = num.toString();
+    while (num.length < size) num = "0" + num;
+    return num;
+}
+
+window.addEventListener('load', ()=>{
+    date = new Date()
+    document.getElementById('inputDate').value = createDateTime("{{ now|ftime:"datetime" }}")
+}, false)
+
+</script>
+{% endblock %}

@@ -124,6 +124,11 @@ class Iesire(Info):
     class Meta:
         verbose_name_plural='Iesiri'
 
+class Lucru(Info):
+    denumire = models.TextField(blank=False, max_length=300, verbose_name="lucru")
+    class Meta:
+        verbose_name_plural='Lucrari'
+
 class Comanda(Info):
     numar_comanda = models.CharField(blank=False, max_length=15, default="Cxxxx.xx")
     denumire = models.CharField(blank=False, max_length=20, default="")

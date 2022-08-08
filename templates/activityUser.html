@@ -90,6 +90,41 @@
         </div>
       </div>
     </div>
+    <div class="modal fade" id="modalCancelLucru" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel10" aria-hidden="true">
+      <div class="modal-dialog me-auto">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title fs-2" id="staticBackdropLabel10">Atentie!</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body fs-4">
+            Lucrarea va fi anulata!<br>
+            Sigur doriti sa continuati?
+          </div>
+          <div class="modal-footer justify-content-around">
+            <button type="button" class="btn btn-danger fs-3" data-bs-dismiss="modal">Anuleaza</button>
+            <button type="button" class="btn btn-warning fs-3" id="btnCancelLucru">Continua</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="modalEditLucru" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel11" aria-hidden="true">
+      <div class="modal-dialog me-auto">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title fs-2" id="staticBackdropLabel11">Atentie!</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body fs-4">
+            Sigur doriti sa editati lucrarea?
+          </div>
+          <div class="modal-footer justify-content-around">
+            <button type="button" class="btn btn-danger fs-3" data-bs-dismiss="modal">Anuleaza</button>
+            <button type="button" class="btn btn-success fs-3" id="btnEditLucru">Salveaza</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     {# STATS #}
     {% load mytags %}
@@ -172,48 +207,126 @@
             </div>
         </div>
     </form>
-        <div class="my-3 mt-5 w-50">
-            <div class="d-flex flex-row">
-                <p class="me-5 text-nowrap"> Comenzi finalizate: {{ nrcomenzi }} </p>
-                <button onclick="arataascunde()" id="btnShowHide" class="btn btn-outline-primary btn-square-md font-weight-bold fs-3 align-self-center my-0 px-4 me-5" title="Arata/Ascunde Comenzile" data-bs-toggle="tooltip" data-bs-placement="top" > Ascunde </button>
-                <button onclick="showEdit('', '', '', '', '{{ datetime|ftime:"date timenow" }}')" id="btnShowAdd" class="btn btn-success btn-square-md font-weight-bold fs-3 align-self-center my-0 px-4" > Adauga </button>
+    <div class="my-3 mt-5 w-50">
+        <div class="d-flex flex-row">
+            <p class="me-5 text-nowrap"> Comenzi finalizate: {{ nrcomenzi }} </p>
+            <button onclick="arataascunde()" id="btnShowHide" class="btn btn-outline-primary btn-square-md font-weight-bold fs-3 align-self-center my-0 px-4 me-5" title="Arata/Ascunde Comenzile" data-bs-toggle="tooltip" data-bs-placement="top" > Ascunde </button>
+            <button onclick="showEdit('', '', '', '', '{{ datetime|ftime:"date timenow" }}')" id="btnShowAdd" class="btn btn-success btn-square-md font-weight-bold fs-3 align-self-center my-0 px-4" > Adauga </button>
+        </div>
+        <div id="comenziShowDiv">
+        {% for comanda in comenzi %}
+            <div class="my-3">
+            <div class="card fs-3 my-1">
+              <div class="card-header fw-bold">
+                {{ comanda.denumire }}
+              </div>
+              <div class="card-body">
+                <div class="list-group list-group-flush">
+                  <li class="list-group-item">Numar comanda: {{ comanda.numar_comanda }}</li>
+                  <li class="list-group-item">Ora: {{ comanda.getStrTime }}</li>
+                  <li class="list-group-item">
+                      <div class="d-flex flex-row">
+                          <p class="me-3">Locatie: {{ comanda|strloc }}</p>
+                          <button class="btn btn-light fs-3" onclick="loadMap('{{ comanda.getCoords|safe }}')" title="Arata pe harta"><i class="fa-solid fa-location-crosshairs"></i></button>
+                      </div>
+                  </li>
+                  <li class="list-group-item">Observatie: {{ comanda.text }} </li>
+                </div>
+                <div class="d-flex justify-content-around">
+                  <button type="button" data-bs-toggle="modal" data-bs-target="#modalCancelComand" data-bs-nr="{{ comanda.numar_comanda }}" class="btn btn-danger btn-square-md font-weight-bold fs-2 my-0"> Anuleaza </button>
+                  <button type="button" class="btn btn-primary btn-square-md font-weight-bold fs-2 my-0"
+                          onclick="showEdit('{{ comanda.denumire }}','{{ comanda.numar_comanda }}','{{ comanda.text }}', '{{ comanda.getCoords }}', '{{ comanda.datetime|ftime:"datetime" }}')">Editeaza</button>
+                </div>
+              </div>
             </div>
-            <div id="comenziShowDiv">
-            {% for comanda in comenzi %}
-                <div class="my-3">
-                <div class="card fs-3 my-1">
-                  <div class="card-header fw-bold">
-                    {{ comanda.denumire }}
-                  </div>
-                  <div class="card-body">
-                    <div class="list-group list-group-flush">
-                      <li class="list-group-item">Numar comanda: {{ comanda.numar_comanda }}</li>
-                      <li class="list-group-item">Ora: {{ comanda.getStrTime }}</li>
-                      <li class="list-group-item">
-                          <div class="d-flex flex-row">
-                              <p class="me-3">Locatie: {{ comanda|strloc }}</p>
-                              <button class="btn btn-light fs-3" onclick="loadMap('{{ comanda.getCoords|safe }}')" title="Arata pe harta"><i class="fa-solid fa-location-crosshairs"></i></button>
-                          </div>
-                      </li>
-                      <li class="list-group-item">Observatie: {{ comanda.text }} </li>
-                    </div>
-                    <div class="d-flex justify-content-around">
-                      <button type="button" data-bs-toggle="modal" data-bs-target="#modalCancelComand" data-bs-nr="{{ comanda.numar_comanda }}" class="btn btn-danger btn-square-md font-weight-bold fs-2 my-0"> Anuleaza </button>
-                      <button type="button" class="btn btn-primary btn-square-md font-weight-bold fs-2 my-0"
-                              onclick="showEdit('{{ comanda.denumire }}','{{ comanda.numar_comanda }}','{{ comanda.text }}', '{{ comanda.getCoords }}', '{{ comanda.datetime|ftime:"datetime" }}')">Editeaza</button>
-                    </div>
-                  </div>
-                </div>
-                </div>
-            {% endfor %}
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+
+    <div class="d-none fs-2 pt-3 w-50" id="comandDiv">
+        <div class="row mb-3 fs-3">
+            <label for="comandaDen" class="form-label fs-2" style="text-align: left !important;">Denumire</label>
+            <input autocomplete="off" class="form-control fs-3" list="datalistOptions" id="comandaDen" placeholder="Alege/Scrie denumirea produsului" required>
+            <datalist id="datalistOptions">
+              <option value="Panou de gard">
+              <option value="Poarta">
+              <option value="Portita">
+              <option value="Scara">
+              <option value="Balustrada">
+              <option value="Stalpi">
+              <option value="Mana curenta">
+        </datalist>
+        </div>
+        <div class="row mb-3 fs-3">
+            <label for="inputNrComanda" class="col-form-label fs-3 text-start">Numar comanda</label>
+            <div class="col-sm-10">
+              <input autocomplete="off" type="text" class="form-control fs-3" id="inputNrComanda" required pattern="C[0-9]{1,}.[0-9]{1,}">
             </div>
         </div>
+        <div class="row mb-3 fs-3">
+            <label for="inputLoc" class="col-form-label fs-3 text-start">Locatie (lat, long) &nbsp;
+                <button onclick="setCurentCoords('inputLoc')" title="Seteaza locatia curenta" class="btn btn-light fs-5"><i class="fa-solid fa-location-crosshairs"></i></button>
+            </label>
+            <div class="col-sm-10">
+              <input autocomplete="off" type="text" class="form-control fs-3" id="inputLoc" required pattern="[0-9]{1,2}.[0-9]{2,},[\s ][0-9]{1,2}.[0-9]{2,}">
+            </div>
+        </div>
+        <div class="row mb-3 fs-3">
+            <label for="inputMom" class="col-form-label fs-3 text-start">Data si ora</label>
+            <div class="col-sm-10">
+              <input autocomplete="off" type="datetime-local" class="form-control fs-3" id="inputMom" required pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}">
+            </div>
+        </div>
+        <div class="form-floating fs-4 mt-3">
+          <textarea maxlength="200" class="form-control fs-4" placeholder="Scrieti observatia/motivarea aici" id="comandObs" style="height: 100px"></textarea>
+          <label for="comandObs">Observatie</label>
+          <div class="d-flex flex-row justify-content-around mt-1 fs-5">
+              <button onclick="toogleView('comandDiv')" class="btn btn-danger font-weight-bold fs-2 align-self-center my-0" > Anuleaza </button>
+              <button id="btnEditShowModal" type="button" data-bs-toggle="modal" data-bs-target="#modalEditComand" class="btn btn-primary font-weight-bold fs-2 align-self-center my-0 me-3">Salveaza</button>
+          </div>
+        </div>
+    </div>
 
-        <div class="d-none fs-2 pt-3 w-50" id="comandDiv">
+    <div class="my-3 mt-5 w-50">
+    <div class="d-flex flex-row" id="showDivLucrari">
+        <p class="me-5 text-nowrap"> Lucrari finalizate: {{ nrlucrari }} </p>
+        <button onclick="arataascunde('lucrariShowDiv', 'btnShowHideLucru')" id="btnShowHideLucru" class="btn btn-outline-primary btn-square-md font-weight-bold fs-3 align-self-center my-0 px-4 me-5" title="Arata/Ascunde Comenzile" data-bs-toggle="tooltip" data-bs-placement="top"> Ascunde </button>
+        <button onclick="showAddLucru('', '', '', '{{ datetime|ftime:"date timenow" }}')" id="btnShowAddLucru" class="btn btn-success btn-square-md font-weight-bold fs-3 align-self-center my-0 px-4" > Adauga </button>
+    </div>
+        <div id="lucrariShowDiv">
+        {% for lucru in lucrari %}
+            <div class="my-3">
+            <div class="card fs-3 my-1">
+              <div class="card-header fw-bold">
+                {{ lucru.denumire }}
+              </div>
+              <div class="card-body">
+                <div class="list-group list-group-flush">
+                  <li class="list-group-item">Ora: {{ lucru.getStrTime }}</li>
+                  <li class="list-group-item">
+                      <div class="d-flex flex-row">
+                          <p class="me-3">Locatie: {{ lucru|strloc }}</p>
+                          <button class="btn btn-light fs-3" onclick="loadMap('{{ lucru.getCoords|safe }}')"><i class="fa-solid fa-location-crosshairs"></i></button>
+                      </div>
+                  </li>
+                  <li class="list-group-item">Observatie: {{ lucru.text }} </li>
+                </div>
+                <div class="d-flex justify-content-around">
+                  <button type="button" data-bs-toggle="modal" data-bs-target="#modalCancelLucru" data-bs-id="{{ lucru.id }}" class="btn btn-danger btn-square-md font-weight-bold fs-2 my-0"> Anuleaza </button>
+                  <button type="button" class="btn btn-primary btn-square-md font-weight-bold fs-2 my-0"
+                          onclick="showEditLucru('{{ lucru.denumire }}', '{{ lucru.text }}', {{ lucru.id }}, '{{ lucru.getCoords|safe }}', '{{ lucru.datetime|ftime:"datetime" }}')">Editeaza</button>
+                </div>
+              </div>
+            </div>
+            </div>
+        {% endfor %}
+        </div>
+        <div class="d-none fs-2 pt-3 w-90" id="lucruDiv">
             <div class="row mb-3 fs-3">
-                <label for="comandaDen" class="form-label fs-2" style="text-align: left !important;">Denumire</label>
-                <input autocomplete="off" class="form-control fs-3" list="datalistOptions" id="comandaDen" placeholder="Alege/Scrie denumirea produsului" required>
-                <datalist id="datalistOptions">
+                <label for="lucruDen" class="form-label fs-2" style="text-align: left !important;">Denumire</label>
+                <input class="form-control fs-3" list="datalistOptions3" id="lucruDen" placeholder="Scrie denumirea lucrului" required>
+                <datalist id="datalistOptions3">
                   <option value="Panou de gard">
                   <option value="Poarta">
                   <option value="Portita">
@@ -221,37 +334,34 @@
                   <option value="Balustrada">
                   <option value="Stalpi">
                   <option value="Mana curenta">
-            </datalist>
+                </datalist>
             </div>
             <div class="row mb-3 fs-3">
-                <label for="inputNrComanda" class="col-form-label fs-3 text-start">Numar comanda</label>
-                <div class="col-sm-10">
-                  <input autocomplete="off" type="text" class="form-control fs-3" id="inputNrComanda" required pattern="C[0-9]{1,}.[0-9]{1,}">
-                </div>
-            </div>
-            <div class="row mb-3 fs-3">
-                <label for="inputLoc" class="col-form-label fs-3 text-start">Locatie (lat, long) &nbsp;
-                    <button onclick="setCurentCoords('inputLoc')" title="Seteaza locatia curenta" class="btn btn-light fs-5"><i class="fa-solid fa-location-crosshairs"></i></button>
+                <label for="lucruLoc" class="col-form-label fs-3 text-start">Locatie (lat, long) &nbsp;
+                    <button onclick="setCurentCoords('lucruLoc')" title="Seteaza locatia curenta" class="btn btn-light fs-5"><i class="fa-solid fa-location-crosshairs"></i></button>
                 </label>
                 <div class="col-sm-10">
-                  <input autocomplete="off" type="text" class="form-control fs-3" id="inputLoc" required pattern="[0-9]{1,2}.[0-9]{2,},[\s ][0-9]{1,2}.[0-9]{2,}">
+                  <input autocomplete="off" type="text" class="form-control fs-3" id="lucruLoc" required pattern="[0-9]{1,2}.[0-9]{2,},[\s ][0-9]{1,2}.[0-9]{2,}">
                 </div>
             </div>
             <div class="row mb-3 fs-3">
-                <label for="inputMom" class="col-form-label fs-3 text-start">Data si ora</label>
+                <label for="lucruMom" class="col-form-label fs-3 text-start">Data si ora</label>
                 <div class="col-sm-10">
-                  <input autocomplete="off" type="datetime-local" class="form-control fs-3" id="inputMom" required pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}">
+                  <input autocomplete="off" type="datetime-local" class="form-control fs-3" id="lucruMom" required pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}">
                 </div>
             </div>
             <div class="form-floating fs-4 mt-3">
-              <textarea maxlength="200" class="form-control fs-4" placeholder="Scrieti observatia/motivarea aici" id="comandObs" style="height: 100px"></textarea>
-              <label for="comandObs">Observatie</label>
+              <textarea maxlength="200" class="form-control fs-4" placeholder="Scrieti observatia/motivarea aici" id="lucruObs" style="height: 100px"></textarea>
+              <label for="lucruObs">Observatie</label>
               <div class="d-flex flex-row justify-content-around mt-1 fs-5">
-                  <button onclick="toogleView('comandDiv')" class="btn btn-danger font-weight-bold fs-2 align-self-center my-0" > Anuleaza </button>
-                  <button id="btnEditShowModal" type="button" data-bs-toggle="modal" data-bs-target="#modalEditComand" class="btn btn-primary font-weight-bold fs-2 align-self-center my-0 me-3">Salveaza</button>
+                  <button type="reset" onclick="toogleView('lucruDiv')" class="btn btn-danger font-weight-bold fs-2 align-self-center my-0" > Anuleaza </button>
+                  <button id="btnEditShowModalLucru" type="button" data-bs-toggle="modal" data-bs-target="#modalEditLucru" class="btn btn-primary font-weight-bold fs-2 align-self-center my-0 me-3">Salveaza</button>
               </div>
             </div>
         </div>
+        </div>
+    </div>
+
     </div>
 </div>
 {% endblock %}
@@ -297,6 +407,38 @@ window.addEventListener('load', ()=>{
       }
     })
 
+    document.getElementById('modalCancelLucru').addEventListener('show.bs.modal', function (event) {
+      var button = event.relatedTarget
+      var recipient = button.getAttribute('data-bs-id')
+      var butonContinua = document.getElementById('btnCancelLucru')
+      butonContinua.onclick = () => {window.location.href = "{% url 'lucru_cancel'%}?id="+recipient};
+    })
+
+    document.getElementById('modalEditLucru').addEventListener('show.bs.modal', function (event) {
+      // Button that triggered the modal
+      var button = event.relatedTarget
+      var butonSave = document.getElementById('btnEditLucru')
+
+      let den = document.getElementById("lucruDen").value.trim()
+      let obs = document.getElementById("lucruObs").value
+      let datetime = document.getElementById("lucruMom").value
+      let coordElem = document.getElementById("lucruLoc")
+      if(!coordElem.value.toString().includes(",")) {
+          alert("Locatie invalida!")
+      }
+      let strcoord = coordElem.value.split(',')
+      let coord = strcoord[0].trim() + "," + strcoord[1].trim()
+
+      var recipient = button.getAttribute('data-bs-id')
+      if(recipient != null && recipient !== ""){
+          butonSave.onclick = () => {window.location.href = `{% url 'lucru_edit' %}?id=${recipient}&den=${den}&obs=${obs}&datetime=${datetime}&loc=${coord}`};
+      } else {
+          let user = "{{ ownuser.username }}"
+          //alert(user)
+          butonSave.onclick = () => {window.location.href = `{% url 'lucru_edit' %}?user=${user}&den=${den}&obs=${obs}&datetime=${datetime}&loc=${coord}`};
+      }
+    })
+
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
     var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
       return new bootstrap.Tooltip(tooltipTriggerEl)
@@ -315,10 +457,9 @@ function toogleView(domname){
     }
 }
 
-function arataascunde(){
-    let domname = "comenziShowDiv"
+function arataascunde(domname="comenziShowDiv", btnid="btnShowHide"){
     elem = document.getElementById(domname);
-    btn = document.getElementById('btnShowHide');
+    btn = document.getElementById(btnid);
     if(elem.classList.contains("d-none")) {
         elem.classList.remove("d-none");
         btn.innerText = "Ascunde";
@@ -409,6 +550,25 @@ function showEdit(den, nr, text, coords, datetime){
     document.getElementById('btnEditShowModal').setAttribute("data-bs-oldnr", nr);
 }
 
+function showAddLucru(den, text, loc, datetime){
+    toogleView('lucruDiv');
+    document.getElementById('lucruDen').value = den;
+    document.getElementById('lucruLoc').value = loc;
+    document.getElementById('lucruMom').value = createDateTime(datetime);
+    document.getElementById('lucruObs').value = text.replace('; ', '\n');
+    window.location.href = window.location.href.replace(/#.*/g, "") + "#lucruDiv";
+}
+
+function showEditLucru(den, text, id, loc, datetime){
+    toogleView('lucruDiv');
+    document.getElementById('lucruDen').value = den;
+    document.getElementById('lucruLoc').value = loc;
+    document.getElementById('lucruMom').value = createDateTime(datetime);
+    document.getElementById('lucruObs').value = text.replace('; ', '\n');
+    window.location.href = window.location.href.replace(/#.*/g, "") + "#lucruDiv";
+    document.getElementById('btnEditShowModalLucru').setAttribute("data-bs-id", id);
+}
+
 function createDateTime(datestr){
     if(datestr == null || datestr.length === 0)
         return ""
@@ -458,6 +618,17 @@ function clearFields(str){
         document.getElementById('inputObsOut').value = ""
     }
     myModal.show()
+}
+
+function recreateNode(el, withChildren) {
+  if (withChildren) {
+    el.parentNode.replaceChild(el.cloneNode(true), el);
+  }
+  else {
+    var newEl = el.cloneNode(false);
+    while (el.hasChildNodes()) newEl.appendChild(el.firstChild);
+    el.parentNode.replaceChild(newEl, el);
+  }
 }
 
 </script>

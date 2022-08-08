@@ -172,6 +172,36 @@
             </div>
         </div>
 
+        <div class="my-3 ms-5">
+            <div class="d-flex flex-row">
+                <button type="button" class="btn mx-auto p-3 border fs-1 me-5" style="background-color: sandybrown" onclick="toogleView('lucruDiv')">Am terminat un lucru</button>
+{#                <div class="d-flex flex-row"><button onclick="toogleView('comandDiv')" class="btn btn-danger btn-square-md font-weight-bold fs-1 align-self-center my-0"><i class="fa-solid fa-xmark"></i></button></div>#}
+            </div>
+            <div class="d-none fs-2 pt-3" id="lucruDiv">
+                <div class="row mb-3 fs-3">
+                    <label for="lucruDen" class="form-label fs-2" style="text-align: left !important;">Denumire</label>
+                    <input class="form-control fs-3" list="datalistOptions2" id="lucruDen" placeholder="Scrie denumirea lucrului" required>
+                    <datalist id="datalistOptions2">
+                      <option value="Panou de gard">
+                      <option value="Poarta">
+                      <option value="Portita">
+                      <option value="Scara">
+                      <option value="Balustrada">
+                      <option value="Stalpi">
+                      <option value="Mana curenta">
+                    </datalist>
+                </div>
+                <div class="form-floating fs-4 mt-3">
+                  <textarea maxlength="200" class="form-control fs-4" placeholder="Scrieti observatia/motivarea aici" id="lucruObs" style="height: 100px"></textarea>
+                  <label for="lucruObs">Observatie</label>
+                  <div class="d-flex flex-row justify-content-around mt-1 fs-5">
+                      <button onclick="lucru()" class="btn btn-primary font-weight-bold fs-3 align-self-center my-0 me-3">Trimite</button>
+                      <button onclick="toogleView('lucruDiv')" class="btn btn-danger btn-square-md font-weight-bold fs-2 align-self-center my-0" > Anuleaza </button>
+                  </div>
+                </div>
+            </div>
+        </div>
+
         <div class="my-3 ms-5 ms-auto">
             <a class="btn btn-primary fs-2 mx-auto me-5 p-3 border" href="{% url 'actToday' %}">Vezi activitatea de astazi</a>
         </div>
@@ -317,6 +347,21 @@ function comanda(){
     }
     getLocation((position) => {
         adress = "{% url 'comanda_finish' %}" + `?lat=${position.coords.latitude}&long=${position.coords.longitude}&obs=${text}&den=${den}&nrcom=${nrcom}`;
+        window.location.href = adress;
+    });
+}
+
+function lucru(){
+    den = document.getElementById("lucruDen").value;
+    text = document.getElementById("lucruObs").value;
+    text = text.replace(/\n\r?/g, '; ');
+    if(den.trim().length === 0) {
+        invComModal = new bootstrap.Modal(document.getElementById("modalInvalidComand"), {});
+        invComModal.show();
+        return;
+    }
+    getLocation((position) => {
+        adress = "{% url 'lucru_finish' %}" + `?lat=${position.coords.latitude}&long=${position.coords.longitude}&obs=${text}&den=${den}`;
         window.location.href = adress;
     });
 }

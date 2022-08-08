@@ -24,6 +24,8 @@
             {% if user.is_authenticated and request.user|role_at_least:"Manager" %}
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item text-success" href="{% url 'actGetPeriodUser' %}">Adauga o activitate</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger" href="{% url 'actDelete' %}">Sterge mai multe activitati</a></li>
             {% endif %}
           </ul>
         </li>
@@ -36,6 +38,7 @@
             <li><a class="dropdown-item" href="{% url 'intrare' %}"> <i class="fa-solid fa-person-walking-arrow-loop-left"></i> Intrari</a></li>
             <li><a class="dropdown-item" href="{% url 'iesire' %}"> <i class="fa-solid fa-person-walking-arrow-right"></i> Iesiri</a></li>
             <li><a class="dropdown-item" href="{% url 'comenzi' %}"> <i class="fa-solid fa-box"></i> Comenzi</a></li>
+            <li><a class="dropdown-item" href="{% url 'lucrari' %}"> <i class="fa-solid fa-briefcase"></i> Lucrari</a></li>
           </ul>
         </li>
         {% endif %}

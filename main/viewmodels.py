@@ -16,7 +16,7 @@ class RowDataActivity:
         self.datetime = data
         self.absent = False
         self.__nu_respecta_filtru = False
-        activities = 3
+        activities = 4
         try: self.intrare = models.Intrare.objects.get(user=user, datetime__date=data.date(), **filtersin)
         except: activities -= 1
         try: self.iesire = models.Iesire.objects.get(user=user, datetime__date=data.date(), **filtersout)
@@ -24,6 +24,9 @@ class RowDataActivity:
         self.comenzi = models.Comanda.objects.filter(user=user, datetime__date=data.date(), **filterscmd)
         self.nrcomenzi = self.comenzi.__len__()
         if self.nrcomenzi == 0: activities -= 1
+        self.lucrari = models.Lucru.objects.filter(user=user, datetime__date=data.date())
+        self.nrlucrari = self.lucrari.__len__()
+        if self.nrlucrari == 0: activities -= 1
         if activities == 0: self.absent = True
         self.numecomenzi = ""
         for comanda in self.comenzi:

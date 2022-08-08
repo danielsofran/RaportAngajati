@@ -1,0 +1,304 @@
+{% extends 'base.html' %}
+
+{% block css %}
+<style>
+    .w-15{
+        width: 15%;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+{% load mytags %}
+<div class="w-100 h-100 mb-5">
+    {# MODALS #}
+    <div class="modal fade" id="modalInvalidLoc" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel4" aria-hidden="true">
+      <div class="modal-dialog me-auto">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title fs-2" id="staticBackdropLabel4">Atentie!</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body fs-4">
+            Locatie invalida!
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary fs-3" data-bs-dismiss="modal">Ok</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="modalUnsupportedLoc" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel5" aria-hidden="true">
+      <div class="modal-dialog me-auto">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title fs-2" id="staticBackdropLabel5">Atentie!</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body fs-4">
+            Locatie invalida!<br>
+            Va rugam sa schimbati browser-ul.
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary fs-3" data-bs-dismiss="modal">Ok</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<div class="container-fluid m-5 fs-1">
+    <h1 class="mb-3 ms-5"> {{ titlu }} </h1>
+    <button id='btnSHS' title="Arata / Ascunde filtrarea" data-bs-toggle="tooltip" data-bs-placement="right" onclick="arataascunde('filter', 'btnSHS')" class="btn btn-outline-secondary btn-square-md font-weight-bold fs-3 align-self-center my-0 px-4 ms-5">Ascunde</button>
+    <div class="m-5 fs-3" id="filter">
+    <div class="fs-3 mt-5 mx-5 mb-3">
+    <form method="get">
+        <div class="d-flex flex-row mb-3">
+            <p class="me-3 form-label">Cauta</p>
+            <input type="search" class="form-control fs-2" name="stext" value="{{ stext }}">
+            <p class="me-3 form-label ms-3">dupa</p>
+            <select class="form-select flex-shrink-1 fs-3 me-5 w-50" aria-label="Default select example" name="scrit" required>
+              <option {% if scrit == "nume" %}selected{% endif %} value="nume">Nume Prenume</option>
+              <option {% if scrit == "email" %}selected{% endif %} value="email">Email</option>
+              <option {% if scrit == "tel" %}selected{% endif %} value="tel">Telefon</option>
+              <option {% if scrit == "obs" %}selected{% endif %} value="obs">Observatie</option>
+              <option {% if scrit == "den" %}selected{% endif %} value="den">Denumire</option>
+            </select>
+        </div>
+        <div class="d-flex flex-row mb-3">
+            <p class="me-3 form-label text-nowrap">Interval de timp</p>
+            <input autocomplete="off" type="datetime-local" class="form-control fs-2 me-5" id="inputDate1" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" name="date1">
+            <input autocomplete="off" type="datetime-local" class="form-control fs-2 me-5" id="inputDate2" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" name="date2">
+        </div>
+{#        <div class="d-flex flex-row mb-3">#}
+{#            <p class="me-3 form-label ms-3">Interval orar</p>#}
+{#            <input autocomplete="off" type="text" class="form-control fs-2 w-15 me-5" value="{{ osin }}" pattern="[0-9]{2}:[0-9]{2}" name="osin" title="Va rugam respectati fromatul unei ore">#}
+{#            <input autocomplete="off" type="text" class="form-control fs-2 w-15 me-5" value="{{ osout }}" pattern="[0-9]{2}:[0-9]{2}" name="osout" title="Va rugam respectati fromatul unei ore">#}
+{#        </div>#}
+        <div class="d-flex flex-row mb-3">
+            <p class="me-3 form-label ms-3">Ordoneaza dupa</p>
+            <select class="form-select flex-shrink-1 fs-3 me-5 w-25" aria-label="Default select example" name="ocrit">
+              <option {% if ocrit == "nume" %}selected{% endif %} value="nume">Nume Prenume</option>
+              <option {% if ocrit == "data" %}selected{% endif %} value="data">Data</option>
+              <option {% if ocrit == "ora" %}selected{% endif %} value="ora">Ora</option>
+              <option {% if ocrit == "loc" %}selected{% endif %} value="loc">Distanta fata de firma</option>
+            </select>
+            <select class="form-select flex-shrink-1 fs-3 me-5 w-25" aria-label="Default select example" name="oord" required>
+              <option {% if oord == "cresc" %}selected{% endif %} value="cresc">Crescator</option>
+              <option {% if oord == "desc" %}selected{% endif %} value="desc">Descrescator</option>
+            </select>
+        </div>
+        <div class="form-check mt-2">
+          <input autocomplete="off" class="form-check-input" type="checkbox" value="1" id="flexCheckDefault" name="showday" {% if showday == "1" %} checked {% endif %}>
+          <label class="form-check-label" for="flexCheckDefault">
+            Arata numele zilei saptamanii
+          </label>
+        </div>
+        <button type="submit" class="btn btn-primary mt-3 me-5 fs-3">Filtreaza</button>
+    </form>
+    </div>
+    </div>
+</div>
+</div>
+{#    {% include 'tableActivity.html' with tabledata=tabledata %}#}
+<div class="w-100 h-100">
+    <table class="table table-hover fs-5">
+        <thead class="">
+            <tr>
+                <th> Denumire </th>
+                <th> Nume </th>
+                {% if showday %} <th> Ziua </th> {% endif %}
+                <th> Data </th>
+                <th> Ora </th>
+                <th> Locatia </th>
+                <th> Observatie </th>
+                <th> Modificare </th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for info in tabledata %}
+            <tr>
+                <th> {{ info.denumire }}</th>
+                <th> <a href="{% url 'detaliiuser' username=info.user.username %}">{{ info.user.nume }}</a></th>
+                {% if showday %} <th> {{ info.datetime|name_of_day }} </th> {% endif %}
+                <th> {{ info.datetime|ftime:"date" }} </th>
+                <th> {{ info.datetime|ftime:"time" }} </th>
+                <th> {{ info|strloc }}
+                {% if info|strloc != "-" %}<button class="btn btn-light" onclick="loadMap('{{ info.getCoords|safe }}')"><i class="fa-solid fa-location-crosshairs"></i></button>{% endif %}
+                </th>
+                <th> {{ info.text }} </th>
+{#                <th> Link comenzi </th>#}
+                <th> <a href="{% url 'actUserFromPath' datein=info.datetime|ftime:"date" dateout=info.datetime|ftime:"date" username=info.user.username%}" class="btn btn-primary">Modificare</a> </th>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+
+function createDateTime(datestr){
+    if(datestr == null || datestr.length === 0)
+        return ""
+    const now = new Date();
+    let elems = datestr.split("-");
+    let toktime = elems[1].split(":");
+    let tokdate = elems[0].split(".");
+    now.setHours(parseInt(toktime[0]));
+    now.setMinutes(parseInt(toktime[1]));
+    now.setDate(parseInt(tokdate[0]));
+
+    now.setMonth(parseInt(tokdate[1]));
+    now.setFullYear(parseInt(tokdate[2]));
+    //alert(now.toJSON())
+    //alert(now.toISOString())
+    //2022-08-22T04:40:00.553Z
+    rez = ""
+    rez += pad(now.getFullYear(), 4) + "-" + pad(now.getMonth(), 2) + "-" + pad(now.getDate(), 2);
+    rez += "T" + pad(now.getHours(), 2) + ":" + pad(now.getMinutes(), 2);
+    return rez;
+}
+
+function pad(num, size) {
+    num = num.toString();
+    while (num.length < size) num = "0" + num;
+    return num;
+}
+
+window.addEventListener('load', ()=>{
+    document.getElementById("inputDate1").value = createDateTime("{{ datetime1|ftime:"datetime" }}");
+    document.getElementById("inputDate2").value = createDateTime("{{ datetime2|ftime:"datetime" }}");
+
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+}, false)
+
+function toogleView(domname){
+    elem = document.getElementById(domname);
+    if(elem.classList.contains("d-none"))
+        elem.classList.remove("d-none");
+    else elem.classList.add("d-none");
+}
+
+function arataascunde(domname="comenziShowDiv", btnid="btnShowHide"){
+    elem = document.getElementById(domname);
+    btn = document.getElementById(btnid);
+    if(elem.classList.contains("d-none")) {
+        elem.classList.remove("d-none");
+        btn.innerText = "Ascunde";
+    }
+    else {
+        elem.classList.add("d-none");
+        btn.innerText = "Arata";
+    }
+}
+
+function loadMap(loc){
+    if(loc.trim().length === 0 || loc === "-") {
+        invComModal = new bootstrap.Modal(document.getElementById("modalInvalidLoc"), {});
+        invComModal.show();
+    }
+    else {
+        //let adress = "https://www.google.com/maps/dir/" + loc + "//@" + loc + ",21z";
+        let adress = "{{ harta|safe }}";
+        let pos = loc.trim().split(',')
+        let rlat = new RegExp('\\^\\^lat\\^\\^', 'g')
+        let rlong = new RegExp('\\^\\^long\\^\\^', 'g')
+        adress = adress.replace(rlat, pos[0]).replace(rlong, pos[1])
+        window.open(adress, '_blank');
+    }
+}
+
+function displayError(error) {
+  var errors = {
+    1: 'Permisiune refuzata',
+    2: 'Pozitie invalida',
+    3: 'Timpul a expirat',
+    default: "Eroare",
+  };
+  alert("Error: " + errors[error.code]);
+}
+
+function getLocation(callback){
+    if (navigator.geolocation) {
+      let timeoutVal = 10 * 1000 * 1000;
+      navigator.geolocation.getCurrentPosition(
+        callback,
+        displayError,
+        { enableHighAccuracy: true, timeout: timeoutVal, maximumAge: 0 }
+      );
+    }
+    else {
+      invComModal = new bootstrap.Modal(document.getElementById("modalUnsupportedLoc"), {});
+      invComModal.show();
+    }
+}
+
+function processposition(url, text=""){
+    getLocation((position) => {
+        text = text.replace(/\n\r?/g, '; ');
+        adress = url + `?lat=${position.coords.latitude}&long=${position.coords.longitude}&obs=${text}`;
+        window.location.href = adress;
+    });
+    //getLocation((position1) => {
+    //    getLocation((position2) => {
+    //        getLocation((position3) => {
+    //            position3.coords.latitude = (position1.coords.latitude + position2.coords.latitude + position3.coords.latitude) / 3.0;
+    //            position3.coords.longitude = (position1.coords.longitude + position2.coords.longitude + position3.coords.longitude) / 3.0;
+    //            text = text.replace(/\n\r?/g, '; ');
+    //            adress = url + `?lat=${position3.coords.latitude}&long=${position3.coords.longitude}&obs=${text}`;
+    //            window.location.href = adress;
+    //        });
+    //    });
+    //});
+}
+
+function showEdit(den, nr, text){
+    toogleView('comandDiv');
+    document.getElementById('comandaDen').value = den;
+    document.getElementById('inputNrComanda').value = nr;
+    document.getElementById('comandObs').value = text.replace('; ', '\n');
+    window.location.href = window.location.href.replace(/#.*/g, "") + "#comandDiv";
+    document.getElementById('btnEditShowModal').setAttribute("data-bs-oldnr", nr);
+}
+
+function fallbackCopyTextToClipboard(text) {
+  var textArea = document.createElement("textarea");
+  textArea.value = text;
+
+  // Avoid scrolling to bottom
+  textArea.style.top = "0";
+  textArea.style.left = "0";
+  textArea.style.position = "fixed";
+
+  document.body.appendChild(textArea);
+  textArea.focus();
+  textArea.select();
+
+  try {
+    var successful = document.execCommand('copy');
+    var msg = successful ? 'successful' : 'unsuccessful';
+    console.log('Fallback: Copying text command was ' + msg);
+  } catch (err) {
+    console.error('Fallback: Oops, unable to copy', err);
+  }
+
+  document.body.removeChild(textArea);
+}
+function copyTextToClipboard(text) {
+  if (!navigator.clipboard) {
+    fallbackCopyTextToClipboard(text);
+    return;
+  }
+  navigator.clipboard.writeText(text).then(function() {
+    console.log('Async: Copying to clipboard was successful!');
+  }, function(err) {
+    console.error('Async: Could not copy text: ', err);
+  });
+}
+
+</script>
+{% endblock %}

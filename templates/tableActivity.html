@@ -15,9 +15,9 @@
             <th> Locatia plecarii </th>
             <th> Observatie la plecare </th>
             <th class="text-wrap"> Numar comenzi </th>
+            <th class="text-wrap"> Numar lucrari </th>
             {% if request.user|role_at_least:"Manager" %}
-            <th class="text-wrap"> Nume comenzi </th>
-            <th> Comenzi </th>
+            <th> Linkuri </th>
             <th> Modificare </th>
             {% endif %}
         </tr>
@@ -46,9 +46,11 @@
                 </th>
                 <th> {{ rowdata.iesire.text }} </th>
                 <th> {{ rowdata.nrcomenzi }} </th>
+                <th> {{ rowdata.nrlucrari }} </th>
                 {% if request.user|role_at_least:"Manager" %}
-                <th> {{ rowdata.numecomenzi|safe }} </th>
-                <th> <a href="{% url 'comenziUser' date=rowdata.datetime|ftime:"date" username=rowdata.user.username %}" class="btn btn-outline-info">Link</a> </th>
+                <th> <a href="{% url 'comenziUser' date=rowdata.datetime|ftime:"date" username=rowdata.user.username %}" class="btn btn-outline-info text-nowrap mb-1">Comenzi</a>
+                     <a href="{% url 'lucrariUser' date=rowdata.datetime|ftime:"date" username=rowdata.user.username %}" class="btn btn-outline-info text-nowrap">Lucrari</a>
+                </th>
                 {% endif %}
             {% endif %}
             {% if request.user|role_at_least:"Manager" %}

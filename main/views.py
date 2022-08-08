@@ -114,7 +114,6 @@ def come(request):
         print("POST in come")
     return redirect('home')
 
-
 def cancel_come(request):
     now = utils.getTime()
     try:
@@ -131,7 +130,6 @@ def cancel_come(request):
     data.delete()
     messages.success(request, ("Momentul intrarii a fost sters!"))
     return redirect('home')
-
 
 def recalc_come(request):
     SEC_RECALC_AFTER = 60
@@ -161,7 +159,6 @@ def recalc_come(request):
         messages.success(request, ("Timpul pentru relocare a expirat!"))
     return redirect('actToday')
 
-
 def left(request):
     now = utils.getTime()
     SEC_RECALC_AFTER = 60
@@ -189,7 +186,6 @@ def left(request):
         #messages.success(request, (f"Daca considerati ca locatia nu este precisa(erori de peste {DIST_ERROR}m), puteti sa folositi butonul relocare de maxim {NR_RECALC_POZ} ori.\nTimpul limita pentru o relocare este de un minut dupa ultima relocare."))
     return redirect('home')
 
-
 def cancel_left(request):
     now = utils.getTime()
     try:
@@ -205,7 +201,6 @@ def cancel_left(request):
     data.delete()
     messages.success(request, ("Momentul iesirii a fost sters!"))
     return redirect('home')
-
 
 def recalc_left(request):
     now = utils.getTime()
@@ -262,7 +257,7 @@ def comandaFinish(request):
             return redirect('home')
         except: pass
         try:
-            models.Comanda.objects.get(numar_comanda=request.GET['nrcom'])
+            models.Comanda.objects.get(datetime__year=now.year, numar_comanda=request.GET['nrcom'])
             messages.success(request, ("Aceasta comanda exista deja!"))
             return redirect('home')
         except: pass
@@ -274,7 +269,6 @@ def comandaFinish(request):
     else:
         raise ValueError("POST in comand finish")
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
-
 
 def comandaEdit(request):
     if request.method == "GET":
@@ -334,7 +328,6 @@ def comandaEdit(request):
     messages.success(request, ("Comanda a fost actualizata!"))
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
-
 def comandaCancel(request):
     if request.method == 'GET':
         now = utils.getTime()
@@ -358,6 +351,102 @@ def comandaCancel(request):
     messages.success(request, ("Terminarea comenzii a fost anulata!"))
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
+# endregion
+
+# region Lucru
+
+def lucruFinish(request):
+    if request.method == "GET":
+        now = utils.getTime()
+        try:
+            models.Intrare.objects.get(user=request.user, datetime__day=now.day, datetime__lte=now)
+        except:
+            messages.success(request, ("Nu puteti salva un lucru daca nu ati inregistrat intrarea!"))
+            return redirect('home')
+        try:
+            models.Iesire.objects.get(user=request.user, datetime__day=now.day)
+            messages.success(request, ("Nu puteti salva un lucru daca ati inregistrat iesirea!"))
+            return redirect('home')
+        except: pass
+        if len(request.GET['den'])==0:
+            messages.success(request, ("Nu ati introdus denumirea!"))
+            return redirect('home')
+        models.Lucru.objects.create(user=request.user, latitude=request.GET['lat'],
+                                      longitude=request.GET['long'], datetime=now,
+                                      nrcalcloc=1, text=utils.secureStr(request.GET['obs']),
+                                      denumire=request.GET['den'])
+        messages.success(request, ("Succes! Lucrul a fost inregistrat!"))
+    else:
+        raise ValueError("POST in lucru finish")
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+def lucruEdit(request):
+    if request.method == "GET":
+        print(request.GET)
+        if 'user' in request.GET:
+            user = models.User.objects.get(username=request.GET['user'])
+            now = datetime.datetime.fromisoformat(request.GET['datetime'])
+            if str(request.GET['loc']).split(',').__len__() < 2:
+                messages.success(request, ("Locatie invalida!"))
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+            coord = str(request.GET['loc']).split(',')
+            models.Lucru.objects.create(user=user, latitude=coord[0], longitude=coord[1],
+                                          denumire=request.GET['den'], text=request.GET['obs'], datetime=now)
+            messages.success(request, ("Lucrul a fost adaugat!"))
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+        elif not 'datetime' in request.GET:
+            now = utils.getTime()
+            oldid = request.GET['id']
+            try:
+                old = models.Lucru.objects.get(pk=oldid)
+            except:
+                messages.success(request, ("Lucrul nu a fost gasit!"))
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+            old.denumire = request.GET['den']
+            old.text = request.GET['obs']
+            old.datetime = now
+            old.save(force_update=True, update_fields=['denumire', 'text', 'datetime'])
+        else:
+            now = datetime.datetime.fromisoformat(request.GET['datetime'])
+            oldid = request.GET['id']
+            try:
+                old = models.Lucru.objects.get(pk=oldid)
+            except:
+                messages.success(request, ("Lucrul nu a fost gasit!"))
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+            old.denumire = request.GET['den']
+            old.text = request.GET['obs']
+            old.datetime = now
+            old.latitude = str(request.GET['loc']).split(',')[0]
+            old.longitude = str(request.GET['loc']).split(',')[1]
+            old.save(force_update=True,
+                     update_fields=['denumire', 'text', 'datetime', 'latitude', 'longitude'])
+    else:
+        raise ValueError("POST in lucru edit")
+    messages.success(request, ("Lucrul a fost actualizat!"))
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+def lucruCancel(request):
+    if request.method == 'GET':
+        now = utils.getTime()
+        if not request.user.role in ("Manager", "Admin"):
+            try:
+                data = models.Lucru.objects.get(pk=request.GET['id'])
+                data.delete()
+            except:
+                messages.success(request, ("Lucrul nu a fost gasit!"))
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+        else:
+            try:
+                data = models.Lucru.objects.get(pk=request.GET['id'])
+                data.delete()
+            except:
+                messages.success(request, ("Lucrul nu a fost gasit!"))
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+    else:
+        raise ValueError("POST in cancel lucru")
+    messages.success(request, ("Lucrul a fost anulat!"))
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
 # endregion
 
@@ -505,6 +594,11 @@ class ActView(TemplateView):
             comenzi = models.Comanda.objects.filter(user=user, datetime__gte=datain, datetime__lte=dataout)
             context2['comenzi'] = comenzi
             context2['nrcomenzi'] = comenzi.count()
+
+            # Lucrari
+            lucrari = models.Lucru.objects.filter(user=user, datetime__gte=datain, datetime__lte=dataout)
+            context2['lucrari'] = lucrari
+            context2['nrlucrari'] = lucrari.count()
         else:
             tabledata = []
             for datetime in utils.rangeDays(datain, dataout):
@@ -650,6 +744,21 @@ def getperioduser(request):
         messages.success(request, ("Utilizatorul nu a fost gasit!"))
         return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
     return render(request, "getPeriodUser.html", {"users": models.User.objects.all(), "now": utils.getTime()})
+
+@user_passes_test(lambda user: user.is_authenticated and user.role in ("Manager", "Admin"))
+def getperioddelete(request):
+    context = {"now": utils.getTime()}
+    if request.method == "POST":
+        try:
+            date = request.POST['date']
+            date = datetime.datetime.fromisoformat(date)
+        except:
+            messages.success(request, ("Data invalida!"))
+            return render(request, 'getPeriodDelete.html', context)
+        qs = models.Info.objects.filter(datetime__lte=date)
+        messages.success(request, f"S-au sters {qs.count()} activitati!")
+        qs.delete()
+    return render(request, 'getPeriodDelete.html', context)
 
 
 @method_decorator(login_required, name='dispatch')
@@ -888,6 +997,9 @@ class BaseActivityView(TemplateView):
                 filterdct.update(denumire__contains=context["stext"])
             elif context["scrit"] == "nrcmd":
                 filterdct.update(numar_comanda__startswith=context["stext"])
+            # lucrare
+            elif context["scrit"] == "den":
+                filterdct.update(denumire__contains=context["stext"])
 
         filterdct.update(datetime__gte=context["datetime1"], datetime__lte=context["datetime2"])
         return filterdct
@@ -952,6 +1064,11 @@ class ComandaActivity(BaseActivityView):
     template_name = 'comenzi.html'
     titlu = "Comenzi"
     model = models.Comanda
+
+class LucruActivity(BaseActivityView):
+    template_name = 'lucrari.html'
+    titlu = "Lucrari"
+    model = models.Lucru
 
 #endregion
 

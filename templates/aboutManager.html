@@ -178,7 +178,7 @@ window.addEventListener('load', ()=>{
     </ul>
     <p class="mt-4"><span class="badge bg-danger rounded-pill">!</span> Dacă introduceţi spaţii suplimantare, nu vă veţi putea loga. </p>
     <p><span class="badge bg-primary rounded-pill">!</span> Nu putei să vă logaţi cu numărul de telefon sau cu email-ul dacă nu le-aţi introdus în cont. </p>
-        <p class="mt-4"><span class="badge bg-danger fs-2 me-3">Atenţie!</span> Recomandăm <span class="text-danger fw-bold"> SCHIMBAREA PAROLEI</span> cu un grad de <span class="text-danger fw-bold"> URGENŢĂ</span> ridicat! Puteţi schimba şi numele de utilizator pentru a face logarea mai uşoară.</p>
+        <p class="mt-4"><span class="badge bg-danger fs-2 me-3">Atenţie!</span> Recomandăm <span class="text-danger fw-bold"> SCHIMBAREA PAROLEI INIŢIALE</span> cu un grad de <span class="text-danger fw-bold"> URGENŢĂ</span> ridicat! Puteţi schimba şi numele de utilizator pentru a face logarea mai uşoară.</p>
     <div class="carsLogin border rounded w-90 mb-2"> {% include 'carousel.html' with carousel=carousellogin %}</div>
 
     <h2 id="acasa"> Pagina Acasă</h2>
@@ -209,6 +209,13 @@ window.addEventListener('load', ()=>{
     <p><span class="badge bg-primary rounded-pill">!</span> Dacă apăsaţi a doua oară pe butonul <span class="badge bg-info">Am terminat o comandă</span>, formularul de va închide.</p>
     <p>Câmpul <strong>Observaţie</strong> este opţional. Acesta se va folosi în cazul în care apar defecţiuni, sau apare o situaţie neprevazută.</p>
     <p><span class="badge bg-danger rounded-pill">!</span> O observaţie pate avea maxim 200 de caractere. Vă rugăm să <strong>nu scrieţi observaţii de dimensiuni mari</strong>.</p>
+    <hr class="dropdown-divider mt-4 mb-4">
+    <p>Butonul <span class="badge" style="background-color: sandybrown">Am terminat un lucru</span> deschide un formular în partea de jos a paginii.<br>Singurul câmp obligaroriu din formular este <strong> Denumirea</strong>.</p>
+    <p><span class="badge bg-primary rounded-pill">!</span> Dacă nu completaţi acest câmp, va apărea un mesaj de eroare.</p>
+    <p><span class="badge bg-primary rounded-pill">!</span> Dacă nu vedeţi formularul, vă rugăm să derulaţi pagina mai jos.</p>
+    <p><span class="badge bg-primary rounded-pill">!</span> Dacă apăsaţi a doua oară pe butonul <span class="badge bg-info">Am terminat o comandă</span>, formularul de va închide.</p>
+    <p>Câmpul <strong>Observaţie</strong> este opţional, dar acesta ajută la descrierea lucrului dumneavoastră.</p>
+    <p><span class="badge bg-danger rounded-pill">!</span> O observaţie pate avea maxim 200 de caractere. Vă rugăm să <strong>nu scrieţi observaţii de dimensiuni mari</strong>.</p>
 {#    <p><span class="badge bg-primary rounded-pill">!</span> Chiar dacă folosiţi linii separate, observaţiile vor fi stocate pe un singur rând, separate prin <strong>;</strong>(punct şi virgulă)</p>#}
     <p> <span class="badge bg-danger fs-3 mt-3 me-1">Atenţie!</span> Nu puteţi raporta nici o activitate dacă nu aţi înregistrat intrarea/sosirea/venirea!</p>
 
@@ -223,6 +230,7 @@ window.addEventListener('load', ()=>{
         <li> *Observaţia la intrare </li>
         <li> *Observaţia la ieşire </li>
         <li> Comenzile finalizate<br>
+        <li> Lucrările finalizate<br>
             <ul>
                 <li>Denumirea</li>
                 <li>Numărul</li>
@@ -238,18 +246,21 @@ window.addEventListener('load', ()=>{
         <li>Afişarea/ascunderea comenzilor</li>
         <li>Editarea comenzilor</li>
         <li>Anularea comenzilor</li>
+        <li>Afişarea/ascunderea lucrărilor</li>
+        <li>Editarea lucrărilor</li>
+        <li>Anularea lucrărilor</li>
     </ul>
     <h4 id="relocare" class="fs-2">Relocarea</h4>
     <p> Dacă consideraţi că localizarea initiala a avut o eroare prea mare, puteti sa folositi butonul <span class="badge bg-light text-dark"> Relocare</span> de pe pagina activităţi fără a fi modificată ora.</p>
     <p><span class="badge bg-danger rounded-pill">!</span> Acest buton este disponibil doar de <strong>{{ setare.nrrecalcpoz }}</strong> ori şi cel mult <strong>{{ setare.secafterrecalc }}</strong> secunde după înregistrarea intrării/ieşirii!</p>
-    <h4 id="editare" class="fs-2">Editarea comenzilor</h4>
-    <p>La adăugarea/editarea unei comenzi pot fi schimbate:</p>
+    <h4 id="editare" class="fs-2">Editarea comenzilor/lucrărilor</h4>
+    <p>La adăugarea/editarea unei comenzi sau a unei lucrări pot fi schimbate:</p>
     <ul>
         <li>Denumirea</li>
         <li>Numărul de comandă</li>
         <li>Observaţia</li>
     </ul>
-    <p><span class="badge bg-danger rounded-pill">!</span> La schimbarea comenzii, ora și locația se actualizează automat!</p>
+    <p><span class="badge bg-danger rounded-pill">!</span> La schimbarea comenzii sau a lucrării, ora și locația se actualizează automat!</p>
 
     <h3 class="mb-3"> Activitatea pe mai multe zile</h3>
     <h4 class="fs-2" style="margin-top: 2px !important;"><i class="fa-solid fa-minus fs-5"></i>Ultimele 3 zile</h4>
@@ -264,7 +275,7 @@ window.addEventListener('load', ()=>{
         <li> *Observaţia la intrare </li>
         <li> *Observaţia la ieşire </li>
         <li> Numărul comenzilor finalizate</li>
-        <li> Numele comenzilor finalizate</li>
+        <li> Numele lucrărilor finalizate</li>
     </ul>
     <p>Semnificaţia culorilor din tabel</p>
     <ul>
@@ -315,8 +326,9 @@ window.addEventListener('load', ()=>{
         <li><span class="text-decoration-underline">Data</span>: data la care a efectuat activitatea respectivă</li>
         <li><span class="text-decoration-underline">Ora, Locația, Observația Intrării</span>: datele intrării</li>
         <li><span class="text-decoration-underline">Ora, Locația, Observația Ieșirii</span>: datele ieșirii</li>
-        <li><span class="text-decoration-underline">Număr, Nume Comenzi</span>: informații despre comenzile efectuate de angajat in data respectivă</li>
-        <li><span class="text-decoration-underline">Comenzi</span>: link pentru vizualizarea detaliată a comenzilor</li>
+        <li><span class="text-decoration-underline">Număr comenzi</span>: numărul de comenzi efectuate de angajat in data respectivă</li>
+        <li><span class="text-decoration-underline">Număr lucrări</span>: numărul de lucrări efectuate de angajat in data respectivă</li>
+        <li><span class="text-decoration-underline">Linkuri</span>: link pentru vizualizarea detaliată a comenzilor, respectiv a lucrărilor</li>
         <li><span class="text-decoration-underline text-primary">Modificare</span>: Editarea/Ștergerea datelor activității respective</li>
     </ul>
     <p>Semnificaţia culorilor din tabel</p>
@@ -377,6 +389,14 @@ window.addEventListener('load', ()=>{
         </li>
     </ol>
     <h3 id="actModif">Modificarea/Ștergerea activităților</h3>
+    <p>Înainte ca aceste acţiuni să aibă loc, ele vor trebui confirmate, prin apăsarea butoanelor <span class="badge bg-warning">Continuă</span> sau <span class="badge bg-success">Salvează</span>.</p>
+    <p id="memfree">Pentru a şterge mai multe actvităţi, acţiue recomandată pentru a <strong>elibera memoria folosita de server</strong>, folosiţi opţiunea <span class="text-danger text-decoration-underline">Şterge mai multe activităţi</span>, iar apoi să selectaţi o dată reprezentând cea mai veche activitate pe care doriţi să o pastraţi. De exemplu, pentru selecţia <strong>10.10.2021 10:40</strong>, toate activităţile mai vechi de data respectivă vor fi şterse. O activitate poate însemna: </p>
+    <ul>
+        <li>Intrare</li>
+        <li>Ieşire</li>
+        <li>Comandă</li>
+        <li>Lucrare</li>
+    </ul>
     <p><span class="badge bg-primary rounded-pill">!</span> Aceste acțiuni sunt permanente, ele nu pot fi anulate!</p>
     <h4 class="fs-2">Intrare/Ieșire</h4>
     <p>Activitatea unui angajat dintr-o anumită dată poate fi ștearsă folosind butoanele <span class="badge bg-danger">Șterge intrare</span>, <span class="badge bg-danger">Șterge ieșire</span>, și <span class="badge bg-danger">Șterge intrare și ieșire</span>. În mod alternativ, puteți șterge câmpurile care trebuie completate pentru ca datele să fie șterse. </p>
@@ -395,6 +415,13 @@ window.addEventListener('load', ()=>{
     <p>Adăugarea unei comenzi se face apăsând butonul <span class="badge bg-success">Adaugă</span>, de la începutul listei de comenzi. Acesta va deschide un formular similar celui de editare, dar fără date. </p>
     <p><span class="badge bg-primary rounded-pill">!</span> În caz că formularul deschis nu poate fi observat, vă rugăm să derulaţi înspre finalul paginii! </p>
     <p><span class="badge bg-danger rounded-pill">!</span> Dacă schimbați data activității, după salvare pagina va afișa o activitate inexistentă! Vă rugăm să reselectați data activitații de pe o altă pagină! </p>
+    <h4 class="fs-2">Lucrări</h4>
+    <p><span class="badge bg-danger rounded-pill">!</span> Modificarea/ștergerea lucrărilor este total separată de celelalte!</p>
+    <p>Ștergerea unei lucrări se face prin apăsarea butonului <span class="badge bg-danger">Anulează</span>, din cadrul unei lucrări, urmată de confirmare prin apăsarea butonului <span class="badge bg-warning">Continuă</span>. </p>
+    <p>Modificarea unei lucrări se face apăsând butonul <span class="badge bg-primary">Editează</span> din cadrul unei lucrări. Astfel, în partea de jos a pagini, după restul lucrărilor, va apărea un formular conținând datele lucrării. </p>
+    <p>Adăugarea unei lucrări se face apăsând butonul <span class="badge bg-success">Adaugă</span>, de la începutul listei de lucrări. Acesta va deschide un formular similar celui de editare, dar fără date precompletate. </p>
+    <p><span class="badge bg-primary rounded-pill">!</span> În caz că formularul deschis nu poate fi observat, vă rugăm să derulaţi înspre finalul paginii! </p>
+    <p><span class="badge bg-danger rounded-pill">!</span> Dacă schimbați data activității, după salvare pagina va afișa o activitate inexistentă! Vă rugăm să reselectați data activitații de pe o altă pagină! </p>
     <h3 id="actAdd">Adăugarea unei activități</h3>
     <p> Adăugarea unei activități se realizează din meniul <strong>Activități <i class="fa-solid fa-arrow-right"></i> Adaugă o activitate</strong>. Această opțiune din meniul derulant va deschide o pagină în care va trebui să selectați user-ul și data asociate activității respective. Ulterior completării acestor date, se va deschide o pagină similară celei de editare a unei activități, fără date completate.</p>
     <p> În acest context, editare înseamnă salvare. </p>
@@ -411,6 +438,7 @@ window.addEventListener('load', ()=>{
         <li>Intrări</li>
         <li>Ieșiri</li>
         <li>Comenzi</li>
+        <li>Lucrări</li>
     </ul>
     <p><span class="badge bg-primary rounded-pill">!</span> Dacă observați că tabelul este greu de vizualizat, vă rugăm folosiți opțiunile <i class="fa-solid fa-magnifying-glass-plus text-primary"></i>Zoom in, respectiv <i class="fa-solid fa-magnifying-glass-minus text-primary"></i>Zoom out ale browser-ului.</p>
     <h3 id="rapFilter">Filtrare</h3>
@@ -423,8 +451,10 @@ window.addEventListener('load', ()=>{
                 <li>Telefon: activitățile al căror telefon începe cu textul căutat</li>
                 <li>Observație: activitățile ale căror observații conție textul căutat</li>
                 <hr class="dropdown-divider mt-3 mb-3">
-                <li title="Apare doar la comenzi">Nume comandă: comenzile ale căror nume de utilizator conțin textul căutat</li>
+                <li title="Apare doar la comenzi">Nume comandă: comenzile ale căror denumire conțin textul căutat</li>
                 <li title="Apare doar la comenzi">Număr comandă: comenzile ale căror număr de comandă începe cu textul căutat</li>
+                <hr class="dropdown-divider mt-3 mb-3">
+                <li title="Apare doar la lucrări">Denumire lucrare: lucrările ale căror denumire conțin textul căutat</li>
             </ul>
         </li>
         <li>Interval de timp, selectând activitățile care au avut loc în intervalul dată-timp precizat</li>
@@ -529,6 +559,7 @@ window.addEventListener('load', ()=>{
         <li><strong>Cuprins</strong>, care conţine legături către fiecare capitol şi subcapitol al cuprinsului</li>
         <li><strong>Butonul <a href="#cuprins" class="btn btn-outline-primary rounded-circle btn-floating btn-lg" title="Sari la cuprins" data-bs-toggle="tooltip" data-bs-placement="right"><i class="fa-solid fa-arrow-up"></i></a></strong> din partea stânga jos, care permite navigarea directă către cuprins, fără să fie necesară derularea întregii pagini</li>
     </ul>
+    <p> Dacă serverul nu mai poate stoca alte date, este probabil ca memoria să fie epuizată. În acest caz, vă rugăm să <a href="#memfree">ştergeţi nişte activităţi înregistrate</a>, sau să aciziţionaţi un server cu mai multă memorie.</p>
 </div>
 <footer id="sticky-footer" class="flex-shrink-0 py-4 bg-dark text-white-50">
     <div class="container text-center">

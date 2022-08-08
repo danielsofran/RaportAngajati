@@ -261,6 +261,7 @@ window.addEventListener("load", ()=>{
         var button = event.relatedTarget
         var recipient = button.getAttribute('data-bs-form')
         var btnSave = document.getElementById('btnSaveEdit')
+        recreateNode(btnSave)
         btnSave.addEventListener('click', function (){
             document.forms[recipient].submit()
         })
@@ -301,6 +302,17 @@ function createlink(idlink){
     let rlong = new RegExp('\\^\\^long\\^\\^', 'g')
     adress = adress.replace(rlat, lat).replace(rlong, long)
     return adress;
+}
+
+function recreateNode(el, withChildren) {
+  if (withChildren) {
+    el.parentNode.replaceChild(el.cloneNode(true), el);
+  }
+  else {
+    var newEl = el.cloneNode(false);
+    while (el.hasChildNodes()) newEl.appendChild(el.firstChild);
+    el.parentNode.replaceChild(newEl, el);
+  }
 }
 
 </script>
