@@ -94,37 +94,27 @@ def come(request):
             DIST_ERROR = setare.disterror
         except:
             print('Nu exista setari!')
-        try:
-            data = models.Iesire.objects.get(user=request.user, datetime__day=now.day)
-            messages.success(request, ("Nu puteti inregistra intrarea din moment ce iesirea este salvata!"))
+        intrari = models.Intrare.objects.filter(user=request.user, datetime__day=now.day)
+        iesiri = models.Iesire.objects.filter(user=request.user, datetime__day=now.day)
+        if intrari.count() != iesiri.count():
+            messages.success(request, ("Nu puteti inregistra intrarea daca nu ati salvat iesirea!"))
             return redirect('home')
-        except:
-            pass
-        try:
-            data = models.Intrare.objects.get(user=request.user, datetime__day=now.day)
-            messages.success(request, (
-                "Momentul intrarii a fost deja inregistrat!\nVa rugam sa il stergeti daca a fost adaugat din greseala!"))
-            return redirect('home')
-        except:
-            models.Intrare.objects.create(user=request.user, latitude=request.GET['lat'], longitude=request.GET['long'],
+        models.Intrare.objects.create(user=request.user, latitude=request.GET['lat'], longitude=request.GET['long'],
                                           datetime=now, nrcalcloc=1, text=utils.secureStr(request.GET['obs']))
-            messages.success(request, ("Succes!"))
-            #messages.success(request, (f"Daca considerati ca locatia nu este precisa(erori de peste {DIST_ERROR}m), puteti sa folositi butonul relocare de maxim {NR_RECALC_POZ} ori.\nTimpul limita pentru o relocare este de un minut dupa ultima relocare."))
+        messages.success(request, ("Succes!"))
     else:
         print("POST in come")
     return redirect('home')
 
 def cancel_come(request):
     now = utils.getTime()
-    try:
-        data = models.Iesire.objects.get(user=request.user, datetime__day=now.day)
-        messages.success(request, ("Nu puteti anula intrarea daca ati inregistrat iesirea!"))
+    intrari = models.Intrare.objects.filter(user=request.user, datetime__day=now.day)
+    iesiri = models.Iesire.objects.filter(user=request.user, datetime__day=now.day)
+    if intrari.count() - iesiri.count() != 1:
+        messages.success(request, ("Momentul intrarii nu a fost inregistrat!"))
         return redirect('home')
-    except:
-        pass
-    try:
-        data = models.Intrare.objects.get(user=request.user, datetime__day=now.day)
-    except:
+    data = intrari.order_by("-datetime").first()
+    if data is None:
         messages.success(request, ("Momentul intrarii nu a fost inregistrat!"))
         return redirect('home')
     data.delete()
@@ -142,7 +132,7 @@ def recalc_come(request):
         print("Nu exista setari")
     try:
         now = utils.getTime()
-        data = models.Intrare.objects.get(user=request.user, datetime__day=now.day)
+        data = models.Intrare.objects.filter(user=request.user, datetime__day=now.day).order_by("-datetime").first()
         if (now - utils.getTime(data)).seconds > SEC_RECALC_AFTER:
             raise ValueError("Timpul pentru relocare a expirat!")
         nr = data.nrcalcloc
@@ -171,33 +161,24 @@ def left(request):
         DIST_ERROR = setare.disterror
     except:
         print("Nu exista setari")
-    if models.Intrare.objects.filter(user=request.user, datetime__day=now.day).__len__() <= 0:
-        messages.success(request, (f"Nu puteti parasi inainte sa intrati!"))
+    intrari = models.Intrare.objects.filter(user=request.user, datetime__day=now.day)
+    iesiri = models.Iesire.objects.filter(user=request.user, datetime__day=now.day)
+    if intrari.count() - iesiri.count() != 1:
+        messages.success(request, ("Nu puteti inregistra iesirea daca nu ati raportat intrarea!"))
         return redirect('home')
-    try:
-        data = models.Iesire.objects.get(user=request.user, datetime__day=now.day)
-        messages.success(request, (
-            "Momentul iesirii a fost deja inregistrat!\nVa rugam sa il stergeti daca a fost adaugat din greseala!"))
-        return redirect('home')
-    except:
-        models.Iesire.objects.create(user=request.user, latitude=request.GET['lat'], longitude=request.GET['long'],
+    models.Iesire.objects.create(user=request.user, latitude=request.GET['lat'], longitude=request.GET['long'],
                                      datetime=now, nrcalcloc=1, text=utils.secureStr(request.GET['obs']))
-        messages.success(request, ("Succes!"))
-        #messages.success(request, (f"Daca considerati ca locatia nu este precisa(erori de peste {DIST_ERROR}m), puteti sa folositi butonul relocare de maxim {NR_RECALC_POZ} ori.\nTimpul limita pentru o relocare este de un minut dupa ultima relocare."))
+    messages.success(request, ("Succes!"))
     return redirect('home')
 
 def cancel_left(request):
     now = utils.getTime()
-    try:
-        models.Intrare.objects.get(user=request.user, datetime__day=now.day)
-    except:
-        messages.success(request, (f"Nu puteti parasi inainte sa intrati!"))
-        return redirect('home')
-    try:
-        data = models.Iesire.objects.get(user=request.user, datetime__day=now.day)
-    except:
+    intrari = models.Intrare.objects.filter(user=request.user, datetime__day=now.day)
+    iesiri = models.Iesire.objects.filter(user=request.user, datetime__day=now.day)
+    if intrari.count() != iesiri.count() or iesiri.count() == 0:
         messages.success(request, ("Momentul iesirii nu a fost inregistrat!"))
         return redirect('home')
+    data = iesiri.order_by("-datetime").first()
     data.delete()
     messages.success(request, ("Momentul iesirii a fost sters!"))
     return redirect('home')
@@ -213,12 +194,7 @@ def recalc_left(request):
     except:
         print("Nu exista setari")
     try:
-        models.Intrare.objects.get(user=request.user, datetime__day=now.day)
-    except:
-        messages.success(request, (f"Nu puteti parasi inainte sa intrati!"))
-        return redirect('actToday')
-    try:
-        data = models.Iesire.objects.get(user=request.user, datetime__day=now.day)
+        data = models.Iesire.objects.filter(user=request.user, datetime__day=now.day).order_by("-datetime").first()
         if (now - utils.getTime(data)).seconds > SEC_RECALC_AFTER:
             raise ValueError("Timpul pentru relocare a expirat!")
         nr = data.nrcalcloc
@@ -493,11 +469,14 @@ class ActView(TemplateView):
         ordlst = {}
         if context['oord'] == "desc": ordlst.update(reverse=True)
         if context["ocrit"] == "nume": ordlst.update(key=lambda r: (r.user.nume, r.datetime.date()))
-        elif context["ocrit"] == "datetimein": ordlst.update(key=lambda r: (r.datetime.date(), r.intrare_notnone.datetime.time()))
-        elif context["ocrit"] == "datetimeout": ordlst.update(key=lambda r: (r.datetime.date(), r.iesire_notnone.datetime.time()))
-        elif context["ocrit"] == "timein": ordlst.update(key=lambda r: (r.intrare_notnone.datetime.time(), r.user.nume))
-        elif context["ocrit"] == "timeout": ordlst.update(key=lambda r: (r.iesire_notnone.datetime.time(), r.user.nume))
+        # elif context["ocrit"] == "datetimein": ordlst.update(key=lambda r: (r.datetime.date(), r.intrare_notnone.datetime.time()))
+        # elif context["ocrit"] == "datetimeout": ordlst.update(key=lambda r: (r.datetime.date(), r.iesire_notnone.datetime.time()))
+        # elif context["ocrit"] == "timein": ordlst.update(key=lambda r: (r.intrare_notnone.datetime.time(), r.user.nume))
+        # elif context["ocrit"] == "timeout": ordlst.update(key=lambda r: (r.iesire_notnone.datetime.time(), r.user.nume))
         elif context["ocrit"] == "nrcom": ordlst.update(key=lambda r: (r.nrcomenzi, r.user.nume))
+        elif context["ocrit"] == "nrin": ordlst.update(key=lambda r: (r.intrari.count(), r.user.nume))
+        elif context["ocrit"] == "nrout": ordlst.update(key=lambda r: (r.iesiri.count(), r.user.nume))
+        elif context["ocrit"] == "nrlucr": ordlst.update(key=lambda r: (r.lucrari.count(), r.user.nume))
         return filteruser, ordlst
 
     def get(self, request, *args, **kwargs):
@@ -537,17 +516,17 @@ class ActView(TemplateView):
                         continue
 
                     # radio buttons - obs
-                    if context["selobs"]=="1":
-                        if context["tobs"]=="i" and row.intrare_notnone.text == "": continue
-                        elif context["tobs"]=="e" and row.iesire_notnone.text == "": continue
-                        elif context["tobs"]=="ie" and (row.intrare_notnone.text == "" or row.iesire_notnone.text == ""): continue
-                        else: pass
+                    # if context["selobs"]=="1":
+                    #     if context["tobs"]=="i" and row.intrare_notnone.text == "": continue
+                    #     elif context["tobs"]=="e" and row.iesire_notnone.text == "": continue
+                    #     elif context["tobs"]=="ie" and (row.intrare_notnone.text == "" or row.iesire_notnone.text == ""): continue
+                    #     else: pass
 
                     # radio buttons - prezenta
                     if context['prezenta']=="pr" and not row.absent or \
-                       context['prezenta']=='abs' and row.absent or \
-                       context['prezenta']=="iec" and not row.notAllDataCompleted or \
-                       context['prezenta']=="iei" and row.notAllDataCompleted and not row.noneDataCompleted:
+                       context['prezenta']=='abs' and row.absent:
+                       # context['prezenta']=="iec" and not row.notAllDataCompleted or \
+                       # context['prezenta']=="iei" and row.notAllDataCompleted and not row.noneDataCompleted:
                         tabledata.append(row)
             tabledata.sort(**order)
             context.update(tabledata=tabledata, harta=harta)
@@ -567,30 +546,16 @@ class ActView(TemplateView):
         if datain.date() == dataout.date():
             context['datetime'] = datain
             # In
-            try:
-                gasit = models.Intrare.objects.get(user=user, datetime__gte=datain, datetime__lte=dataout)
-                context2['oraIn'] = utils.getTime(gasit).strftime("%H:%M")
-                context2['locIn'] = f"{gasit.latitude},{gasit.longitude}"
-                context2['locStrIn'] = utils.locStr(gasit)
-                context2['obsIn'] = gasit.text
-            except:
-                context2['oraIn'] = "-"
-                context2['locIn'] = "-"
-                context2['locStrIn'] = "-"
-                context2['obsIn'] = ""
+            intrari = models.Intrare.objects.filter(user=user, datetime__gte=datain, datetime__lte=dataout).order_by("-datetime")
+            context2['íntrari'] = intrari
 
             # Out
-            try:
-                gasit = models.Iesire.objects.get(user=user, datetime__gte=datain, datetime__lte=dataout)
-                context2['oraOut'] = utils.getTime(gasit).strftime("%H:%M")
-                context2['locOut'] = f"{gasit.latitude},{gasit.longitude}"
-                context2['locStrOut'] = utils.locStr(gasit)
-                context2['obsOut'] = gasit.text
-            except:
-                context2['oraOut'] = "-"
-                context2['locOut'] = "-"
-                context2['locStrOut'] = "-"
-                context2['obsOut'] = ""
+            iesiri = models.Iesire.objects.filter(user=user, datetime__gte=datain, datetime__lte=dataout).order_by("-datetime")
+            context2['iesiri'] = iesiri
+
+            # In Out
+            inout = zip(intrari, iesiri)
+            context2["intrariiesiri"] = inout
 
             # Comenzi
             comenzi = models.Comanda.objects.filter(user=user, datetime__gte=datain, datetime__lte=dataout)
@@ -793,6 +758,9 @@ class ActUserFromPathView(ActFromPathView):
         datetimein=None
         datetimeout=None
 
+        inid = request.POST['inid']
+        outid = request.POST["outid"]
+
         def is_one_null(strora: str, strloc: str) -> bool:
             return len(strora) == 0 or len(strloc) == 0
 
@@ -837,10 +805,10 @@ class ActUserFromPathView(ActFromPathView):
             # intrare
             intrare = None
             try:
-                intrare = models.Intrare.objects.get(user=user, datetime__date=data)
+                intrare = models.Intrare.objects.get(pk=inid)
             except:
                 if not is_one_null(strorain, strlocin):
-                    print("intrare is_notnull\n", locals())
+                    #print("intrare is_notnull\n", locals())
                     models.Intrare.objects.create(user=user, latitude=locin[0], longitude=locin[1], datetime=datetimein,
                                                   text=obsin)
                     messages.success(request, ("Intrarea a fost adaugata cu succes!"))
@@ -893,7 +861,7 @@ class ActUserFromPathView(ActFromPathView):
             # iesire
             iesire = None
             try:
-                iesire = models.Iesire.objects.get(user=user, datetime__date=data)
+                iesire = models.Iesire.objects.get(pk=outid)
             except:
                 if not is_one_null(stroraout, strlocout):
                     #print("iesire is_notnull\n", locals())

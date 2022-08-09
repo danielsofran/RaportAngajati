@@ -10,79 +10,37 @@ class RowDataActivity:
         if filterscmd is None: filterscmd = {}
         self.__mins = mintold
         self.__now = utils.getTime()
-        self.intrare = None
-        self.iesire = None
         self.user = user
         self.datetime = data
         self.absent = False
         self.__nu_respecta_filtru = False
-        activities = 4
-        try: self.intrare = models.Intrare.objects.get(user=user, datetime__date=data.date(), **filtersin)
-        except: activities -= 1
-        try: self.iesire = models.Iesire.objects.get(user=user, datetime__date=data.date(), **filtersout)
-        except: activities -= 1
+        a2 = self.__activities = 4
+        self.intrari = models.Intrare.objects.filter(user=user, datetime__date=data.date(), **filtersin)
+        cnt = self.intrari.count()
+        if self.intrari.count() == 0: self.__activities -= 1
+        self.iesiri = models.Iesire.objects.filter(user=user, datetime__date=data.date(), **filtersout)
+        if self.iesiri.count() == 0: self.__activities -= 1
         self.comenzi = models.Comanda.objects.filter(user=user, datetime__date=data.date(), **filterscmd)
         self.nrcomenzi = self.comenzi.__len__()
-        if self.nrcomenzi == 0: activities -= 1
+        if self.nrcomenzi == 0: self.__activities -= 1
         self.lucrari = models.Lucru.objects.filter(user=user, datetime__date=data.date())
         self.nrlucrari = self.lucrari.__len__()
-        if self.nrlucrari == 0: activities -= 1
-        if activities == 0: self.absent = True
+        if self.nrlucrari == 0: self.__activities -= 1
+        if self.__activities == 0: self.absent = True
         self.numecomenzi = ""
         for comanda in self.comenzi:
             self.numecomenzi += comanda.denumire+"<br>"
-
-    class structDate:
-        datetime = datetime.datetime.strptime("01.01.2001 00:00:00", "%d.%m.%Y %H:%M:%S")
-        text = ""
-
-    @property
-    def intrare_notnone(self):
-        if self.intrare is not None: return self.intrare
-        return self.structDate
-
-    @property
-    def iesire_notnone(self):
-        if self.iesire is not None: return self.iesire
-        return self.structDate
 
     def hasCmd(self, cmd: str) -> bool:
         rez = self.comenzi.filter(numar_comanda__startswith=cmd).count()
         return rez > 0
 
     @property
-    def __isLocationWarning(self) -> bool:
-        infos = [self.intrare]
-        for info in infos:
-            if info is not None and utils.locStr(info) != "In firma":
-                return True
-        return False
-
-    @property
-    def notAllDataCompleted(self) -> bool:
-        return self.intrare is None or self.iesire is None
-
-    @property
-    def noneDataCompleted(self) -> bool:
-        return self.intrare is None and self.iesire is None
-
-    @property
-    def __hasWorked8Hours(self) -> bool:
-        if not self.notAllDataCompleted:
-            delta = self.iesire.datetime - self.intrare.datetime
-            delta2 = datetime.timedelta(hours=8)
-            delta2 -= datetime.timedelta(minutes=self.__mins)
-            return delta >= delta2
-        return True
-
-    @property
     def color(self):
-        if self.__isLocationWarning: return 'class=\'table-warning\''
-        if not self.__hasWorked8Hours: return 'class=\'table-info\''
         if self.__now.date() != self.datetime.date():
-            if self.notAllDataCompleted: return 'class=\'table-secondary\''
+            if self.__activities != 4: return 'class=\'table-warning\''
             return 'class=\'table-success\''
-        elif not self.notAllDataCompleted:
+        elif self.__activities == 4:
             return 'class=\'table-success\''
         return ""
 

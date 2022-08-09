@@ -42,8 +42,8 @@ def is_recent(user, tip):
 
     if model is not None:
         now = utils.getTime()
-        try: info = model.objects.get(user=user, datetime__day=now.day)
-        except: return False
+        info = model.objects.filter(user=user, datetime__day=now.day).order_by("-datetime").first()
+        if info is None: return False
         dtime = now - info.datetime
         if dtime.seconds <= SEC_RECALC_AFTER:
             return True
@@ -80,5 +80,5 @@ def strloc(info: models.Info) -> str:
     return utils.locStr(info)
 
 @register.filter(name='strobs')
-def strloc(obs: str) -> str:
+def strobs(obs: str) -> str:
     return obs.replace("; ", "\n")

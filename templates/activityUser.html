@@ -138,42 +138,45 @@
             <p class="me-5 text-nowrap"> Data: </p>
             <p class="me-5 text-nowrap"> {{ datetime|name_of_day }}, {{ data }} </p>
         </div>
-        <div class="d-flex flex-row me-5 my-3">
-            <button class="btn btn-outline-danger fs-2 me-5" onclick="clearFields('In')"> Sterge intrarea </button>
-            <button class="btn btn-outline-danger fs-2 me-5" onclick="clearFields('Out')"> Sterge iesirea </button>
-            <button class="btn btn-outline-danger fs-2 me-5" onclick="clearFields('InOut')"> Sterge intrarea si iesirea </button>
-{#            <button class="btn btn-outline-info fs-2 me-5" onclick="location.reload()" title="Reincarca"> Anuleaza </button>#}
-        </div>
-    <form name="myform" method="post">
+    {% for intrare, iesire in intrariiesiri %}
+    <hr class="dropdown-divider mt-5">
+{#    <div class="d-flex flex-row me-5 mt-3">#}
+{#        <button class="btn btn-outline-danger fs-3 me-5" onclick="clearFields('In', '{{ intrare.id }}{{ iesire.id }}')"> Sterge intrarea </button>#}
+{#        <button class="btn btn-outline-danger fs-3 me-5" onclick="clearFields('Out', '{{ intrare.id }}{{ iesire.id }}')"> Sterge iesirea </button>#}
+{#        <button class="btn btn-outline-danger fs-3 me-5" onclick="clearFields('InOut', '{{ intrare.id }}{{ iesire.id }}')"> Sterge intrarea si iesirea </button>#}
+{#    </div>#}
+    <form name="myform{{ intrare.id }}{{ iesire.id }}" method="post">
         {% csrf_token %}
+        <input type="hidden" value="{{ intrare.id }}" name="inid">
+        <input type="hidden" value="{{ iesire.id }}" name="outid">
         <div class="fs-2 pt-3 w-50">
             <div class="row mb-3 fs-3">
-                <label for="inputOraIn" class="col-form-label fs-3 text-start">Ora intrarii</label>
+                <label for="inputOraIn{{ intrare.id }}{{ iesire.id }}" class="col-form-label fs-3 text-start">Ora intrarii</label>
                 <div class="col-sm-10">
-                  <input autocomplete="off" type="text" class="form-control fs-3" id="inputOraIn" value="{{ oraIn }}" name="orain">
+                  <input autocomplete="off" type="text" class="form-control fs-3" id="inputOraIn{{ intrare.id }}{{ iesire.id }}" value="{{ intrare.datetime|ftime:"time" }}" name="orain">
                 </div>
             </div>
             <div class="row mb-3 fs-3">
-                <label for="inputOraOut" class="col-form-label fs-3 text-start">Ora plecarii</label>
+                <label for="inputOraOut{{ intrare.id }}{{ iesire.id }}" class="col-form-label fs-3 text-start">Ora plecarii</label>
                 <div class="col-sm-10">
-                  <input autocomplete="off" type="text" class="form-control fs-3" id="inputOraOut" value="{{ oraOut }}" name="oraout">
+                  <input autocomplete="off" type="text" class="form-control fs-3" id="inputOraOut{{ intrare.id }}{{ iesire.id }}" value="{{ iesire.datetime|ftime:"time" }}" name="oraout">
                 </div>
             </div>
 
             <div class="row mb-3 fs-3">
-                <label for="inputLocIn" class="col-form-label fs-3 text-start">Locatie intrare (lat, long): {{ locStrIn }}</label>
+                <label for="inputLocIn{{ intrare.id }}{{ iesire.id }}" class="col-form-label fs-3 text-start">Locatie intrare (lat, long): {{ intrare|strloc }}</label>
                 <div class="d-flex flex-row col-sm-10">
-                  <input autocomplete="off" type="text" class="form-control fs-3 me-5" id="inputLocIn" value="{{ locIn }}" name="locin">
-                  <button type="button" class="btn btn-light btn-lg fs-3 me-3" onclick="loadMap('{{ locIn }}')" title="Arata pe harta"><i class="fa-solid fa-location-crosshairs"></i></button>
-                  <button type="button" class="btn btn-light btn-lg fs-3" onclick="setCurentCoords('inputLocIn')" title="Seteaza pozitia curenta"><i class="fa-solid fa-magnifying-glass-location"></i></button>
+                  <input autocomplete="off" type="text" class="form-control fs-3 me-5" id="inputLocIn{{ intrare.id }}{{ iesire.id }}" value="{{ intrare.getCoords }}" name="locin">
+                  <button type="button" class="btn btn-light btn-lg fs-3 me-3" onclick="loadMap('{{ intrare.getCoords }}')" title="Arata pe harta"><i class="fa-solid fa-location-crosshairs"></i></button>
+                  <button type="button" class="btn btn-light btn-lg fs-3" onclick="setCurentCoords('inputLocIn{{ intrare.id }}{{ iesire.id }}')" title="Seteaza pozitia curenta"><i class="fa-solid fa-magnifying-glass-location"></i></button>
                 </div>
             </div>
             <div class="row mb-3 fs-3">
-                <label for="inputLocOut" class="col-form-label fs-3 text-start">Locatie plecare (lat, long): {{ locStrOut }}</label>
+                <label for="inputLocOut{{ intrare.id }}{{ iesire.id }}" class="col-form-label fs-3 text-start">Locatie plecare (lat, long): {{ iesire|strloc }}</label>
                 <div class="d-flex flex-row col-sm-10">
-                  <input autocomplete="off" type="text" class="form-control fs-3 me-5" id="inputLocOut" required value="{{ locOut }}" name="locout">
-                  <button type="button" class="btn btn-light btn-lg fs-3 me-3" onclick="loadMap('{{ locOut }}')" title="Arata pe harta"><i class="fa-solid fa-location-crosshairs"></i></button>
-                  <button type="button" class="btn btn-light btn-lg fs-3" onclick="setCurentCoords('inputLocOut')" title="Seteaza pozitia curenta"><i class="fa-solid fa-magnifying-glass-location"></i></button>
+                  <input autocomplete="off" type="text" class="form-control fs-3 me-5" id="inputLocOut{{ intrare.id }}{{ iesire.id }}" required value="{{ iesire.getCoords }}" name="locout">
+                  <button type="button" class="btn btn-light btn-lg fs-3 me-3" onclick="loadMap('{{ iesire.getCoords }}')" title="Arata pe harta"><i class="fa-solid fa-location-crosshairs"></i></button>
+                  <button type="button" class="btn btn-light btn-lg fs-3" onclick="setCurentCoords('inputLocOut{{ intrare.id }}{{ iesire.id }}')" title="Seteaza pozitia curenta"><i class="fa-solid fa-magnifying-glass-location"></i></button>
                 </div>
             </div>
             {% if show_nrReloc %}
@@ -193,20 +196,21 @@
             <p class="mt-3 mb-1">Observatie la intrare</p>
             <div class="form-floating fs-4 me-5">
 
-              <textarea maxlength="200" class="form-control fs-4" placeholder="Scrieti observatia/motivarea aici" id="inputObsIn" style="height: 100px" name="obsin">{{ obsIn }}</textarea>
+              <textarea maxlength="200" class="form-control fs-4" placeholder="Scrieti observatia/motivarea aici" id="inputObsIn{{ intrare.id }}{{ iesire.id }}" style="height: 100px" name="obsin">{{ intrare.text|strobs }}</textarea>
 {#              <label for="inputObsIn">Observatie la intrare</label>#}
             </div>
             <p class="mt-3 mb-1">Observatie la iesire</p>
             <div class="form-floating fs-4 me-5">
-              <textarea maxlength="200" class="form-control fs-4" placeholder="Scrieti observatia/motivarea aici" id="inputObsOut" style="height: 100px" name="obsout">{{ obsOut }}</textarea>
+              <textarea maxlength="200" class="form-control fs-4" placeholder="Scrieti observatia/motivarea aici" id="inputObsOut" style="height: 100px" name="obsout">{{ iesire.text|strobs }}</textarea>
 {#              <label for="inputObsOut">Observatie la plecare</label>#}
             </div>
             <div class="d-flex flex-row justify-content-around mt-2 fs-5">
               <button type="reset" class="btn btn-danger font-weight-bold fs-2 align-self-center my-0" > Anuleaza modificarile </button>
-              <button id="" type="button" data-bs-toggle="modal" data-bs-target="#modalSaveEdit" class="btn btn-primary font-weight-bold fs-2 align-self-center my-0 me-3">Salveaza modificarile</button>
+              <button type="button" data-bs-toggle="modal" data-bs-target="#modalSaveEdit" data-bs-id="{{ intrare.id }}{{ iesire.id }}" class="btn btn-primary font-weight-bold fs-2 align-self-center my-0 me-3">Salveaza modificarile</button>
             </div>
         </div>
     </form>
+    {% endfor %}
     <div class="my-3 mt-5 w-50">
         <div class="d-flex flex-row">
             <p class="me-5 text-nowrap"> Comenzi finalizate: {{ nrcomenzi }} </p>
@@ -230,12 +234,12 @@
                           <button class="btn btn-light fs-3" onclick="loadMap('{{ comanda.getCoords|safe }}')" title="Arata pe harta"><i class="fa-solid fa-location-crosshairs"></i></button>
                       </div>
                   </li>
-                  <li class="list-group-item">Observatie: {{ comanda.text }} </li>
+                  <li class="list-group-item">Observatie: {{ comanda.text|strobs }} </li>
                 </div>
                 <div class="d-flex justify-content-around">
                   <button type="button" data-bs-toggle="modal" data-bs-target="#modalCancelComand" data-bs-nr="{{ comanda.numar_comanda }}" class="btn btn-danger btn-square-md font-weight-bold fs-2 my-0"> Anuleaza </button>
                   <button type="button" class="btn btn-primary btn-square-md font-weight-bold fs-2 my-0"
-                          onclick="showEdit('{{ comanda.denumire }}','{{ comanda.numar_comanda }}','{{ comanda.text }}', '{{ comanda.getCoords }}', '{{ comanda.datetime|ftime:"datetime" }}')">Editeaza</button>
+                          onclick="showEdit('{{ comanda.denumire }}','{{ comanda.numar_comanda }}','{{ comanda.text|strobs }}', '{{ comanda.getCoords }}', '{{ comanda.datetime|ftime:"datetime" }}')">Editeaza</button>
                 </div>
               </div>
             </div>
@@ -306,12 +310,12 @@
                           <button class="btn btn-light fs-3" onclick="loadMap('{{ lucru.getCoords|safe }}')"><i class="fa-solid fa-location-crosshairs"></i></button>
                       </div>
                   </li>
-                  <li class="list-group-item">Observatie: {{ lucru.text }} </li>
+                  <li class="list-group-item">Observatie: {{ lucru.text|strobs }} </li>
                 </div>
                 <div class="d-flex justify-content-around">
                   <button type="button" data-bs-toggle="modal" data-bs-target="#modalCancelLucru" data-bs-id="{{ lucru.id }}" class="btn btn-danger btn-square-md font-weight-bold fs-2 my-0"> Anuleaza </button>
                   <button type="button" class="btn btn-primary btn-square-md font-weight-bold fs-2 my-0"
-                          onclick="showEditLucru('{{ lucru.denumire }}', '{{ lucru.text }}', {{ lucru.id }}, '{{ lucru.getCoords|safe }}', '{{ lucru.datetime|ftime:"datetime" }}')">Editeaza</button>
+                          onclick="showEditLucru('{{ lucru.denumire }}', '{{ lucru.text|strobs }}', {{ lucru.id }}, '{{ lucru.getCoords|safe }}', '{{ lucru.datetime|ftime:"datetime" }}')">Editeaza</button>
                 </div>
               </div>
             </div>
@@ -362,8 +366,14 @@
 <script type="text/javascript">
 
 window.addEventListener('load', ()=>{
-    document.getElementById('btnSaveEdit').addEventListener("click", function(){
-        document.forms['myform'].submit()
+    //document.getElementById('btnSaveEdit').addEventListener("click", function(){
+    //    document.forms['myform'].submit()
+    //})
+    document.getElementById('modalSaveEdit').addEventListener('show.bs.modal', function (event) {
+      var button = event.relatedTarget
+      var recipient = button.getAttribute('data-bs-id')
+      var butonContinua = document.getElementById('btnSaveEdit')
+      butonContinua.onclick = () => {document.forms[`myform${recipient}`].submit()};
     })
 
     document.getElementById('modalCancelComand').addEventListener('show.bs.modal', function (event) {
@@ -488,12 +498,12 @@ function setCurentCoords(id){
 
 function displayError(error) {
   var errors = {
-    1: 'Permisiune refuzata',
+    1: 'Permisiune locatie refuzata',
     2: 'Pozitie invalida',
-    3: 'Timpul a expirat',
-    default: "Eroare",
+    3: 'Timpul pentru localizare a expirat',
+    default: "default",
   };
-  alert("Error: " + errors[error.code]);
+  alert("Eoare: " + errors[error.code]);
 }
 
 function getLocation(callback){
@@ -589,38 +599,27 @@ function pad(num, size) {
     return num;
 }
 
-function clearFields(str){
+function clearFields(str, id){
     var myModal = new bootstrap.Modal(document.getElementById('modalSaveEdit'), {backdrop: "static", keyboard: false})
     if(str === "In"){
-        document.getElementById('inputOraIn').value = ""
-        document.getElementById('inputLocIn').value = ""
-        document.getElementById('inputObsIn').value = ""
+        document.getElementById(`inputOraIn${id}`).value = ""
+        document.getElementById(`inputLocIn${id}`).value = ""
+        document.getElementById(`inputObsIn${id}`).value = ""
     }
     else if(str === "Out") {
-        document.getElementById('inputOraOut').value = ""
-        document.getElementById('inputLocOut').value = ""
-        document.getElementById('inputObsOut').value = ""
+        document.getElementById(`inputOraOut${id}`).value = ""
+        document.getElementById(`inputLocOut${id}`).value = ""
+        document.getElementById(`inputObsOut${id}`).value = ""
     }
     else if(str === "InOut") {
-        document.getElementById('inputOraIn').value = ""
-        document.getElementById('inputLocIn').value = ""
-        document.getElementById('inputObsIn').value = ""
-        document.getElementById('inputOraOut').value = ""
-        document.getElementById('inputLocOut').value = ""
-        document.getElementById('inputObsOut').value = ""
+        document.getElementById(`inputOraIn${id}`).value = ""
+        document.getElementById(`inputLocIn${id}`).value = ""
+        document.getElementById(`inputObsIn${id}`).value = ""
+        document.getElementById(`inputOraOut${id}`).value = ""
+        document.getElementById(`inputLocOut${id}`).value = ""
+        document.getElementById(`inputObsOut${id}`).value = ""
     }
     myModal.show()
-}
-
-function recreateNode(el, withChildren) {
-  if (withChildren) {
-    el.parentNode.replaceChild(el.cloneNode(true), el);
-  }
-  else {
-    var newEl = el.cloneNode(false);
-    while (el.hasChildNodes()) newEl.appendChild(el.firstChild);
-    el.parentNode.replaceChild(newEl, el);
-  }
 }
 
 </script>

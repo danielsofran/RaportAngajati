@@ -129,42 +129,47 @@
             <p class="me-5 text-nowrap"> Data: </p>
             <p class="me-5 text-nowrap"> {{ datetime|name_of_day }}, {{ data }} </p>
         </div>
+        <hr class="dropdown-divider mt-4 mb-4">
+        {% for intrare, iesire in intrariiesiri %}
+
         <div class="d-flex flex-row me-5 my-3">
             <p class="me-5 text-nowrap"> Ora intrarii:&nbsp; </p>
-            <button disabled class="btn btn-secondary me-5 font-weight-bold fs-1">{{ oraIn }}</button>
+            <button disabled class="btn btn-secondary me-5 font-weight-bold fs-1">{{ intrare.datetime|ftime:"time" }}</button>
         </div>
         <div class="d-flex flex-row me-5 my-3">
             <p class="me-5 text-nowrap"> Ora plecarii: </p>
-            <button disabled class="btn btn-secondary me-5 font-weight-bold fs-1">{{ oraOut }}</button>
+            <button disabled class="btn btn-secondary me-5 font-weight-bold fs-1">{{ iesire.datetime|ftime:"time" }}</button>
         </div>
         <div class="d-flex flex-row me-5 my-3 align-items-left">
             <p class="me-5 text-nowrap"> Locatia intrarii:&nbsp; </p>
-            <button disabled class="btn btn-secondary me-5 font-weight-bold fs-3" title="Apasa pentru a deschide in Maps" >{{ locStrIn }}</button>
-            <div class="fs-1"> <button class="btn btn-light btn-lg fs-3" onclick="loadMap('{{ locIn }}')"><i class="fa-solid fa-location-crosshairs"></i></button> </div>
+            <button disabled class="btn btn-secondary me-5 font-weight-bold fs-3" title="Apasa pentru a deschide in Maps" >{{ intrare|strloc }}</button>
+            <div class="fs-1"> <button class="btn btn-light btn-lg fs-3" onclick="loadMap('{{ intrare.getCoords }}')"><i class="fa-solid fa-location-crosshairs"></i></button> </div>
             {% if request.user|is_recent:"In" %}<div class="fs-1 ms-2"> <button onclick="processposition('{% url 'come_recalc' %}')" class="btn btn-light btn-lg" >Relocare</button> </div>{% endif %}
         </div>
         <div class="d-flex flex-row me-5 my-3">
             <p class="me-5 text-nowrap"> Locatia plecarii: </p>
-            <button disabled class="btn btn-secondary me-5 font-weight-bold fs-3" title="Apasa pentru a deschide in Maps">{{ locStrOut }}</button>
-            <div class="fs-1"> <button class="btn btn-light btn-lg fs-3" onclick="loadMap('{{ locOut }}')"><i class="fa-solid fa-location-crosshairs"></i></button> </div>
+            <button disabled class="btn btn-secondary me-5 font-weight-bold fs-3" title="Apasa pentru a deschide in Maps">{{ iesire|strloc }}</button>
+            <div class="fs-1"> <button class="btn btn-light btn-lg fs-3" onclick="loadMap('{{ iesire.getCoords }}')"><i class="fa-solid fa-location-crosshairs"></i></button> </div>
             {% if request.user|is_recent:"Out" %}<div class="fs-1 ms-2"> <button onclick="processposition('{% url 'left_recalc' %}')" class="btn btn-light btn-lg" >Relocare</button> </div>{% endif %}
         </div>
-    {% if obsIn != "" %}
+    {% if intrare.text != "" %}
         <div class="my-3 w-90">
             <p class="me-5 text-nowrap"> Observatie la intrare: </p>
             <div class="form-floating">
-              <textarea maxlength="200" disabled class="form-control fs-4" id="floatingTextarea2" style="height: 100px">{{ obsIn|strobs }}</textarea>
+              <textarea maxlength="200" disabled class="form-control fs-4" id="floatingTextarea2" style="height: 100px">{{ intrare.text|strobs }}</textarea>
             </div>
         </div>
     {% endif %}
-    {% if obsOut != "" %}
+    {% if iesire.text != "" %}
         <div class="my-3 w-90">
             <p class="me-5 text-nowrap"> Observatie la iesire: </p>
             <div class="form-floating">
-              <textarea maxlength="200" disabled class="form-control fs-4" id="floatingTextarea2" style="height: 100px">{{ obsOut|strobs }}</textarea>
+              <textarea maxlength="200" disabled class="form-control fs-4" id="floatingTextarea2" style="height: 100px">{{ iesire.text|strobs }}</textarea>
             </div>
         </div>
     {% endif %}
+    <hr class="dropdown-divider mt-4 mb-4">
+    {% endfor %}
     {% if comenzi|length > 0 %}
         <div class="my-3 mt-5 w-90">
         <div class="d-flex flex-row" id="showDivComenzi">
@@ -289,7 +294,7 @@
         </div>
     </div>
 {% endif %}
-    </div>
+
 
     {% else %} <!-- Table View -->
         <div class="mt-5">
@@ -323,11 +328,14 @@
                     <p class="me-3 form-label ms-3">Ordoneaza dupa</p>
                     <select class="form-select flex-shrink-1 fs-3 me-5 w-25" aria-label="Default select example" name="ocrit">
                       <option {% if ocrit == "nume" %}selected{% endif %} value="nume">Nume Prenume</option>
-                      <option {% if ocrit == "datetimein" %}selected{% endif %} value="datetimein">Data si ora intrarii</option>
-                      <option {% if ocrit == "datetimeout" %}selected{% endif %} value="datetimeout">Data si ora iesirii</option>
-                      <option {% if ocrit == "timein" %}selected{% endif %} value="timein">Ora intrarii</option>
-                      <option {% if ocrit == "timeout" %}selected{% endif %} value="timeout">Ora iesirii</option>
-                      <option {% if ocrit == "nrcom" %}selected{% endif %} value="nrcom">Numar de lucrari</option>
+{#                      <option {% if ocrit == "datetimein" %}selected{% endif %} value="datetimein">Data si ora intrarii</option>#}
+{#                      <option {% if ocrit == "datetimeout" %}selected{% endif %} value="datetimeout">Data si ora iesirii</option>#}
+{#                      <option {% if ocrit == "timein" %}selected{% endif %} value="timein">Ora intrarii</option>#}
+{#                      <option {% if ocrit == "timeout" %}selected{% endif %} value="timeout">Ora iesirii</option>#}
+                      <option {% if ocrit == "nrin" %}selected{% endif %} value="nrin">Numar de intrari</option>
+                      <option {% if ocrit == "nrout" %}selected{% endif %} value="nrout">Numar de iesiri</option>
+                      <option {% if ocrit == "nrcom" %}selected{% endif %} value="nrcom">Numar de comenzi</option>
+                      <option {% if ocrit == "nrlucr" %}selected{% endif %} value="nrlucr">Numar de lucrari</option>
                     </select>
                     <select class="form-select flex-shrink-1 fs-3 me-5 w-25" aria-label="Default select example" name="oord" required>
                       <option {% if oord == "cresc" %}selected{% endif %} value="cresc">Crescator</option>
@@ -342,32 +350,32 @@
                   <input autocomplete="off" class="form-check-input" type="radio" name="prezenta" id="exampleRadios2" value="abs" {% if prezenta == "abs" %} checked {% endif %}>
                   <label class="form-check-label" for="exampleRadios2">Absenti</label>
                 </div>
-                <div class="form-check form-check-inline">
-                  <input autocomplete="off" class="form-check-input" type="radio" name="prezenta" id="exampleRadios3" value="iec" {% if prezenta == "iec" %} checked {% endif %}>
-                  <label class="form-check-label" for="exampleRadios3">Intrare/Iesire completate</label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input autocomplete="off" class="form-check-input" type="radio" name="prezenta" id="exampleRadios4" value="iei" {% if prezenta == "iei" %} checked {% endif %}>
-                  <label class="form-check-label" for="exampleRadios4">Intrare/Iesire incomplete</label>
-                </div>
-                <div class="form-check mt-2">
-                  <input autocomplete="off" class="form-check-input" type="checkbox" value="1" id="flexCheckDefault" name="selobs" {% if selobs == "1" %} checked {% endif %}>
-                  <label class="form-check-label" for="flexCheckDefault">
-                    Arata doar daca exista observatii
-                  </label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="tobs" id="exampleRadios5" value="i" {% if tobs == "i" %} checked {% endif %}>
-                  <label class="form-check-label" for="exampleRadios5" title="Observatii">La intrare</label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="tobs" id="exampleRadios6" value="e" {% if tobs == "e" %} checked {% endif %}>
-                  <label class="form-check-label" for="exampleRadios6" title="Observatii">La iesire</label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="tobs" id="exampleRadios7" value="ie" {% if tobs == "ie" %} checked {% endif %}>
-                  <label class="form-check-label" for="exampleRadios7" title="Observatii">La intrare si iesire</label>
-                </div>
+{#                <div class="form-check form-check-inline">#}
+{#                  <input autocomplete="off" class="form-check-input" type="radio" name="prezenta" id="exampleRadios3" value="iec" {% if prezenta == "iec" %} checked {% endif %}>#}
+{#                  <label class="form-check-label" for="exampleRadios3">Intrare/Iesire completate</label>#}
+{#                </div>#}
+{#                <div class="form-check form-check-inline">#}
+{#                  <input autocomplete="off" class="form-check-input" type="radio" name="prezenta" id="exampleRadios4" value="iei" {% if prezenta == "iei" %} checked {% endif %}>#}
+{#                  <label class="form-check-label" for="exampleRadios4">Intrare/Iesire incomplete</label>#}
+{#                </div>#}
+{#                <div class="form-check mt-2">#}
+{#                  <input autocomplete="off" class="form-check-input" type="checkbox" value="1" id="flexCheckDefault" name="selobs" {% if selobs == "1" %} checked {% endif %}>#}
+{#                  <label class="form-check-label" for="flexCheckDefault">#}
+{#                    Arata doar daca exista observatii#}
+{#                  </label>#}
+{#                </div>#}
+{#                <div class="form-check form-check-inline">#}
+{#                  <input class="form-check-input" type="radio" name="tobs" id="exampleRadios5" value="i" {% if tobs == "i" %} checked {% endif %}>#}
+{#                  <label class="form-check-label" for="exampleRadios5" title="Observatii">La intrare</label>#}
+{#                </div>#}
+{#                <div class="form-check form-check-inline">#}
+{#                  <input class="form-check-input" type="radio" name="tobs" id="exampleRadios6" value="e" {% if tobs == "e" %} checked {% endif %}>#}
+{#                  <label class="form-check-label" for="exampleRadios6" title="Observatii">La iesire</label>#}
+{#                </div>#}
+{#                <div class="form-check form-check-inline">#}
+{#                  <input class="form-check-input" type="radio" name="tobs" id="exampleRadios7" value="ie" {% if tobs == "ie" %} checked {% endif %}>#}
+{#                  <label class="form-check-label" for="exampleRadios7" title="Observatii">La intrare si iesire</label>#}
+{#                </div>#}
                 <button type="submit" class="btn btn-primary mt-3 me-5 fs-3">Filtreaza</button>
             </form>
             </div>

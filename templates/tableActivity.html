@@ -4,22 +4,24 @@
         <tr>
             {% if request.user|role_at_least:"Manager" %}
                 <th> Nume </th>
-                <th> Data </th>
+                <th class="text-nowrap"> Data </th>
             {% else %}
                 <th> Ziua </th>
             {% endif %}
-            <th> Ora intrarii </th>
-            <th> Locatia intrarii </th>
-            <th> Observatie la intrare </th>
-            <th> Ora plecarii </th>
-            <th> Locatia plecarii </th>
-            <th> Observatie la plecare </th>
+            <th class="text-wrap"> Numarul intrarilor </th>
+            <th class="text-wrap"> Numarul iesirilor </th>
             <th class="text-wrap"> Numar comenzi </th>
             <th class="text-wrap"> Numar lucrari </th>
             {% if request.user|role_at_least:"Manager" %}
-            <th> Linkuri </th>
+            <th> Link intrari </th>
+            <th> Link iesiri </th>
+            <th> Link comenzi </th>
+            <th> Link lucrari </th>
             <th> Modificare </th>
+            {% else %}
+            <th> Link </th>
             {% endif %}
+
         </tr>
     </thead>
     <tbody>
@@ -33,23 +35,20 @@
             {% endif %}
 
             {% if rowdata.absent %}
-                <th colspan="9" class="text-center"> Absent </th>
+                <th colspan="5" class="text-center"> Absent </th>
             {% else %}
-                <th> {{ rowdata.intrare.datetime|ftime:"time" }} </th>
-                <th> {{ rowdata.intrare|strloc }}
-                {% if rowdata.intrare|strloc != "-" %}<button class="btn btn-light" onclick="loadMap('{{ rowdata.intrare.getCoords|safe }}')"><i class="fa-solid fa-location-crosshairs"></i></button>{% endif %}
-                </th>
-                <th> {{ rowdata.intrare.text }} </th>
-                <th> {{ rowdata.iesire.datetime|ftime:"time" }} </th>
-                <th> {{ rowdata.iesire|strloc }}
-                {% if rowdata.iesire|strloc != "-" %}<button class="btn btn-light" onclick="loadMap('{{ rowdata.iesire.getCoords|safe }}')"><i class="fa-solid fa-location-crosshairs"></i></button>{% endif %}
-                </th>
-                <th> {{ rowdata.iesire.text }} </th>
+                <th> {{ rowdata.intrari.count }} </th>
+                <th> {{ rowdata.iesiri.count }} </th>
                 <th> {{ rowdata.nrcomenzi }} </th>
                 <th> {{ rowdata.nrlucrari }} </th>
                 {% if request.user|role_at_least:"Manager" %}
-                <th> <a href="{% url 'comenziUser' date=rowdata.datetime|ftime:"date" username=rowdata.user.username %}" class="btn btn-outline-info text-nowrap mb-1">Comenzi</a>
-                     <a href="{% url 'lucrariUser' date=rowdata.datetime|ftime:"date" username=rowdata.user.username %}" class="btn btn-outline-info text-nowrap">Lucrari</a>
+                <th> <a href="{% url 'intrareUser' date=rowdata.datetime|ftime:"date" username=rowdata.user.username %}" class="btn btn-outline-success text-nowrap mb-1">Intrari</a></th>
+                <th> <a href="{% url 'iesireUser' date=rowdata.datetime|ftime:"date" username=rowdata.user.username %}" class="btn btn-outline-danger text-nowrap mb-1">Iesiri</a></th>
+                <th> <a href="{% url 'comenziUser' date=rowdata.datetime|ftime:"date" username=rowdata.user.username %}" class="btn btn-outline-info text-nowrap mb-1">Comenzi</a></th>
+                <th> <a href="{% url 'lucrariUser' date=rowdata.datetime|ftime:"date" username=rowdata.user.username %}" class="btn btn-outline-dark text-nowrap">Lucrari</a> </th>
+                {% else %}
+                <th>
+                    <a href="{% url 'actFromPath' datein=rowdata.datetime|ftime:"date" dateout=rowdata.datetime|ftime:"date" %}" class="btn btn-outline-info text-nowrap"> Link</a>
                 </th>
                 {% endif %}
             {% endif %}
