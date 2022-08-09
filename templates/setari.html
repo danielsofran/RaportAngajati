@@ -11,6 +11,9 @@
     .w-45{
         width: 45%;
     }
+    .h-200{
+        height: 200px;
+    }
     .w-fpx{
         width: 450px;
     }
@@ -140,6 +143,22 @@
             </div>
         </div>
         <div class="row mb-3">
+            <div class="d-flex flex-column">
+                <label for="inputDataListComanda" class="form-label col-form-label text-nowrap me-5">Optiunile predefinite pentru denumirea comenzii</label>
+                <div class="col-sm-10">
+                    <textarea class="form-control fs-3 w-50 h-200" id="inputDataListComanda" required name="dlcmd">{{ setare.datalist_comanda }}</textarea>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="d-flex flex-column">
+                <label for="inputDataListLucru" class="form-label col-form-label text-nowrap me-5">Optiunile predefinite pentru denumirea unui lucru</label>
+                <div class="col-sm-10">
+                    <textarea class="form-control fs-3 w-50 h-200" id="inputDataListLucru" required name="dllcr">{{ setare.datalist_lucru }}</textarea>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-3">
             <div class="d-flex flex-row justify-content-around">
                 <button type="reset" class="btn btn-outline-secondary fs-3">Anuleaza</button>
                 <button type="button" data-bs-toggle="modal" data-bs-target="#modalSaveEdit" data-bs-form="setare" class="btn btn-success fs-3">Salveaza</button>
@@ -261,10 +280,9 @@ window.addEventListener("load", ()=>{
         var button = event.relatedTarget
         var recipient = button.getAttribute('data-bs-form')
         var btnSave = document.getElementById('btnSaveEdit')
-        recreateNode(btnSave)
-        btnSave.addEventListener('click', function (){
+        btnSave.onclick = function (){
             document.forms[recipient].submit()
-        })
+        }
     })
 
     document.getElementById('modalAccessLink').addEventListener('show.bs.modal', function (event) {
@@ -302,17 +320,6 @@ function createlink(idlink){
     let rlong = new RegExp('\\^\\^long\\^\\^', 'g')
     adress = adress.replace(rlat, lat).replace(rlong, long)
     return adress;
-}
-
-function recreateNode(el, withChildren) {
-  if (withChildren) {
-    el.parentNode.replaceChild(el.cloneNode(true), el);
-  }
-  else {
-    var newEl = el.cloneNode(false);
-    while (el.hasChildNodes()) newEl.appendChild(el.firstChild);
-    el.parentNode.replaceChild(newEl, el);
-  }
 }
 
 </script>

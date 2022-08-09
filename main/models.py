@@ -66,6 +66,22 @@ class OwnSettings(models.Model):
     program = models.CharField(blank=False, default="L Ma Mi J V S D", max_length=20)
     min_tolerated = models.IntegerField(blank=False, default=5, verbose_name="Numarul de minute tolerate in calculul celor 8 ore dintre intrare si iesire")
     harta = models.ForeignKey(Harta, null=True, on_delete=models.DO_NOTHING)
+    datalist_comanda = models.TextField(blank=True, verbose_name="Lista denumire comenzi")
+    datalist_lucru = models.TextField(blank=True, verbose_name="Lista denumire lucrari")
+
+    @property
+    def getDataListComanda(self):
+        listrez =  [token.replace('\r', "") for token in self.datalist_comanda.split('\n')]
+        while "" in listrez:
+            listrez.remove("")
+        return listrez
+
+    @property
+    def getDataListLucru(self):
+        listrez = [token.replace('\r', "") for token in self.datalist_lucru.split('\n')]
+        while "" in listrez:
+            listrez.remove("")
+        return listrez
 
     def __str__(self): return "Setare"
 

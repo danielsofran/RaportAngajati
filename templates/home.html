@@ -91,17 +91,19 @@
     </div>
 
     {# BUTOANE #}
-    <div class="d-inline-flex flex-column text-center overflow-hidden align-start pe-0">
+    <div class="d-flex flex-row justify-content-center">
+    <div class="align-self-center mb-3">
+    <div class="d-inline-flex flex-column text-center overflow-hidden align-start pe-0 ">
         <div class="my-3 ms-5">
             <div class="d-flex flex-row justify-content-center">
-                <button type="button" class="btn p-3 border fs-1 me-3" style="background-color: aquamarine" onclick="ajuns()">Am ajuns </button>
+                <button type="button" class="btn p-3 border fs-1 me-3 flex-fill" style="background-color: aquamarine" onclick="ajuns()">Am ajuns </button>
                 <button id="inputModalCancelCome" type="button" data-bs-toggle="modal" data-bs-target="#modalCancelCome" class="btn btn-danger btn-square-md font-weight-bold fs-1 align-self-center my-0 px-3 py-3 me-5" ><i class="fa-solid fa-xmark"></i></button>
             </div>
         </div>
 
         <div class="my-3 ms-5">
             <div class="d-flex flex-row">
-                <button type="button" class="btn btn-warning mx-auto p-3 border fs-1 me-5" onclick="toogleView('comeObsDiv')">Am ajuns, fac o observatie </button>
+                <button type="button" class="btn btn-warning mx-auto p-3 border fs-1 me-5 flex-fill" onclick="toogleView('comeObsDiv')">Am ajuns, fac o observatie </button>
             </div>
             <div class="d-none form-floating fs-4 mt-3" id="comeObsDiv">
               <textarea maxlength="200" class="form-control fs-4" placeholder="Scrieti observatia/motivarea aici" id="comeObs" style="height: 100px" required></textarea>
@@ -116,14 +118,14 @@
 
         <div class="my-3 ms-5">
             <div class="d-flex flex-row justify-content-center">
-                <button type="button" class="btn p-3 border fs-1 me-3" style="background-color:#f06969" onclick="plecat()">Am plecat</button>
+                <button type="button" class="btn p-3 border fs-1 me-3 flex-fill" style="background-color:#f06969" onclick="plecat()">Am plecat</button>
                 <button id="inputModalCancelLeft" type="button" data-bs-toggle="modal" data-bs-target="#modalCancelLeft" class="btn btn-danger btn-square-md font-weight-bold fs-1 align-self-center px-3 py-3 me-5"><i class="fa-solid fa-xmark"></i></button>
             </div>
         </div>
 
         <div class="my-3 ms-5">
             <div class="d-flex flex-row">
-                <button type="button" class="btn btn-warning mx-auto p-3 border fs-1 me-5" onclick="toogleView('leftObsDiv')">Am plecat, fac o observatie </button>
+                <button type="button" class="btn btn-warning mx-auto p-3 border fs-1 me-5 flex-fill" onclick="toogleView('leftObsDiv')">Am plecat, fac o observatie </button>
             </div>
             <div class="d-none form-floating fs-4 mt-3" id="leftObsDiv">
               <textarea maxlength="200" class="form-control fs-4" placeholder="Scrieti observatia/motivarea aici" id="leftObs" style="height: 100px" required></textarea>
@@ -138,7 +140,7 @@
 
         <div class="my-3 ms-5">
             <div class="d-flex flex-row">
-                <button type="button" class="btn mx-auto p-3 border fs-1 me-5" style="background-color: aqua" onclick="toogleView('comandDiv')">Am terminat o comamda</button>
+                <button type="button" class="btn mx-auto p-3 border fs-1 me-5 flex-fill" style="background-color: aqua" onclick="toogleView('comandDiv')">Am terminat o comamda</button>
 {#                <div class="d-flex flex-row"><button onclick="toogleView('comandDiv')" class="btn btn-danger btn-square-md font-weight-bold fs-1 align-self-center my-0"><i class="fa-solid fa-xmark"></i></button></div>#}
             </div>
             <div class="d-none fs-2 pt-3" id="comandDiv">
@@ -146,13 +148,9 @@
                     <label for="comandaDen" class="form-label fs-2" style="text-align: left !important;">Denumire</label>
                     <input class="form-control fs-3" list="datalistOptions" id="comandaDen" placeholder="Alege/Scrie denumirea produsului" required>
                     <datalist id="datalistOptions">
-                      <option value="Panou de gard">
-                      <option value="Poarta">
-                      <option value="Portita">
-                      <option value="Scara">
-                      <option value="Balustrada">
-                      <option value="Stalpi">
-                      <option value="Mana curenta">
+                      {% for cmd in datalist_comanda %}
+                      <option value="{{ cmd }}">
+                      {% endfor %}
                 </datalist>
                 </div>
                 <div class="row mb-3 fs-3">
@@ -174,7 +172,7 @@
 
         <div class="my-3 ms-5">
             <div class="d-flex flex-row">
-                <button type="button" class="btn mx-auto p-3 border fs-1 me-5" style="background-color: sandybrown" onclick="toogleView('lucruDiv')">Am terminat un lucru</button>
+                <button type="button" class="btn mx-auto p-3 border fs-1 me-5 flex-fill" style="background-color: sandybrown" onclick="toogleView('lucruDiv')">Am terminat un lucru</button>
 {#                <div class="d-flex flex-row"><button onclick="toogleView('comandDiv')" class="btn btn-danger btn-square-md font-weight-bold fs-1 align-self-center my-0"><i class="fa-solid fa-xmark"></i></button></div>#}
             </div>
             <div class="d-none fs-2 pt-3" id="lucruDiv">
@@ -182,13 +180,9 @@
                     <label for="lucruDen" class="form-label fs-2" style="text-align: left !important;">Denumire</label>
                     <input class="form-control fs-3" list="datalistOptions2" id="lucruDen" placeholder="Scrie denumirea lucrului" required>
                     <datalist id="datalistOptions2">
-                      <option value="Panou de gard">
-                      <option value="Poarta">
-                      <option value="Portita">
-                      <option value="Scara">
-                      <option value="Balustrada">
-                      <option value="Stalpi">
-                      <option value="Mana curenta">
+                      {% for lucru in datalist_lucru %}
+                      <option value="{{ lucru }}">
+                      {% endfor %}
                     </datalist>
                 </div>
                 <div class="form-floating fs-4 mt-3">
@@ -202,9 +196,11 @@
             </div>
         </div>
 
-        <div class="my-3 ms-5 ms-auto">
-            <a class="btn btn-primary fs-2 mx-auto me-5 p-3 border" href="{% url 'actToday' %}">Vezi activitatea de astazi</a>
+        <div class="my-3 ms-5 d-flex flex-row">
+            <a class="btn btn-primary fs-2 mx-auto me-5 p-3 border flex-fill" href="{% url 'actToday' %}">Vezi activitatea de astazi</a>
         </div>
+    </div>
+    </div>
     </div>
     </div>
 {% endblock %}

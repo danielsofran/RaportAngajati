@@ -88,7 +88,7 @@ def come(request):
         NR_RECALC_POZ = 3
         DIST_ERROR = 10
         try:
-            setare = models.OwnSettings.objects.all()[0]
+            setare = models.OwnSettings.objects.first()
             SEC_RECALC_AFTER = setare.secafterrecalc
             NR_RECALC_POZ = setare.nrrecalcpoz
             DIST_ERROR = setare.disterror
@@ -135,7 +135,7 @@ def recalc_come(request):
     SEC_RECALC_AFTER = 60
     NR_RECALC_POZ = 3
     try:
-        setare = models.OwnSettings.objects.all()[0]
+        setare = models.OwnSettings.objects.first()
         SEC_RECALC_AFTER = setare.secafterrecalc
         NR_RECALC_POZ = setare.nrrecalcpoz
     except:
@@ -165,7 +165,7 @@ def left(request):
     NR_RECALC_POZ = 3
     DIST_ERROR = 10
     try:
-        setare = models.OwnSettings.objects.all()[0]
+        setare = models.OwnSettings.objects.first()
         SEC_RECALC_AFTER = setare.secafterrecalc
         NR_RECALC_POZ = setare.nrrecalcpoz
         DIST_ERROR = setare.disterror
@@ -207,7 +207,7 @@ def recalc_left(request):
     SEC_RECALC_AFTER = 60
     NR_RECALC_POZ = 3
     try:
-        setare = models.OwnSettings.objects.all()[0]
+        setare = models.OwnSettings.objects.first()
         SEC_RECALC_AFTER = setare.secafterrecalc
         NR_RECALC_POZ = setare.nrrecalcpoz
     except:
@@ -454,9 +454,11 @@ def lucruCancel(request):
 class HomeView(TemplateView):
     template_name = 'home.html'
 
-def home(request):
-    return render(request, 'home.html', {})
-
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        setare = models.OwnSettings.objects.first()
+        context.update(datalist_comanda=setare.getDataListComanda, datalist_lucru=setare.getDataListLucru)
+        return context
 
 # endregion
 
@@ -518,11 +520,11 @@ class ActView(TemplateView):
             context = {}
             self.__proces_request_to_context(request, context)
             filteruser, order = self.__create_filters(context)
-            setari = models.OwnSettings.objects.all()[0]
+            setari = models.OwnSettings.objects.first()
 
             # get data
             datetimein, datetimeout = self._getPeriod(**kwargs)
-            harta = models.OwnSettings.objects.all()[0].harta.adresa
+            harta = models.OwnSettings.objects.first().harta.adresa
             roluri_listate = ["Angajat", "Viewer", "Manager"]
             if request.user.role == "Admin": roluri_listate.append("Admin")
             tabledata = []
@@ -558,7 +560,7 @@ class ActView(TemplateView):
         datain, dataout = self._getPeriod(**context)
         user = self.request.user
         if 'ownuser' in kwargs: user = kwargs['ownuser']
-        setari = models.OwnSettings.objects.all()[0]
+        setari = models.OwnSettings.objects.first()
         harta = setari.harta.adresa
         context2['harta'] = harta
 
@@ -607,6 +609,7 @@ class ActView(TemplateView):
             tabledata.sort()
             context2['tabledata'] = tabledata
         context.update(context2)
+        context.update(datalist_comanda=setari.getDataListComanda, datalist_lucru=setari.getDataListLucru)
         return context
 
 
@@ -949,8 +952,9 @@ class ActUserFromPathView(ActFromPathView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        setare = models.OwnSettings.objects.all()[0]
+        setare = models.OwnSettings.objects.first()
         context.update(show_edit=True, nrrecalcpoz=setare.nrrecalcpoz + 1)
+        context.update(datalist_comanda=setare.getDataListComanda, datalist_lucru=setare.getDataListLucru)
         return context
 
 
@@ -1046,7 +1050,7 @@ class BaseActivityView(TemplateView):
         datetime2 = datetime.datetime.combine(date, time2, tzinfo=pytz.timezone(settings.TIME_ZONE))
         context.update(titlu=self.titlu, datetime1=datetime1, datetime2=datetime2)
         if user is not None: context.update(user=user)
-        harta = models.OwnSettings.objects.all()[0].harta.adresa
+        harta = models.OwnSettings.objects.first().harta.adresa
         context.update(harta=harta)
         return context
 
@@ -1212,7 +1216,7 @@ class Setari(TemplateView):
     template_name = 'setari.html'
 
     def __validate_post_setare(self, request):
-        keys = ("nrrecalcpoz", "secafterrecalc", "disterror", "mintol", "harta", "progr")
+        keys = ("nrrecalcpoz", "secafterrecalc", "disterror", "mintol", "harta", "progr", "dlcmd", "dllcr")
         for key in keys:
             if not key in request.POST:
                 messages.success(request, ("Date insuficiente!"))
@@ -1246,7 +1250,9 @@ class Setari(TemplateView):
             messages.success(request, ("Program invalid!"))
             return None
         progr = " ".join(progr)
-        vals = (nr, sec, dist, mintol, harta, progr)
+        dlcmd = str(request.POST[keys[6]])
+        dllcr = str(request.POST[keys[7]])
+        vals = (nr, sec, dist, mintol, harta, progr, dlcmd, dllcr)
         context = {keys[i]: vals[i] for i, _ in enumerate(keys)}
         return context
 
@@ -1336,13 +1342,15 @@ class Setari(TemplateView):
         if request.POST['type'] == "setare":
             context = self.__validate_post_setare(request)
             if context is not None:
-                seatre = models.OwnSettings.objects.all()[0]
+                seatre = models.OwnSettings.objects.first()
                 seatre.nrrecalcpoz = context['nrrecalcpoz']
                 seatre.secafterrecalc = context['secafterrecalc']
                 seatre.disterror = context['disterror']
                 seatre.min_tolerated = context['mintol']
                 seatre.program = context['progr']
                 seatre.harta = context['harta']
+                seatre.datalist_comanda = context['dlcmd']
+                seatre.datalist_lucru = context['dllcr']
                 seatre.save(force_update=True)
                 messages.success(request, ("Setare modificata cu succes!"))
         elif request.POST['type'] == 'harta':
@@ -1384,7 +1392,7 @@ class Setari(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        setare = models.OwnSettings.objects.all()[0]
+        setare = models.OwnSettings.objects.first()
         arii = models.Forma.objects.all()
         harti = models.Harta.objects.all()
         context.update(setare=setare, arii=arii, harti=harti)
@@ -1395,7 +1403,7 @@ def stergeharta(request, hid):
     try:
         harta = models.Harta.objects.get(pk=hid)
         nume = harta.nume
-        setare = models.OwnSettings.objects.all()[0]
+        setare = models.OwnSettings.objects.first()
         if harta.id == setare.harta.id:
             messages.success(request, (f"Harta {nume} este setata ca fiind harta curenta! Va rugam sa selectati alta harta daca doriti sa o stergeti pe aceasta!"))
             return redirect('setari')
@@ -1422,7 +1430,7 @@ def stergeforma(request, fid):
 
 def about(request):
     context = {}
-    setare=models.OwnSettings.objects.all()[0]
+    setare=models.OwnSettings.objects.first()
     carousellogin = Carousel()
     carousellogin.addItem("https://i.ibb.co/3k3RYQZ/login.png")
     carousellogin.addItem("https://i.ibb.co/WvjBx2D/loginnume.png")

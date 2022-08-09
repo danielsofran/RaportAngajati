@@ -160,16 +160,17 @@ def validAccountModif(user, request) -> bool:
 
     tel = str(request.POST['tel'])
     tel.replace(' ', '')
-    if tel.__len__() < 10:
-        messages.success(request, ("Numarul de telefon nu contine destule cifre!"))
-        return False
-    if (tel[0]<'0' or tel[0]>'9') and tel[0] != '+':
-        messages.success(request, ("Prima cifra a numarului de telefon este invalida!"))
-        return False
-    for cif in tel[1:]:
-        if cif not in '.-' and (cif<'0' or cif>'9'):
-            messages.success(request, ("Numar de telefon invalid!"))
+    if tel.__len__() != 0:
+        if tel.__len__() < 10:
+            messages.success(request, ("Numarul de telefon nu contine destule cifre!"))
             return False
+        if (tel[0]<'0' or tel[0]>'9') and tel[0] != '+':
+            messages.success(request, ("Prima cifra a numarului de telefon este invalida!"))
+            return False
+        for cif in tel[1:]:
+            if cif not in '.-' and (cif<'0' or cif>'9'):
+                messages.success(request, ("Numar de telefon invalid!"))
+                return False
     parola = str(request.POST['pwd'])
     if len(parola) < 8:
         messages.success(request, ("Parola trebuie sa contina minim 8 caractere!"))

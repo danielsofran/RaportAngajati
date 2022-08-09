@@ -209,14 +209,10 @@
                 <label for="comandaDen" class="form-label fs-2" style="text-align: left !important;">Denumire</label>
                 <input autocomplete="off" class="form-control fs-3" list="datalistOptions" id="comandaDen" placeholder="Alege/Scrie denumirea produsului" required>
                 <datalist id="datalistOptions">
-                  <option value="Panou de gard">
-                  <option value="Poarta">
-                  <option value="Portita">
-                  <option value="Scara">
-                  <option value="Balustrada">
-                  <option value="Stalpi">
-                  <option value="Mana curenta">
-            </datalist>
+                  {% for cmd in datalist_comanda %}
+                      <option value="{{ cmd }}">
+                  {% endfor %}
+                </datalist>
             </div>
             <div class="row mb-3 fs-3">
                 <label for="inputNrComanda" class="col-form-label fs-3 text-start">Numar comanda</label>
@@ -277,13 +273,9 @@
                 <label for="lucruDen" class="form-label fs-2" style="text-align: left !important;">Denumire</label>
                 <input class="form-control fs-3" list="datalistOptions3" id="lucruDen" placeholder="Scrie denumirea lucrului" required>
                 <datalist id="datalistOptions3">
-                  <option value="Panou de gard">
-                  <option value="Poarta">
-                  <option value="Portita">
-                  <option value="Scara">
-                  <option value="Balustrada">
-                  <option value="Stalpi">
-                  <option value="Mana curenta">
+                  {% for lucru in datalist_lucru %}
+                      <option value="{{ lucru }}">
+                  {% endfor %}
                 </datalist>
             </div>
             <div class="form-floating fs-4 mt-3">
