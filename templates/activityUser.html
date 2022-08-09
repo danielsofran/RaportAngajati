@@ -211,6 +211,73 @@
         </div>
     </form>
     {% endfor %}
+    {% if showinoutsupl %}
+    <form name="myformBlank" method="post">
+        {% csrf_token %}
+        <input type="hidden" value="{{ intrare.id }}" name="inid">
+        <input type="hidden" value="{{ iesire.id }}" name="outid">
+        <div class="fs-2 pt-3 w-50">
+            <div class="row mb-3 fs-3">
+                <label for="inputOraInBlank" class="col-form-label fs-3 text-start">Ora intrarii</label>
+                <div class="col-sm-10">
+                  <input autocomplete="off" type="text" class="form-control fs-3" id="inputOraInBlank" value="{{ intrare.datetime|ftime:"time" }}" name="orain">
+                </div>
+            </div>
+            <div class="row mb-3 fs-3">
+                <label for="inputOraOutBlank" class="col-form-label fs-3 text-start">Ora plecarii</label>
+                <div class="col-sm-10">
+                  <input autocomplete="off" type="text" class="form-control fs-3" id="inputOraOutBlank" value="{{ iesire.datetime|ftime:"time" }}" name="oraout">
+                </div>
+            </div>
+
+            <div class="row mb-3 fs-3">
+                <label for="inputLocInBlank" class="col-form-label fs-3 text-start">Locatie intrare (lat, long): {{ intrare|strloc }}</label>
+                <div class="d-flex flex-row col-sm-10">
+                  <input autocomplete="off" type="text" class="form-control fs-3 me-5" id="inputLocInBlank" value="{{ intrare.getCoords }}" name="locin">
+                  <button type="button" class="btn btn-light btn-lg fs-3 me-3" onclick="loadMap('{{ intrare.getCoords }}')" title="Arata pe harta"><i class="fa-solid fa-location-crosshairs"></i></button>
+                  <button type="button" class="btn btn-light btn-lg fs-3" onclick="setCurentCoords('inputLocInBlank')" title="Seteaza pozitia curenta"><i class="fa-solid fa-magnifying-glass-location"></i></button>
+                </div>
+            </div>
+            <div class="row mb-3 fs-3">
+                <label for="inputLocOutBlank" class="col-form-label fs-3 text-start">Locatie plecare (lat, long): {{ iesire|strloc }}</label>
+                <div class="d-flex flex-row col-sm-10">
+                  <input autocomplete="off" type="text" class="form-control fs-3 me-5" id="inputLocOutBlank" required value="{{ iesire.getCoords }}" name="locout">
+                  <button type="button" class="btn btn-light btn-lg fs-3 me-3" onclick="loadMap('{{ iesire.getCoords }}')" title="Arata pe harta"><i class="fa-solid fa-location-crosshairs"></i></button>
+                  <button type="button" class="btn btn-light btn-lg fs-3" onclick="setCurentCoords('inputLocOutBlank')" title="Seteaza pozitia curenta"><i class="fa-solid fa-magnifying-glass-location"></i></button>
+                </div>
+            </div>
+            {% if show_nrReloc %}
+            <div class="row mb-3 fs-3">
+                <label for="inputNrRelocIn" class="col-form-label fs-3 text-start">Numar de relocari la intrare</label>
+                <div class="col-sm-10">
+                  <input autocomplete="off" type="number" class="form-control fs-3" id="inputNrRelocIn" required min="1" max="{{ nrrecalcpoz }}" value="{{ 1 }}">
+                </div>
+            </div>
+            <div class="row mb-3 fs-3">
+                <label for="inputNrRelocOut" class="col-form-label fs-3 text-start">Numar de relocari la iesire</label>
+                <div class="col-sm-10">
+                  <input autocomplete="off" type="number" class="form-control fs-3" id="inputNrRelocOut" required min="1" max="{{ nrrecalcpoz }}" value="{{ 1 }}">
+                </div>
+            </div>
+            {% endif %}
+            <p class="mt-3 mb-1">Observatie la intrare</p>
+            <div class="form-floating fs-4 me-5">
+
+              <textarea maxlength="200" class="form-control fs-4" placeholder="Scrieti observatia/motivarea aici" id="inputObsInBlank" style="height: 100px" name="obsin">{{ intrare.text|strobs }}</textarea>
+{#              <label for="inputObsIn">Observatie la intrare</label>#}
+            </div>
+            <p class="mt-3 mb-1">Observatie la iesire</p>
+            <div class="form-floating fs-4 me-5">
+              <textarea maxlength="200" class="form-control fs-4" placeholder="Scrieti observatia/motivarea aici" id="inputObsOut" style="height: 100px" name="obsout">{{ iesire.text|strobs }}</textarea>
+{#              <label for="inputObsOut">Observatie la plecare</label>#}
+            </div>
+            <div class="d-flex flex-row justify-content-around mt-2 fs-5">
+              <button type="reset" class="btn btn-danger font-weight-bold fs-2 align-self-center my-0" > Anuleaza modificarile </button>
+              <button type="button" data-bs-toggle="modal" data-bs-target="#modalSaveEdit" data-bs-id="Blank" class="btn btn-primary font-weight-bold fs-2 align-self-center my-0 me-3">Salveaza modificarile</button>
+            </div>
+        </div>
+    </form>
+    {% endif %}
     <div class="my-3 mt-5 w-50">
         <div class="d-flex flex-row">
             <p class="me-5 text-nowrap"> Comenzi finalizate: {{ nrcomenzi }} </p>

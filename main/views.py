@@ -1,3 +1,5 @@
+import itertools
+
 import pytz
 from django.contrib import messages
 from django.contrib.auth import login, logout, get_user_model
@@ -554,7 +556,7 @@ class ActView(TemplateView):
             context2['iesiri'] = iesiri
 
             # In Out
-            inout = zip(intrari, iesiri)
+            inout = itertools.zip_longest(intrari, iesiri)
             context2["intrariiesiri"] = inout
 
             # Comenzi
@@ -923,6 +925,7 @@ class ActUserFromPathView(ActFromPathView):
         setare = models.OwnSettings.objects.first()
         context.update(show_edit=True, nrrecalcpoz=setare.nrrecalcpoz + 1)
         context.update(datalist_comanda=setare.getDataListComanda, datalist_lucru=setare.getDataListLucru)
+        context.update(showinoutsupl=True)
         return context
 
 

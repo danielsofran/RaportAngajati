@@ -141,13 +141,13 @@
             <button disabled class="btn btn-secondary me-5 font-weight-bold fs-1">{{ iesire.datetime|ftime:"time" }}</button>
         </div>
         <div class="d-flex flex-row me-5 my-3 align-items-left">
-            <p class="me-5 text-nowrap"> Locatia intrarii:&nbsp; </p>
+            <p class="me-5 text-wrap"> Locatia intrarii:&nbsp; </p>
             <button disabled class="btn btn-secondary me-5 font-weight-bold fs-3" title="Apasa pentru a deschide in Maps" >{{ intrare|strloc }}</button>
             <div class="fs-1"> <button class="btn btn-light btn-lg fs-3" onclick="loadMap('{{ intrare.getCoords }}')"><i class="fa-solid fa-location-crosshairs"></i></button> </div>
             {% if request.user|is_recent:"In" %}<div class="fs-1 ms-2"> <button onclick="processposition('{% url 'come_recalc' %}')" class="btn btn-light btn-lg" >Relocare</button> </div>{% endif %}
         </div>
         <div class="d-flex flex-row me-5 my-3">
-            <p class="me-5 text-nowrap"> Locatia plecarii: </p>
+            <p class="me-5 text-wrap"> Locatia plecarii: </p>
             <button disabled class="btn btn-secondary me-5 font-weight-bold fs-3" title="Apasa pentru a deschide in Maps">{{ iesire|strloc }}</button>
             <div class="fs-1"> <button class="btn btn-light btn-lg fs-3" onclick="loadMap('{{ iesire.getCoords }}')"><i class="fa-solid fa-location-crosshairs"></i></button> </div>
             {% if request.user|is_recent:"Out" %}<div class="fs-1 ms-2"> <button onclick="processposition('{% url 'left_recalc' %}')" class="btn btn-light btn-lg" >Relocare</button> </div>{% endif %}
