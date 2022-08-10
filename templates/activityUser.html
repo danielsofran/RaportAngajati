@@ -142,8 +142,8 @@
     <hr class="dropdown-divider mt-5">
 {#    <div class="d-flex flex-row me-5 mt-3">#}
 {#        <button class="btn btn-outline-danger fs-3 me-5" onclick="clearFields('In', '{{ intrare.id }}{{ iesire.id }}')"> Sterge intrarea </button>#}
-{#        <button class="btn btn-outline-danger fs-3 me-5" onclick="clearFields('Out', '{{ intrare.id }}{{ iesire.id }}')"> Sterge iesirea </button>#}
-{#        <button class="btn btn-outline-danger fs-3 me-5" onclick="clearFields('InOut', '{{ intrare.id }}{{ iesire.id }}')"> Sterge intrarea si iesirea </button>#}
+{#        <button class="btn btn-outline-danger fs-3 me-5" onclick="clearFields('Out', '{{ intrare.id }}{{ iesire.id }}')"> Sterge plecarea </button>#}
+{#        <button class="btn btn-outline-danger fs-3 me-5" onclick="clearFields('InOut', '{{ intrare.id }}{{ iesire.id }}')"> Sterge intrarea si plecarea </button>#}
 {#    </div>#}
     <form name="myform{{ intrare.id }}{{ iesire.id }}" method="post">
         {% csrf_token %}
@@ -151,7 +151,7 @@
         <input type="hidden" value="{{ iesire.id }}" name="outid">
         <div class="fs-2 pt-3 w-50">
             <div class="row mb-3 fs-3">
-                <label for="inputOraIn{{ intrare.id }}{{ iesire.id }}" class="col-form-label fs-3 text-start">Ora intrarii</label>
+                <label for="inputOraIn{{ intrare.id }}{{ iesire.id }}" class="col-form-label fs-3 text-start">Ora venirii</label>
                 <div class="col-sm-10">
                   <input autocomplete="off" type="text" class="form-control fs-3" id="inputOraIn{{ intrare.id }}{{ iesire.id }}" value="{{ intrare.datetime|ftime:"time" }}" name="orain">
                 </div>
@@ -181,25 +181,25 @@
             </div>
             {% if show_nrReloc %}
             <div class="row mb-3 fs-3">
-                <label for="inputNrRelocIn" class="col-form-label fs-3 text-start">Numar de relocari la intrare</label>
+                <label for="inputNrRelocIn" class="col-form-label fs-3 text-start">Numar de relocari la venire</label>
                 <div class="col-sm-10">
                   <input autocomplete="off" type="number" class="form-control fs-3" id="inputNrRelocIn" required min="1" max="{{ nrrecalcpoz }}" value="{{ 1 }}">
                 </div>
             </div>
             <div class="row mb-3 fs-3">
-                <label for="inputNrRelocOut" class="col-form-label fs-3 text-start">Numar de relocari la iesire</label>
+                <label for="inputNrRelocOut" class="col-form-label fs-3 text-start">Numar de relocari la plecare</label>
                 <div class="col-sm-10">
                   <input autocomplete="off" type="number" class="form-control fs-3" id="inputNrRelocOut" required min="1" max="{{ nrrecalcpoz }}" value="{{ 1 }}">
                 </div>
             </div>
             {% endif %}
-            <p class="mt-3 mb-1">Observatie la intrare</p>
+            <p class="mt-3 mb-1">Observatie la venire</p>
             <div class="form-floating fs-4 me-5">
 
               <textarea maxlength="200" class="form-control fs-4" placeholder="Scrieti observatia/motivarea aici" id="inputObsIn{{ intrare.id }}{{ iesire.id }}" style="height: 100px" name="obsin">{{ intrare.text|strobs }}</textarea>
-{#              <label for="inputObsIn">Observatie la intrare</label>#}
+{#              <label for="inputObsIn">Observatie la venire</label>#}
             </div>
-            <p class="mt-3 mb-1">Observatie la iesire</p>
+            <p class="mt-3 mb-1">Observatie la plecare</p>
             <div class="form-floating fs-4 me-5">
               <textarea maxlength="200" class="form-control fs-4" placeholder="Scrieti observatia/motivarea aici" id="inputObsOut" style="height: 100px" name="obsout">{{ iesire.text|strobs }}</textarea>
 {#              <label for="inputObsOut">Observatie la plecare</label>#}
@@ -218,7 +218,7 @@
         <input type="hidden" value="{{ iesire.id }}" name="outid">
         <div class="fs-2 pt-3 w-50">
             <div class="row mb-3 fs-3">
-                <label for="inputOraInBlank" class="col-form-label fs-3 text-start">Ora intrarii</label>
+                <label for="inputOraInBlank" class="col-form-label fs-3 text-start">Ora venirii</label>
                 <div class="col-sm-10">
                   <input autocomplete="off" type="text" class="form-control fs-3" id="inputOraInBlank" value="{{ intrare.datetime|ftime:"time" }}" name="orain">
                 </div>
@@ -248,25 +248,25 @@
             </div>
             {% if show_nrReloc %}
             <div class="row mb-3 fs-3">
-                <label for="inputNrRelocIn" class="col-form-label fs-3 text-start">Numar de relocari la intrare</label>
+                <label for="inputNrRelocIn" class="col-form-label fs-3 text-start">Numar de relocari la venire</label>
                 <div class="col-sm-10">
                   <input autocomplete="off" type="number" class="form-control fs-3" id="inputNrRelocIn" required min="1" max="{{ nrrecalcpoz }}" value="{{ 1 }}">
                 </div>
             </div>
             <div class="row mb-3 fs-3">
-                <label for="inputNrRelocOut" class="col-form-label fs-3 text-start">Numar de relocari la iesire</label>
+                <label for="inputNrRelocOut" class="col-form-label fs-3 text-start">Numar de relocari la plecare</label>
                 <div class="col-sm-10">
                   <input autocomplete="off" type="number" class="form-control fs-3" id="inputNrRelocOut" required min="1" max="{{ nrrecalcpoz }}" value="{{ 1 }}">
                 </div>
             </div>
             {% endif %}
-            <p class="mt-3 mb-1">Observatie la intrare</p>
+            <p class="mt-3 mb-1">Observatie la venire</p>
             <div class="form-floating fs-4 me-5">
 
               <textarea maxlength="200" class="form-control fs-4" placeholder="Scrieti observatia/motivarea aici" id="inputObsInBlank" style="height: 100px" name="obsin">{{ intrare.text|strobs }}</textarea>
-{#              <label for="inputObsIn">Observatie la intrare</label>#}
+{#              <label for="inputObsIn">Observatie la venire</label>#}
             </div>
-            <p class="mt-3 mb-1">Observatie la iesire</p>
+            <p class="mt-3 mb-1">Observatie la plecare</p>
             <div class="form-floating fs-4 me-5">
               <textarea maxlength="200" class="form-control fs-4" placeholder="Scrieti observatia/motivarea aici" id="inputObsOut" style="height: 100px" name="obsout">{{ iesire.text|strobs }}</textarea>
 {#              <label for="inputObsOut">Observatie la plecare</label>#}

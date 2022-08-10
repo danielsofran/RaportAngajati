@@ -98,12 +98,13 @@ def come(request):
             print('Nu exista setari!')
         intrari = models.Intrare.objects.filter(user=request.user, datetime__day=now.day)
         iesiri = models.Iesire.objects.filter(user=request.user, datetime__day=now.day)
-        if intrari.count() != iesiri.count():
-            messages.success(request, ("Nu puteti inregistra intrarea daca nu ati salvat iesirea!"))
-            return redirect('home')
-        models.Intrare.objects.create(user=request.user, latitude=request.GET['lat'], longitude=request.GET['long'],
+        if intrari.count() == iesiri.count() in (-1, 0) and intrari.count() != 0:
+            models.Intrare.objects.create(user=request.user, latitude=request.GET['lat'], longitude=request.GET['long'],
                                           datetime=now, nrcalcloc=1, text=utils.secureStr(request.GET['obs']))
-        messages.success(request, ("Succes!"))
+            messages.success(request, ("Succes!"))
+        else:
+            messages.success(request, ("Nu puteti inregistra venirea!"))
+            return redirect('home')
     else:
         print("POST in come")
     return redirect('home')
@@ -112,15 +113,15 @@ def cancel_come(request):
     now = utils.getTime()
     intrari = models.Intrare.objects.filter(user=request.user, datetime__day=now.day)
     iesiri = models.Iesire.objects.filter(user=request.user, datetime__day=now.day)
-    if intrari.count() - iesiri.count() != 1:
-        messages.success(request, ("Momentul intrarii nu a fost inregistrat!"))
+    if intrari.count() - iesiri.count() not in (1, 0) or intrari.count() == 0:
+        messages.success(request, ("Nu puteti anula venirea!"))
         return redirect('home')
     data = intrari.order_by("-datetime").first()
     if data is None:
-        messages.success(request, ("Momentul intrarii nu a fost inregistrat!"))
+        messages.success(request, ("Momentul venirii nu a fost inregistrat!"))
         return redirect('home')
     data.delete()
-    messages.success(request, ("Momentul intrarii a fost sters!"))
+    messages.success(request, ("Momentul venirii a fost sters!"))
     return redirect('home')
 
 def recalc_come(request):
@@ -165,8 +166,8 @@ def left(request):
         print("Nu exista setari")
     intrari = models.Intrare.objects.filter(user=request.user, datetime__day=now.day)
     iesiri = models.Iesire.objects.filter(user=request.user, datetime__day=now.day)
-    if intrari.count() - iesiri.count() != 1:
-        messages.success(request, ("Nu puteti inregistra iesirea daca nu ati raportat intrarea!"))
+    if intrari.count() - iesiri.count() not in (0, 1):
+        messages.success(request, ("Nu puteti inregistra plecarea!"))
         return redirect('home')
     models.Iesire.objects.create(user=request.user, latitude=request.GET['lat'], longitude=request.GET['long'],
                                      datetime=now, nrcalcloc=1, text=utils.secureStr(request.GET['obs']))
@@ -177,12 +178,12 @@ def cancel_left(request):
     now = utils.getTime()
     intrari = models.Intrare.objects.filter(user=request.user, datetime__day=now.day)
     iesiri = models.Iesire.objects.filter(user=request.user, datetime__day=now.day)
-    if intrari.count() != iesiri.count() or iesiri.count() == 0:
-        messages.success(request, ("Momentul iesirii nu a fost inregistrat!"))
+    if intrari.count() - iesiri.count() not in (0, -1) or iesiri.count() == 0:
+        messages.success(request, ("Momentul plecarii nu a fost inregistrat!"))
         return redirect('home')
     data = iesiri.order_by("-datetime").first()
     data.delete()
-    messages.success(request, ("Momentul iesirii a fost sters!"))
+    messages.success(request, ("Momentul plecarii a fost sters!"))
     return redirect('home')
 
 def recalc_left(request):
@@ -224,16 +225,17 @@ def comandaFinish(request):
             messages.success(request, ("Numar comanda invalid!"))
             return redirect('home')
         now = utils.getTime()
-        try:
-            models.Intrare.objects.get(user=request.user, datetime__day=now.day, datetime__lte=now)
-        except:
-            messages.success(request, ("Nu puteti termina o comanda daca nu ati inregistrat intrarea!"))
-            return redirect('home')
-        try:
-            models.Iesire.objects.get(user=request.user, datetime__day=now.day)
-            messages.success(request, ("Nu puteti termina o comanda daca ati inregistrat iesirea!"))
-            return redirect('home')
-        except: pass
+        # try:
+        #     intraris =models.Intrare.objects.filter(user=request.user, datetime__day=now.day, datetime__lte=now)
+        #     assert intraris.count() != 0
+        # except:
+        #     messages.success(request, ("Nu puteti termina o comanda daca nu ati inregistrat o intrarea!"))
+        #     return redirect('home')
+        # try:
+        #     models.Iesire.objects.get(user=request.user, datetime__day=now.day)
+        #     messages.success(request, ("Nu puteti termina o comanda daca ati inregistrat iesirea!"))
+        #     return redirect('home')
+        # except: pass
         try:
             models.Comanda.objects.get(datetime__year=now.year, numar_comanda=request.GET['nrcom'])
             messages.success(request, ("Aceasta comanda exista deja!"))
@@ -336,16 +338,16 @@ def comandaCancel(request):
 def lucruFinish(request):
     if request.method == "GET":
         now = utils.getTime()
-        try:
-            models.Intrare.objects.get(user=request.user, datetime__day=now.day, datetime__lte=now)
-        except:
-            messages.success(request, ("Nu puteti salva un lucru daca nu ati inregistrat intrarea!"))
-            return redirect('home')
-        try:
-            models.Iesire.objects.get(user=request.user, datetime__day=now.day)
-            messages.success(request, ("Nu puteti salva un lucru daca ati inregistrat iesirea!"))
-            return redirect('home')
-        except: pass
+        # try:
+        #     models.Intrare.objects.get(user=request.user, datetime__day=now.day, datetime__lte=now)
+        # except:
+        #     messages.success(request, ("Nu puteti salva un lucru daca nu ati inregistrat intrarea!"))
+        #     return redirect('home')
+        # try:
+        #     models.Iesire.objects.get(user=request.user, datetime__day=now.day)
+        #     messages.success(request, ("Nu puteti salva un lucru daca ati inregistrat iesirea!"))
+        #     return redirect('home')
+        # except: pass
         if len(request.GET['den'])==0:
             messages.success(request, ("Nu ati introdus denumirea!"))
             return redirect('home')
@@ -780,13 +782,13 @@ class ActUserFromPathView(ActFromPathView):
                     orain = datetime.datetime.strptime(strorain, "%H:%M").time()
                     datetimein = datetime.datetime.combine(data, orain)
                 except:
-                    raise MyException("Format ora intrare invalid!")
+                    raise MyException("Format ora venire invalid!")
             if len(stroraout) > 0:
                 try:
                     oraout = datetime.datetime.strptime(stroraout, "%H:%M").time()
                     datetimeout = datetime.datetime.combine(data, oraout)
                 except:
-                    raise MyException("Format ora iesire invalid!")
+                    raise MyException("Format ora plecare invalid!")
             strlocin = str(request.POST['locin']).replace(" ", "").replace("-", "")
             strlocout = str(request.POST['locout']).replace(" ", "").replace("-", "")
             if len(strlocin) > 0:
@@ -794,13 +796,13 @@ class ActUserFromPathView(ActFromPathView):
                     locin = strlocin.split(',')
                     assert (locin.__len__() == 2)
                 except:
-                    raise MyException("Format locatie intrare invalid! Formatul este (lat,long)!")
+                    raise MyException("Format locatie venire invalid! Formatul este (lat,long)!")
             if len(strlocout) > 0:
                 try:
                     locout = strlocout.split(',')
                     assert (locout.__len__() == 2)
                 except:
-                    raise MyException("Format locatie iesire invalid! Formatul este (lat,long)!")
+                    raise MyException("Format locatie plecare invalid! Formatul este (lat,long)!")
             obsin = request.POST['obsin']
             obsout = request.POST['obsout']
 
@@ -813,13 +815,13 @@ class ActUserFromPathView(ActFromPathView):
                     #print("intrare is_notnull\n", locals())
                     models.Intrare.objects.create(user=user, latitude=locin[0], longitude=locin[1], datetime=datetimein,
                                                   text=obsin)
-                    messages.success(request, ("Intrarea a fost adaugata cu succes!"))
+                    messages.success(request, ("Venirea a fost adaugata cu succes!"))
                 else:
-                    messages.success(request, ("Date insuficiente intrare!"))
+                    messages.success(request, ("Date insuficiente venire!"))
             if intrare is not None:
                 if is_both_null(strorain, strlocin):
                     intrare.delete()
-                    messages.success(request, ("Intrarea a fost stearsa!"))
+                    messages.success(request, ("Venirea a fost stearsa!"))
                 elif is_one_null(strorain, strlocin):
                     if len(strlocin) > 0:  # locatia
                         report = ""
@@ -832,7 +834,7 @@ class ActUserFromPathView(ActFromPathView):
                             report+="Observatia, "
                         if report != "":
                             intrare.save(force_update=True, update_fields=['latitude', 'longitude', 'text'])
-                            messages.success(request, (f"{report[:-2]} intrarii s-a modificat cu succes!"))
+                            messages.success(request, (f"{report[:-2]} venirii s-a modificat cu succes!"))
                     else:  # ora
                         report = ""
                         if intrare.datetime != datetimein:
@@ -843,7 +845,7 @@ class ActUserFromPathView(ActFromPathView):
                             report+="Observatia, "
                         if report!="":
                             intrare.save(force_update=True, update_fields=['datetime', 'text'])
-                            messages.success(request, (f"{report[:-2]} intrarii s-a modificat cu succes!"))
+                            messages.success(request, (f"{report[:-2]} venirii s-a modificat cu succes!"))
                 else:
                     report=""
                     if intrare.latitude != locin[0] or intrare.longitude != locin[1]:
@@ -858,7 +860,7 @@ class ActUserFromPathView(ActFromPathView):
                         report += "Observatia, "
                     if report != "":
                         intrare.save(force_update=True, update_fields=['latitude', 'longitude', 'datetime', 'text'])
-                        messages.success(request, (f"{report[:-2]} intrarii s-a modificat cu succes!"))
+                        messages.success(request, (f"{report[:-2]} venirii s-a modificat cu succes!"))
 
             # iesire
             iesire = None
@@ -869,14 +871,14 @@ class ActUserFromPathView(ActFromPathView):
                     #print("iesire is_notnull\n", locals())
                     models.Iesire.objects.create(user=user, latitude=locout[0], longitude=locout[1],
                                                  datetime=datetimeout, text=obsout)
-                    messages.success(request, ("Iesirea a fost adaugata cu succes!"))
+                    messages.success(request, ("Plecarea a fost adaugata cu succes!"))
                 else:
-                    messages.success(request, ("Date insuficiente iesire!"))
+                    messages.success(request, ("Date insuficiente plecare!"))
             if iesire is not None:
                 report=""
                 if is_both_null(stroraout, strlocout):
                     iesire.delete()
-                    messages.success(request, ("Iesirea a fost stearsa!"))
+                    messages.success(request, ("Plecarea a fost stearsa!"))
                 elif is_one_null(stroraout, strlocout):
                     if len(strlocout) > 0:  # locatia
                         if iesire.latitude != locout[0] or iesire.longitude != locout[1]:
@@ -888,7 +890,7 @@ class ActUserFromPathView(ActFromPathView):
                             report += "Observatia, "
                         if report!="":
                             iesire.save(force_update=True, update_fields=['latitude', 'longitude', 'text'])
-                            messages.success(request, (f"{report[:-2]} iesirii s-a modificat cu succes!"))
+                            messages.success(request, (f"{report[:-2]} plecarii s-a modificat cu succes!"))
                     else:  # ora
                         if iesire.datetime != datetimeout:
                             iesire.datetime = datetimeout
@@ -898,7 +900,7 @@ class ActUserFromPathView(ActFromPathView):
                             report += "Observatia, "
                         if report!="":
                             iesire.save(force_update=True, update_fields=['datetime', 'text'])
-                            messages.success(request, (f"{report[:-2]} iesirii s-a modificat cu succes!"))
+                            messages.success(request, (f"{report[:-2]} plecarii s-a modificat cu succes!"))
                 else:
                     if iesire.latitude != locout[0] or iesire.longitude != locout[1]:
                         iesire.latitude = locout[0]
@@ -912,7 +914,7 @@ class ActUserFromPathView(ActFromPathView):
                         report += "Observatia, "
                     if report!="":
                         iesire.save(force_update=True, update_fields=['latitude', 'longitude', 'datetime', 'text'])
-                        messages.success(request, (f"{report[:-2]} iesirii s-a modificat cu succes!"))
+                        messages.success(request, (f"{report[:-2]} plecarii s-a modificat cu succes!"))
         except MyException as e:
             messages.success(request, (e.args[0]))
         except Exception as ex:
@@ -1028,11 +1030,11 @@ class BaseActivityView(TemplateView):
 #region Inherited change model
 
 class IntrareActivity(BaseActivityView):
-    titlu = "Intrari"
+    titlu = "Veniri"
     model = models.Intrare
 
 class IesireActivity(BaseActivityView):
-    titlu = "Iesiri"
+    titlu = "Plecari"
     model = models.Iesire
 
 class ComandaActivity(BaseActivityView):
@@ -1187,7 +1189,7 @@ class Setari(TemplateView):
     template_name = 'setari.html'
 
     def __validate_post_setare(self, request):
-        keys = ("nrrecalcpoz", "secafterrecalc", "disterror", "mintol", "harta", "progr", "dlcmd", "dllcr")
+        keys = ("nrrecalcpoz", "secafterrecalc", "disterror", "harta", "progr", "dlcmd", "dllcr")
         for key in keys:
             if not key in request.POST:
                 messages.success(request, ("Date insuficiente!"))
@@ -1205,25 +1207,26 @@ class Setari(TemplateView):
         if dist < 0 or dist > 1000:
             messages.success(request, ("Distanta invalida!"))
             return None
-        try: mintol = int(request.POST[keys[3]])
-        except: mintol = int(float(request.POST[keys[3]]))
-        if mintol < 0 or mintol >= 1440:
-            messages.success(request, ("Numar de minute tolerate invalid!"))
-            return None
-        hartaid = request.POST[keys[4]]
+        # try: mintol = int(request.POST[keys[3]])
+        # except: mintol = int(float(request.POST[keys[3]]))
+        # if mintol < 0 or mintol >= 1440:
+        #     messages.success(request, ("Numar de minute tolerate invalid!"))
+        #     return None
+        mintolskip = -1
+        hartaid = request.POST[keys[4 + mintolskip]]
         harta = None
         try: harta = models.Harta.objects.get(pk=hartaid)
         except:
             messages.success(request, ("Harta invalida!"))
             return None
-        progr = request.POST.getlist(keys[5])
+        progr = request.POST.getlist(keys[5+ mintolskip])
         if len(progr) == 0:
             messages.success(request, ("Program invalid!"))
             return None
         progr = " ".join(progr)
-        dlcmd = str(request.POST[keys[6]])
-        dllcr = str(request.POST[keys[7]])
-        vals = (nr, sec, dist, mintol, harta, progr, dlcmd, dllcr)
+        dlcmd = str(request.POST[keys[6+ mintolskip]])
+        dllcr = str(request.POST[keys[7+ mintolskip]])
+        vals = (nr, sec, dist, harta, progr, dlcmd, dllcr)
         context = {keys[i]: vals[i] for i, _ in enumerate(keys)}
         return context
 
@@ -1317,7 +1320,7 @@ class Setari(TemplateView):
                 seatre.nrrecalcpoz = context['nrrecalcpoz']
                 seatre.secafterrecalc = context['secafterrecalc']
                 seatre.disterror = context['disterror']
-                seatre.min_tolerated = context['mintol']
+                #seatre.min_tolerated = context['mintol']
                 seatre.program = context['progr']
                 seatre.harta = context['harta']
                 seatre.datalist_comanda = context['dlcmd']

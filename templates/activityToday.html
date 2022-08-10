@@ -133,7 +133,7 @@
         {% for intrare, iesire in intrariiesiri %}
 
         <div class="d-flex flex-row me-5 my-3">
-            <p class="me-5 text-nowrap"> Ora intrarii:&nbsp; </p>
+            <p class="me-5 text-nowrap"> Ora venirii:&nbsp; </p>
             <button disabled class="btn btn-secondary me-5 font-weight-bold fs-1">{{ intrare.datetime|ftime:"time" }}</button>
         </div>
         <div class="d-flex flex-row me-5 my-3">
@@ -141,7 +141,7 @@
             <button disabled class="btn btn-secondary me-5 font-weight-bold fs-1">{{ iesire.datetime|ftime:"time" }}</button>
         </div>
         <div class="d-flex flex-row me-5 my-3 align-items-left">
-            <p class="me-5 text-wrap"> Locatia intrarii:&nbsp; </p>
+            <p class="me-5 text-wrap"> Locatia venirii:&nbsp; </p>
             <button disabled class="btn btn-secondary me-5 font-weight-bold fs-3" title="Apasa pentru a deschide in Maps" >{{ intrare|strloc }}</button>
             <div class="fs-1"> <button class="btn btn-light btn-lg fs-3" onclick="loadMap('{{ intrare.getCoords }}')"><i class="fa-solid fa-location-crosshairs"></i></button> </div>
             {% if request.user|is_recent:"In" %}<div class="fs-1 ms-2"> <button onclick="processposition('{% url 'come_recalc' %}')" class="btn btn-light btn-lg" >Relocare</button> </div>{% endif %}
@@ -154,7 +154,7 @@
         </div>
     {% if intrare.text != "" %}
         <div class="my-3 w-90">
-            <p class="me-5 text-nowrap"> Observatie la intrare: </p>
+            <p class="me-5 text-nowrap"> Observatie la venire: </p>
             <div class="form-floating">
               <textarea maxlength="200" disabled class="form-control fs-4" id="floatingTextarea2" style="height: 100px">{{ intrare.text|strobs }}</textarea>
             </div>
@@ -162,7 +162,7 @@
     {% endif %}
     {% if iesire.text != "" %}
         <div class="my-3 w-90">
-            <p class="me-5 text-nowrap"> Observatie la iesire: </p>
+            <p class="me-5 text-nowrap"> Observatie la plecare: </p>
             <div class="form-floating">
               <textarea maxlength="200" disabled class="form-control fs-4" id="floatingTextarea2" style="height: 100px">{{ iesire.text|strobs }}</textarea>
             </div>
@@ -320,20 +320,20 @@
 {#                    <input autocomplete="off" type="text" class="form-control fs-2 w-15 me-5" value="{{ osin }}" pattern="[0-9]{2}:[0-9]{2}" name="osin" title="Va rugam respectati fromatul unei ore">#}
 {#                    <input autocomplete="off" type="text" class="form-control fs-2 w-15 me-5" value="{{ osout }}" pattern="[0-9]{2}:[0-9]{2}" name="osout" title="Va rugam respectati fromatul unei ore">#}
 {#                    <select class="form-select flex-shrink-1 fs-3 me-5 w-15" aria-label="Default select example" name="tiora" required>#}
-{#                      <option {% if tiora == "in" %}selected{% endif %} value="in">Intrare</option>#}
-{#                      <option {% if tiora == "out" %}selected{% endif %} value="out">Iesire</option>#}
+{#                      <option {% if tiora == "in" %}selected{% endif %} value="in">Venire</option>#}
+{#                      <option {% if tiora == "out" %}selected{% endif %} value="out">Plecare</option>#}
 {#                    </select>#}
 {#                </div>#}
                 <div class="d-flex flex-row mb-3">
                     <p class="me-3 form-label ms-3">Ordoneaza dupa</p>
                     <select class="form-select flex-shrink-1 fs-3 me-5 w-25" aria-label="Default select example" name="ocrit">
                       <option {% if ocrit == "nume" %}selected{% endif %} value="nume">Nume Prenume</option>
-{#                      <option {% if ocrit == "datetimein" %}selected{% endif %} value="datetimein">Data si ora intrarii</option>#}
-{#                      <option {% if ocrit == "datetimeout" %}selected{% endif %} value="datetimeout">Data si ora iesirii</option>#}
-{#                      <option {% if ocrit == "timein" %}selected{% endif %} value="timein">Ora intrarii</option>#}
-{#                      <option {% if ocrit == "timeout" %}selected{% endif %} value="timeout">Ora iesirii</option>#}
-                      <option {% if ocrit == "nrin" %}selected{% endif %} value="nrin">Numar de intrari</option>
-                      <option {% if ocrit == "nrout" %}selected{% endif %} value="nrout">Numar de iesiri</option>
+{#                      <option {% if ocrit == "datetimein" %}selected{% endif %} value="datetimein">Data si ora venirii</option>#}
+{#                      <option {% if ocrit == "datetimeout" %}selected{% endif %} value="datetimeout">Data si ora plecarii</option>#}
+{#                      <option {% if ocrit == "timein" %}selected{% endif %} value="timein">Ora venirii</option>#}
+{#                      <option {% if ocrit == "timeout" %}selected{% endif %} value="timeout">Ora plecarii</option>#}
+                      <option {% if ocrit == "nrin" %}selected{% endif %} value="nrin">Numar de veniri</option>
+                      <option {% if ocrit == "nrout" %}selected{% endif %} value="nrout">Numar de plecari</option>
                       <option {% if ocrit == "nrcom" %}selected{% endif %} value="nrcom">Numar de comenzi</option>
                       <option {% if ocrit == "nrlucr" %}selected{% endif %} value="nrlucr">Numar de lucrari</option>
                     </select>
@@ -352,11 +352,11 @@
                 </div>
 {#                <div class="form-check form-check-inline">#}
 {#                  <input autocomplete="off" class="form-check-input" type="radio" name="prezenta" id="exampleRadios3" value="iec" {% if prezenta == "iec" %} checked {% endif %}>#}
-{#                  <label class="form-check-label" for="exampleRadios3">Intrare/Iesire completate</label>#}
+{#                  <label class="form-check-label" for="exampleRadios3">venire/Plecare completate</label>#}
 {#                </div>#}
 {#                <div class="form-check form-check-inline">#}
 {#                  <input autocomplete="off" class="form-check-input" type="radio" name="prezenta" id="exampleRadios4" value="iei" {% if prezenta == "iei" %} checked {% endif %}>#}
-{#                  <label class="form-check-label" for="exampleRadios4">Intrare/Iesire incomplete</label>#}
+{#                  <label class="form-check-label" for="exampleRadios4">Venire/Plecare incomplete</label>#}
 {#                </div>#}
 {#                <div class="form-check mt-2">#}
 {#                  <input autocomplete="off" class="form-check-input" type="checkbox" value="1" id="flexCheckDefault" name="selobs" {% if selobs == "1" %} checked {% endif %}>#}
@@ -366,15 +366,15 @@
 {#                </div>#}
 {#                <div class="form-check form-check-inline">#}
 {#                  <input class="form-check-input" type="radio" name="tobs" id="exampleRadios5" value="i" {% if tobs == "i" %} checked {% endif %}>#}
-{#                  <label class="form-check-label" for="exampleRadios5" title="Observatii">La intrare</label>#}
+{#                  <label class="form-check-label" for="exampleRadios5" title="Observatii">La venire</label>#}
 {#                </div>#}
 {#                <div class="form-check form-check-inline">#}
 {#                  <input class="form-check-input" type="radio" name="tobs" id="exampleRadios6" value="e" {% if tobs == "e" %} checked {% endif %}>#}
-{#                  <label class="form-check-label" for="exampleRadios6" title="Observatii">La iesire</label>#}
+{#                  <label class="form-check-label" for="exampleRadios6" title="Observatii">La plecare</label>#}
 {#                </div>#}
 {#                <div class="form-check form-check-inline">#}
 {#                  <input class="form-check-input" type="radio" name="tobs" id="exampleRadios7" value="ie" {% if tobs == "ie" %} checked {% endif %}>#}
-{#                  <label class="form-check-label" for="exampleRadios7" title="Observatii">La intrare si iesire</label>#}
+{#                  <label class="form-check-label" for="exampleRadios7" title="Observatii">La venire si plecare</label>#}
 {#                </div>#}
                 <button type="submit" class="btn btn-primary mt-3 me-5 fs-3">Filtreaza</button>
             </form>
