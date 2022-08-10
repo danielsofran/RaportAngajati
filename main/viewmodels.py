@@ -38,7 +38,7 @@ class RowDataActivity:
     @property
     def color(self):
         if self.__now.date() != self.datetime.date():
-            if self.__activities != 4: return 'class=\'table-warning\''
+            if self.__activities == 0: return 'class=\'table-warning\''
             return 'class=\'table-success\''
         elif self.__activities == 4:
             return 'class=\'table-success\''
