@@ -1,22 +1,38 @@
 {% load mytags %}
 <table class="table table-hover fs-5">
     <thead class="">
+        {% if request.user|role_at_least:"Manager" %}
+        <tr class="text-center">
+            <th colspan="2" class="table-secondary"> Date cont </th>
+            <th colspan="3" class="table-success">Ultima ajungere</th>
+            <th colspan="3" class="table-danger" >Ultima plecare</th>
+            <th colspan="4" class="table-info">Linkuri</th>
+            <th colspan="2" class="table-secondary">  </th>
+        </tr>
+        {% endif %}
         <tr>
             {% if request.user|role_at_least:"Manager" %}
                 <th> Nume </th>
                 <th class="text-nowrap"> Data </th>
+                <th class="text-nowrap"> Ora</th>
+                <th> Locatia</th>
+                <th class="text-wrap"> Observatia</th>
+                <th class="text-nowrap"> Ora</th>
+                <th> Locatia</th>
+                <th class="text-wrap"> Observatia</th>
             {% else %}
                 <th> Ziua </th>
+                <th class="text-wrap"> Numarul ajungerilor </th>
+                <th class="text-wrap"> Numarul plecarilor </th>
+                <th class="text-wrap"> Numar comenzi </th>
+                <th class="text-wrap"> Numar lucrari </th>
             {% endif %}
-            <th class="text-wrap"> Numarul ajungerilor </th>
-            <th class="text-wrap"> Numarul plecarilor </th>
-            <th class="text-wrap"> Numar comenzi </th>
-            <th class="text-wrap"> Numar lucrari </th>
+
             {% if request.user|role_at_least:"Manager" %}
-            <th> Link ajungeri </th>
-            <th> Link plecari </th>
-            <th> Link comenzi </th>
-            <th> Link lucrari </th>
+            <th> Ajungeri </th>
+            <th> Plecari </th>
+            <th> Comenzi </th>
+            <th> Lucrari </th>
             <th> Modificare </th>
             {% else %}
             <th> Link </th>
@@ -30,27 +46,37 @@
             {% if request.user|role_at_least:"Manager" %}
                 <th> <a href="{% url 'detaliiuser' username=rowdata.user.username %}">{{ rowdata.user.nume }}</a></th>
                 <th> {{ rowdata.datetime|ftime:"date" }} </th>
+                {% if rowdata.absent %}
+                    <th colspan="6" class="text-center"> Absent </th>
+                {% else %}
+                <th>{{ rowdata.first_intrare.datetime|ftime:"time" }}</th>
+                <th>
+                    <button onclick="loadMap('{{ rowdata.first_intrare.getCoords }}')" class="btn rounded" title="Arata pe harta ajungerea" data-bs-toggle="tooltip" data-bs-placement="top"><i class="fa-solid fa-location-crosshairs"></i></button>
+                </th>
+                <th class="text-wrap">{{ rowdata.first_intrare.text|strobs }}</th>
+                <th>{{ rowdata.first_iesire.datetime|ftime:"time" }}</th>
+                <th>
+                    <button onclick="loadMap('{{ rowdata.first_iesire.getCoords }}')" class="btn rounded" title="Arata pe harta plecarea" data-bs-toggle="tooltip" data-bs-placement="top"><i class="fa-solid fa-location-crosshairs"></i></button>
+                </th>
+                <th class="text-wrap">{{ rowdata.first_iesire.text|strobs }}</th>
+                {% endif %}
             {% else %}
                 <th> {{ rowdata.datetime|name_of_day }}</th>
-            {% endif %}
-
-            {% if rowdata.absent %}
-                <th colspan="5" class="text-center"> Absent </th>
-            {% else %}
                 <th> {{ rowdata.intrari.count }} </th>
                 <th> {{ rowdata.iesiri.count }} </th>
                 <th> {{ rowdata.nrcomenzi }} </th>
                 <th> {{ rowdata.nrlucrari }} </th>
-                {% if request.user|role_at_least:"Manager" %}
-                <th> <a href="{% url 'intrareUser' date=rowdata.datetime|ftime:"date" username=rowdata.user.username %}" class="btn btn-outline-success text-nowrap mb-1">Ajungeri</a></th>
-                <th> <a href="{% url 'iesireUser' date=rowdata.datetime|ftime:"date" username=rowdata.user.username %}" class="btn btn-outline-danger text-nowrap mb-1">Plecari</a></th>
-                <th> <a href="{% url 'comenziUser' date=rowdata.datetime|ftime:"date" username=rowdata.user.username %}" class="btn btn-outline-info text-nowrap mb-1">Comenzi</a></th>
-                <th> <a href="{% url 'lucrariUser' date=rowdata.datetime|ftime:"date" username=rowdata.user.username %}" class="btn btn-outline-dark text-nowrap">Lucrari</a> </th>
-                {% else %}
-                <th>
-                    <a href="{% url 'actFromPath' datein=rowdata.datetime|ftime:"date" dateout=rowdata.datetime|ftime:"date" %}" class="btn btn-outline-info text-nowrap"> Link</a>
-                </th>
-                {% endif %}
+            {% endif %}
+
+            {% if request.user|role_at_least:"Manager" %}
+            <th> <a href="{% url 'intrareUser' date=rowdata.datetime|ftime:"date" username=rowdata.user.username %}" class="btn btn-outline-success text-nowrap mb-1">Ajungeri</a></th>
+            <th> <a href="{% url 'iesireUser' date=rowdata.datetime|ftime:"date" username=rowdata.user.username %}" class="btn btn-outline-danger text-nowrap mb-1">Plecari</a></th>
+            <th> <a href="{% url 'comenziUser' date=rowdata.datetime|ftime:"date" username=rowdata.user.username %}" class="btn btn-outline-info text-nowrap mb-1">Comenzi</a></th>
+            <th> <a href="{% url 'lucrariUser' date=rowdata.datetime|ftime:"date" username=rowdata.user.username %}" class="btn btn-outline-dark text-nowrap">Lucrari</a> </th>
+            {% else %}
+            <th>
+                <a href="{% url 'actFromPath' datein=rowdata.datetime|ftime:"date" dateout=rowdata.datetime|ftime:"date" %}" class="btn btn-outline-info text-nowrap"> Link</a>
+            </th>
             {% endif %}
             {% if request.user|role_at_least:"Manager" %}
                 <th> <a href="{% url 'actUserFromPath' datein=rowdata.datetime|ftime:"date" dateout=rowdata.datetime|ftime:"date" username=rowdata.user.username%}" class="btn btn-primary">Modificare</a> </th>

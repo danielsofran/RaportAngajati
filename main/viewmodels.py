@@ -14,11 +14,12 @@ class RowDataActivity:
         self.datetime = data
         self.absent = False
         self.__nu_respecta_filtru = False
-        a2 = self.__activities = 4
+        self.__activities = 4
         self.intrari = models.Intrare.objects.filter(user=user, datetime__date=data.date(), **filtersin)
-        cnt = self.intrari.count()
+        self.first_intrare = self.intrari.order_by("-datetime").first()
         if self.intrari.count() == 0: self.__activities -= 1
         self.iesiri = models.Iesire.objects.filter(user=user, datetime__date=data.date(), **filtersout)
+        self.first_iesire = self.iesiri.order_by("-datetime").first()
         if self.iesiri.count() == 0: self.__activities -= 1
         self.comenzi = models.Comanda.objects.filter(user=user, datetime__date=data.date(), **filterscmd)
         self.nrcomenzi = self.comenzi.__len__()
@@ -39,7 +40,7 @@ class RowDataActivity:
     def color(self):
         if self.__now.date() != self.datetime.date():
             if self.__activities == 0: return 'class=\'table-warning\''
-            return 'class=\'table-success\''
+            elif self.__activities == 4: return 'class=\'table-success\''
         elif self.__activities == 4:
             return 'class=\'table-success\''
         return ""
