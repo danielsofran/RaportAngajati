@@ -98,7 +98,7 @@ def come(request):
             print('Nu exista setari!')
         intrari = models.Intrare.objects.filter(user=request.user, datetime__day=now.day)
         iesiri = models.Iesire.objects.filter(user=request.user, datetime__day=now.day)
-        if intrari.count() == iesiri.count() in (-1, 0):
+        if intrari.count() - iesiri.count() in (-1, 0):
             models.Intrare.objects.create(user=request.user, latitude=request.GET['lat'], longitude=request.GET['long'],
                                           datetime=now, nrcalcloc=1, text=utils.secureStr(request.GET['obs']))
             messages.success(request, ("Succes!"))
