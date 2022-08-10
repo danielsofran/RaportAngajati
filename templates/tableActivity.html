@@ -8,12 +8,12 @@
             {% else %}
                 <th> Ziua </th>
             {% endif %}
-            <th class="text-wrap"> Numarul venirilor </th>
+            <th class="text-wrap"> Numarul ajungerilor </th>
             <th class="text-wrap"> Numarul plecarilor </th>
             <th class="text-wrap"> Numar comenzi </th>
             <th class="text-wrap"> Numar lucrari </th>
             {% if request.user|role_at_least:"Manager" %}
-            <th> Link veniri </th>
+            <th> Link ajungeri </th>
             <th> Link plecari </th>
             <th> Link comenzi </th>
             <th> Link lucrari </th>
@@ -42,7 +42,7 @@
                 <th> {{ rowdata.nrcomenzi }} </th>
                 <th> {{ rowdata.nrlucrari }} </th>
                 {% if request.user|role_at_least:"Manager" %}
-                <th> <a href="{% url 'intrareUser' date=rowdata.datetime|ftime:"date" username=rowdata.user.username %}" class="btn btn-outline-success text-nowrap mb-1">Veniri</a></th>
+                <th> <a href="{% url 'intrareUser' date=rowdata.datetime|ftime:"date" username=rowdata.user.username %}" class="btn btn-outline-success text-nowrap mb-1">Ajungeri</a></th>
                 <th> <a href="{% url 'iesireUser' date=rowdata.datetime|ftime:"date" username=rowdata.user.username %}" class="btn btn-outline-danger text-nowrap mb-1">Plecari</a></th>
                 <th> <a href="{% url 'comenziUser' date=rowdata.datetime|ftime:"date" username=rowdata.user.username %}" class="btn btn-outline-info text-nowrap mb-1">Comenzi</a></th>
                 <th> <a href="{% url 'lucrariUser' date=rowdata.datetime|ftime:"date" username=rowdata.user.username %}" class="btn btn-outline-dark text-nowrap">Lucrari</a> </th>

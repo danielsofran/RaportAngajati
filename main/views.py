@@ -98,12 +98,12 @@ def come(request):
             print('Nu exista setari!')
         intrari = models.Intrare.objects.filter(user=request.user, datetime__day=now.day)
         iesiri = models.Iesire.objects.filter(user=request.user, datetime__day=now.day)
-        if intrari.count() == iesiri.count() in (-1, 0) and intrari.count() != 0:
+        if intrari.count() == iesiri.count() in (-1, 0):
             models.Intrare.objects.create(user=request.user, latitude=request.GET['lat'], longitude=request.GET['long'],
                                           datetime=now, nrcalcloc=1, text=utils.secureStr(request.GET['obs']))
             messages.success(request, ("Succes!"))
         else:
-            messages.success(request, ("Nu puteti inregistra venirea!"))
+            messages.success(request, ("Nu puteti inregistra ajungerea!"))
             return redirect('home')
     else:
         print("POST in come")
@@ -114,14 +114,14 @@ def cancel_come(request):
     intrari = models.Intrare.objects.filter(user=request.user, datetime__day=now.day)
     iesiri = models.Iesire.objects.filter(user=request.user, datetime__day=now.day)
     if intrari.count() - iesiri.count() not in (1, 0) or intrari.count() == 0:
-        messages.success(request, ("Nu puteti anula venirea!"))
+        messages.success(request, ("Nu puteti anula ajungerea!"))
         return redirect('home')
     data = intrari.order_by("-datetime").first()
     if data is None:
-        messages.success(request, ("Momentul venirii nu a fost inregistrat!"))
+        messages.success(request, ("Momentul ajungerii nu a fost inregistrat!"))
         return redirect('home')
     data.delete()
-    messages.success(request, ("Momentul venirii a fost sters!"))
+    messages.success(request, ("Momentul ajungerii a fost sters!"))
     return redirect('home')
 
 def recalc_come(request):
@@ -782,7 +782,7 @@ class ActUserFromPathView(ActFromPathView):
                     orain = datetime.datetime.strptime(strorain, "%H:%M").time()
                     datetimein = datetime.datetime.combine(data, orain)
                 except:
-                    raise MyException("Format ora venire invalid!")
+                    raise MyException("Format ora ajungere invalid!")
             if len(stroraout) > 0:
                 try:
                     oraout = datetime.datetime.strptime(stroraout, "%H:%M").time()
@@ -796,7 +796,7 @@ class ActUserFromPathView(ActFromPathView):
                     locin = strlocin.split(',')
                     assert (locin.__len__() == 2)
                 except:
-                    raise MyException("Format locatie venire invalid! Formatul este (lat,long)!")
+                    raise MyException("Format locatie ajungere invalid! Formatul este (lat,long)!")
             if len(strlocout) > 0:
                 try:
                     locout = strlocout.split(',')
@@ -815,13 +815,13 @@ class ActUserFromPathView(ActFromPathView):
                     #print("intrare is_notnull\n", locals())
                     models.Intrare.objects.create(user=user, latitude=locin[0], longitude=locin[1], datetime=datetimein,
                                                   text=obsin)
-                    messages.success(request, ("Venirea a fost adaugata cu succes!"))
+                    messages.success(request, ("Ajungerea a fost adaugata cu succes!"))
                 else:
-                    messages.success(request, ("Date insuficiente venire!"))
+                    messages.success(request, ("Date insuficiente ajungere!"))
             if intrare is not None:
                 if is_both_null(strorain, strlocin):
                     intrare.delete()
-                    messages.success(request, ("Venirea a fost stearsa!"))
+                    messages.success(request, ("Ajungerea a fost stearsa!"))
                 elif is_one_null(strorain, strlocin):
                     if len(strlocin) > 0:  # locatia
                         report = ""
@@ -834,7 +834,7 @@ class ActUserFromPathView(ActFromPathView):
                             report+="Observatia, "
                         if report != "":
                             intrare.save(force_update=True, update_fields=['latitude', 'longitude', 'text'])
-                            messages.success(request, (f"{report[:-2]} venirii s-a modificat cu succes!"))
+                            messages.success(request, (f"{report[:-2]} ajungerii s-a modificat cu succes!"))
                     else:  # ora
                         report = ""
                         if intrare.datetime != datetimein:
@@ -845,7 +845,7 @@ class ActUserFromPathView(ActFromPathView):
                             report+="Observatia, "
                         if report!="":
                             intrare.save(force_update=True, update_fields=['datetime', 'text'])
-                            messages.success(request, (f"{report[:-2]} venirii s-a modificat cu succes!"))
+                            messages.success(request, (f"{report[:-2]} ajungerii s-a modificat cu succes!"))
                 else:
                     report=""
                     if intrare.latitude != locin[0] or intrare.longitude != locin[1]:
@@ -860,7 +860,7 @@ class ActUserFromPathView(ActFromPathView):
                         report += "Observatia, "
                     if report != "":
                         intrare.save(force_update=True, update_fields=['latitude', 'longitude', 'datetime', 'text'])
-                        messages.success(request, (f"{report[:-2]} venirii s-a modificat cu succes!"))
+                        messages.success(request, (f"{report[:-2]} ajungerii s-a modificat cu succes!"))
 
             # iesire
             iesire = None
@@ -1030,7 +1030,7 @@ class BaseActivityView(TemplateView):
 #region Inherited change model
 
 class IntrareActivity(BaseActivityView):
-    titlu = "Veniri"
+    titlu = "Ajungeri"
     model = models.Intrare
 
 class IesireActivity(BaseActivityView):

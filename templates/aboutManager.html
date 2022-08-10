@@ -183,16 +183,16 @@ window.addEventListener('load', ()=>{
 
     <h2 id="acasa"> Pagina Acasă</h2>
     <ul class="mt-4">
-        <li>Butonul <span class="badge bg-success">Am venit </span> înregistrează ora şi locaţia curentă şi o salvează ca intrare/sosire/venire la locul de muncă.</li>
-        <li>Butonul <span class="badge bg-danger"><i class="fa-solid fa-xmark"></i></span> din dreapta butonului <span class="badge bg-success" style="opacity: 50%">Am venit </span> anulează înregistrarea unei sosiri la locul de muncă. </li>
-        <li>Butonul <span class="badge bg-warning">Am venit, fac o observaie</span> înregistrează ora, locaţia curentă şi observaţia făcută, salvând-o ca intrare/sosire/venire la locul de muncă.<br>
-            <span class="badge bg-primary rounded-pill">!</span> Anularea acestei acţuni se face folosind butonul <span class="badge bg-danger"><i class="fa-solid fa-xmark"></i></span> din dreapta butonului <span class="badge bg-success" style="opacity: 50%">Am venit </span><br>
+        <li>Butonul <span class="badge bg-success">Am ajuns </span> înregistrează ora şi locaţia curentă şi o salvează ca intrare/sosire/venire la locul de muncă.</li>
+        <li>Butonul <span class="badge bg-danger"><i class="fa-solid fa-xmark"></i></span> din dreapta butonului <span class="badge bg-success" style="opacity: 50%">Am ajuns </span> anulează înregistrarea unei sosiri la locul de muncă. </li>
+        <li>Butonul <span class="badge bg-warning">Am ajuns, fac o observaie</span> înregistrează ora, locaţia curentă şi observaţia făcută, salvând-o ca intrare/sosire/venire la locul de muncă.<br>
+            <span class="badge bg-primary rounded-pill">!</span> Anularea acestei acţuni se face folosind butonul <span class="badge bg-danger"><i class="fa-solid fa-xmark"></i></span> din dreapta butonului <span class="badge bg-success" style="opacity: 50%">Am ajuns </span><br>
             <span class="badge bg-danger rounded-pill">!</span> Nu puteți edita observația dacă nu anulați activitatea!
         </li>
         <hr class="dropdown-divider mt-4 mb-4">
         <li>Butonul <span class="badge bg-danger" style="opacity: 85%">Am plecat </span> înregistrează ora şi locaţia curentă şi o salvează ca ieşire/plecare de la locul de muncă.</li>
         <li>Butonul <span class="badge bg-danger"><i class="fa-solid fa-xmark"></i></span> din dreapta butonului <span class="badge bg-danger" style="opacity: 85%">Am plecat </span> anulează înregistrarea unei plecări de la locul de muncă. </li>
-        <li>Butonul <span class="badge bg-warning">Am venit, fac o observaie</span> înregistrează ora, locaţia curentă şi observaţia făcută, salvând-o ca ieşire/plecare la locul de muncă.<br>
+        <li>Butonul <span class="badge bg-warning">Am ajuns, fac o observaie</span> înregistrează ora, locaţia curentă şi observaţia făcută, salvând-o ca ieşire/plecare la locul de muncă.<br>
             <span class="badge bg-primary rounded-pill">!</span> Anularea acestei acţuni se face folosind butonul <span class="badge bg-danger"><i class="fa-solid fa-xmark"></i></span> din dreapta butonului <span class="badge bg-danger" style="opacity: 85%">Am plecat </span><br>
             <span class="badge bg-danger rounded-pill">!</span> Nu puteți edita observația dacă nu anulați activitatea!
         </li>
@@ -227,7 +227,7 @@ window.addEventListener('load', ()=>{
         <li> Ora ieşirii </li>
         <li> Locaţia intrării</li>
         <li> Locaţia ieşirii</li>
-        <li> *Observaţia la venire </li>
+        <li> *Observaţia la ajungere </li>
         <li> *Observaţia la plecare </li>
         <li> Comenzile finalizate<br>
         <li> Lucrările finalizate<br>
@@ -272,14 +272,14 @@ window.addEventListener('load', ()=>{
         <li> Ora ieşirii </li>
         <li> Locaţia intrării</li>
         <li> Locaţia ieşirii</li>
-        <li> *Observaţia la venire </li>
+        <li> *Observaţia la ajungere </li>
         <li> *Observaţia la plecare </li>
         <li> Numărul comenzilor finalizate</li>
         <li> Numele lucrărilor finalizate</li>
     </ul>
     <p>Semnificaţia culorilor din tabel</p>
     <ul>
-        <li> <div class="rounded bg-secondary p-3 float-start mb-0 me-3"></div> Date incomplete: venirea sau plecarea lipseşte </li>
+        <li> <div class="rounded bg-secondary p-3 float-start mb-0 me-3"></div> Date incomplete: ajungerea sau plecarea lipseşte </li>
         <li> <div class="rounded bg-info p-3 float-start mb-0 me-3"></div> Diferenţa de timp nu este de 8 ore </li>
         <li> <div class="rounded bg-warning p-3 float-start mb-0 me-3"></div> Locaţia intrării nu este <strong>În firmă</strong> </li>
         <li> <div class="rounded bg-success p-3 float-start mb-0 me-3"></div> Totul este în regulă </li>
@@ -333,7 +333,7 @@ window.addEventListener('load', ()=>{
     </ul>
     <p>Semnificaţia culorilor din tabel</p>
     <ul>
-        <li> <div class="rounded bg-secondary p-3 float-start mb-0 me-3"></div> Date incomplete: venirea sau plecarea lipseşte </li>
+        <li> <div class="rounded bg-secondary p-3 float-start mb-0 me-3"></div> Date incomplete: ajungerea sau plecarea lipseşte </li>
         <li> <div class="rounded bg-info p-3 float-start mb-0 me-3"></div> Diferenţa de timp nu este de 8 ore, fiind incluse și numărul de minute tolerate </li>
         <li> <div class="rounded bg-warning p-3 float-start mb-0 me-3"></div> Locaţia intrării nu este <strong>În firmă</strong> </li>
         <li> <div class="rounded bg-success p-3 float-start mb-0 me-3"></div> Totul este în regulă </li>
@@ -352,8 +352,8 @@ window.addEventListener('load', ()=>{
         </li>
         <li>Prezență: se poate selecta una dintre opțiunile următoare:
             <ul>
-                <li>Prezenți: angajații care au confirmat plecarea și/sau venirea din firmă</li>
-                <li>Absenți: angajații care nu au completat nici venirea, nici plecareaa</li>
+                <li>Prezenți: angajații care au confirmat plecarea și/sau ajungerea din firmă</li>
+                <li>Absenți: angajații care nu au completat nici ajungerea, nici plecarea</li>
 {#                <li>Intrare/Ieșire completate: angajații care au confirmat atât intrarea cât și ieșirea</li>#}
 {#                <li>Intrare/Ieșire incomplete: angajații care au confirmat doar intrarea</li>#}
             </ul>
@@ -392,13 +392,13 @@ window.addEventListener('load', ()=>{
     <p>Înainte ca aceste acţiuni să aibă loc, ele vor trebui confirmate, prin apăsarea butoanelor <span class="badge bg-warning">Continuă</span> sau <span class="badge bg-success">Salvează</span>.</p>
     <p id="memfree">Pentru a şterge mai multe actvităţi, acţiue recomandată pentru a <strong>elibera memoria folosita de server</strong>, folosiţi opţiunea <span class="text-danger text-decoration-underline">Şterge mai multe activităţi</span>, iar apoi să selectaţi o dată reprezentând cea mai veche activitate pe care doriţi să o pastraţi. De exemplu, pentru selecţia <strong>10.10.2021 10:40</strong>, toate activităţile mai vechi de data respectivă vor fi şterse. O activitate poate însemna: </p>
     <ul>
-        <li>Venire</li>
+        <li>Ajungere</li>
         <li>Plecare</li>
         <li>Comandă</li>
         <li>Lucrare</li>
     </ul>
     <p><span class="badge bg-primary rounded-pill">!</span> Aceste acțiuni sunt permanente, ele nu pot fi anulate!</p>
-    <h4 class="fs-2">Venire/Plecare</h4>
+    <h4 class="fs-2">Ajuns/Plecare</h4>
 {#    <p>Activitatea unui angajat dintr-o anumită dată poate fi ștearsă folosind butoanele <span class="badge bg-danger">Șterge venire</span>, <span class="badge bg-danger">Șterge plecare</span>, și <span class="badge bg-danger">Șterge intrare și ieșire</span>. În mod alternativ, puteți șterge câmpurile care trebuie completate pentru ca datele să fie șterse. </p>#}
     <p>Modificarea datelor de venire sau de plecare se face prin editarea câmpurilor, urmată de apăsarea butonului <span class="badge bg-primary">Salvează modificările</span>.</p>
     <p>Butonul <span class="badge bg-danger">Anulează</span> va recompleta valorile câmpurilor cu datele inițiale, înainte să fie modificate, dacă nu ați confirmat salvarea modificărilor sau a ștergerii.</p>
