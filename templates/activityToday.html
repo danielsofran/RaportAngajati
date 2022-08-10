@@ -426,7 +426,6 @@ window.addEventListener('load', () =>{
     modalCancelLucru.addEventListener('show.bs.modal', function (event) {
       var button = event.relatedTarget
       var recipient = button.getAttribute('data-bs-id')
-      alert(recipient)
       var butonContinua = document.getElementById('btnCancelLucru')
       butonContinua.onclick = () => {window.location.href = "{% url 'lucru_cancel' %}?id="+recipient};
     })

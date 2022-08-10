@@ -151,90 +151,113 @@ window.addEventListener('load', ()=>{
 
     <h2 id="introducere">Introducere</h2>
     <p>Această aplicaţie web a fost creeată pentru monitorizarea angajaţilor. Monitorizarea constă în salvarea locaţiei, a datei şi orei activităţilor la locul de muncă. </p>
-    <p class="mt-4"><span class="badge bg-danger fs-2 me-3">Atenţie!</span> Recomandăm <span class="text-danger fw-bold"> SCHIMBAREA PAROLEI</span> dumneavoastră cu un grad de <span class="text-danger fw-bold"> URGENŢĂ</span> ridicat! Puteţi schimba şi numele de utilizator pentru a face logarea mai uşoară.</p>
 
     <h3 id="cerintetehnice">Cerinţe tehnice minime</h3>
     <ul class="">
         <li class="fs-3"> Activarea locaţiei</li>
         <li class="fs-3"> Acceptarea cererii permisiunii de a accesa locaţia <span class="badge rounded-pill bg-danger">!</span></li>
     </ul>
-    <div class="d-flex flex-row justify-content-around">
-        <div class="me-3 my-auto"><img src="https://i.ibb.co/0sD0m6s/loc-Desktop.png" alt="Desktop" class="w-auto h-auto"></div>
-        <div class="ms-3 my-auto"><img src="https://i.ibb.co/DzHg8Nz/loc-Mobile.jpg" alt="Mobile" class="w-50"></div>
+    <div class="d-flex flex-column flex-xxl-row justify-content-around">
+        <div class="ms-1 my-3 w-90"><img src="https://i.ibb.co/DzHg8Nz/loc-Mobile.jpg" class="w-100" alt="mobile" crossorigin="anonymous"></div>
+        <div class="ms-1 my-3 w-90"><img src="https://i.ibb.co/0sD0m6s/loc-Desktop.png" class="w-100" alt="desktop" crossorigin="anonymous"></div>
     </div>
-    <p class="mt-4"><span class="badge bg-danger fs-2 me-3">Atenţie!</span> Dacă permisiunea la locaţie nu este acordată, datele nu vor fi înregistrate. </p>
+    <p class="mt-4"><span class="badge bg-danger fs-2 me-3">Atenţie!</span> Dacă permisiunea la locaţie nu este acordată, datele nu vor fi înregistrate, apăsarea butoanelor neavând <strong>nici un efect</strong>! </p>
+    <p><span class="badge bg-danger rounded-pill">!</span> Dacă aţi refuzat Accesarea Locaţiei, va trebui să o activaţi din <a href="https://docs.buddypunch.com/en/articles/919258-how-to-enable-location-services-for-chrome-safari-edge-and-android-ios-devices-gps-setting">setările browser-ului</a>.</p>
 
-
-    {# ANGAJAT #}
     <h1>Instrucţiuni Angajat</h1>
-
     <h2 id="login"> Login-ul </h2>
     <p> Login-ul se poate efectua în mai multe moduri. Criteriile sunt: </p>
-    <ul>
-        <li class="fs-3"> Numele de utilizator </li>
-        <li class="fs-3"> Numele complet (cu un singur spaţiu, şi fără spaţii la început şi final) </li>
-        <li class="fs-3"> Email-ul</li>
-        <li class="fs-3"> Numărul de telefon</li>
+    <ul class="fs-3">
+        <li> Numele de utilizator </li>
+        <li> Numele complet:
+            <ul>
+                <li>cu un singur spaţiu</li>
+                <li>fără spaţii la început şi final</li>
+                <li>fără diacritice</li>
+            </ul>
+        </li>
+        <li> Email-ul</li>
+        <li> Numărul de telefon</li>
     </ul>
     <p class="mt-4"><span class="badge bg-danger rounded-pill">!</span> Dacă introduceţi spaţii suplimantare, nu vă veţi putea loga. </p>
-    <p><span class="badge bg-primary rounded-pill">!</span> Nu putei să vă logaţi cu numărul de telefon sau cu email-ul dacă nu le-aţi introdus în cont. </p>
-        <p class="mt-4"><span class="badge bg-danger fs-2 me-3">Atenţie!</span> Recomandăm <span class="text-danger fw-bold"> SCHIMBAREA PAROLEI INIŢIALE</span> cu un grad de <span class="text-danger fw-bold"> URGENŢĂ</span> ridicat! Puteţi schimba şi numele de utilizator pentru a face logarea mai uşoară.</p>
-    <div class="carsLogin border rounded w-90 mb-2"> {% include 'carousel.html' with carousel=carousellogin %}</div>
+    <p><span class="badge bg-primary rounded-pill">!</span> Nu putei să vă logaţi cu numărul de telefon sau cu email-ul dacă nu le-aţi introdus în cont, la <strong>Cont -> Detalii -> Modicicare cont</strong>. </p>
+    <p class="mt-4"><span class="badge bg-danger fs-2 me-3">Atenţie!</span> Recomandăm <span class="text-danger fw-bold"> SCHIMBAREA PAROLEI INIŢIALE</span> cu un grad de <span class="text-danger fw-bold"> URGENŢĂ</span> ridicat! Puteţi schimba şi numele de utilizator pentru a face logarea mai uşoară.</p>
+    <div class="carsLogin border rounded w-90 w-xxl-50 mb-2"> {% include 'carousel.html' with carousel=carousellogin %}</div>
 
     <h2 id="acasa"> Pagina Acasă</h2>
+    <h3>Butonul <span class="badge bg-success">Am ajuns </span></h3>
     <ul class="mt-4">
-        <li>Butonul <span class="badge bg-success">Am ajuns </span> înregistrează ora şi locaţia curentă şi o salvează ca intrare/sosire/venire la locul de muncă.</li>
-        <li>Butonul <span class="badge bg-danger"><i class="fa-solid fa-xmark"></i></span> din dreapta butonului <span class="badge bg-success" style="opacity: 50%">Am ajuns </span> anulează înregistrarea unei sosiri la locul de muncă. </li>
-        <li>Butonul <span class="badge bg-warning">Am ajuns, fac o observaie</span> înregistrează ora, locaţia curentă şi observaţia făcută, salvând-o ca intrare/sosire/venire la locul de muncă.<br>
-            <span class="badge bg-primary rounded-pill">!</span> Anularea acestei acţuni se face folosind butonul <span class="badge bg-danger"><i class="fa-solid fa-xmark"></i></span> din dreapta butonului <span class="badge bg-success" style="opacity: 50%">Am ajuns </span><br>
-            <span class="badge bg-danger rounded-pill">!</span> Nu puteți edita observația dacă nu anulați activitatea!
-        </li>
-        <hr class="dropdown-divider mt-4 mb-4">
-        <li>Butonul <span class="badge bg-danger" style="opacity: 85%">Am plecat </span> înregistrează ora şi locaţia curentă şi o salvează ca ieşire/plecare de la locul de muncă.</li>
-        <li>Butonul <span class="badge bg-danger"><i class="fa-solid fa-xmark"></i></span> din dreapta butonului <span class="badge bg-danger" style="opacity: 85%">Am plecat </span> anulează înregistrarea unei plecări de la locul de muncă. </li>
-        <li>Butonul <span class="badge bg-warning">Am ajuns, fac o observaie</span> înregistrează ora, locaţia curentă şi observaţia făcută, salvând-o ca ieşire/plecare la locul de muncă.<br>
-            <span class="badge bg-primary rounded-pill">!</span> Anularea acestei acţuni se face folosind butonul <span class="badge bg-danger"><i class="fa-solid fa-xmark"></i></span> din dreapta butonului <span class="badge bg-danger" style="opacity: 85%">Am plecat </span><br>
-            <span class="badge bg-danger rounded-pill">!</span> Nu puteți edita observația dacă nu anulați activitatea!
-        </li>
-        <hr class="dropdown-divider mt-4 mb-4">
-        <li>Butonul <span class="badge bg-primary" style="opacity: 85%">Vezi activitatea de astăzi</span> vă va trimite pe pagina activităţilor din ziua curentă.<br>Vă puteţi întoarce pe pagina <strong>Acasă</strong> apăsând butonul <i class="fa-solid fa-angle-left"></i> al browser-ului sau butonul <strong>Undo</strong> al telefonului, sau butonul <strong><i class="fa-solid fa-house"></i> Acasă</strong> din meniul de opțiuni.</li>
-    </ul><hr class="dropdown-divider mt-4 mb-4">
-    <p>Butonul <span class="badge bg-info">Am terminat o comandă</span> deschide un formular în partea de jos a paginii.<br>Câmpurile obligarorii din formular sunt:</p>
-    <ul>
-        <li> Denumirea</li>
-        <li> Numărul comenzii</li>
+        <li>Înregistrează ora şi locaţia curentă şi o salvează ca ajungere.</li>
+        <li>Nu poate fi apăsat de mai multe ori consecutiv</li>
+        <li>Anularea înregistrarea unei ajungeri se face apăsând butonul <span class="badge bg-danger"><i class="fa-solid fa-xmark"></i></span> din dreapta sa.
+        <li><span class="badge bg-primary rounded-pill">!</span> Dacă aveţi ceva de comunicat, apăsaţi butonul <span class="badge bg-warning">Am ajuns, fac o observaie</span>, în loc de butonul <span class="badge bg-success">Am ajuns </span>. </li>
     </ul>
-    <p><span class="badge bg-primary rounded-pill">!</span> Dacă completaţi aceste câmpuri, va apărea un mesaj de eroare.</p>
+    <hr class="dropdown-divider mt-4 mb-4">
+    <h3>Butonul <span class="badge bg-danger" style="opacity: 85%">Am plecat </span></h3>
+    <ul class="mt-4">
+        <li>Înregistrează ora şi locaţia curentă şi o salvează ca plecare.</li>
+        <li>Nu poate fi apăsat de mai multe ori consecutiv</li>
+        <li>Anularea înregistrarea unei ajungeri se face apăsând butonul <span class="badge bg-danger"><i class="fa-solid fa-xmark"></i></span> din dreapta sa.
+        <li><span class="badge bg-primary rounded-pill">!</span> Dacă aveţi ceva de comunicat, apăsaţi butonul <span class="badge bg-warning">Am plecat, fac o observaie</span>, în loc de butonul <span class="badge bg-danger" style="opacity: 85%">Am plecat </span>. </li>
+    </ul>
+    <hr class="dropdown-divider mt-4 mb-4">
+    <h3>Butonul <span class="badge bg-primary" style="opacity: 85%">Vezi activitatea de astăzi</span></h3>
+    <ul class="mt-4">
+        <li>Vă va trimite pe pagina activităţilor din ziua curentă.</li>
+        <li>Vă puteţi întoarce pe pagina <strong>Acasă</strong> apăsând butonul <i class="fa-solid fa-angle-left"></i> al browser-ului sau butonul <strong>Undo</strong> al telefonului, sau butonul <strong><i class="fa-solid fa-house"></i> Acasă</strong> din meniul de opțiuni.</li>
+    </ul>
+    <hr class="dropdown-divider mt-4 mb-4">
+    <h3>Butonul <span class="badge bg-info">Am terminat o comandă</span></h3>
+    <ul class="mt-4">
+        <li>Deschide un formular sub acest buton.</li>
+        <li>Câmpurile obligarorii din formular sunt:
+            <ul>
+                <li> Denumirea</li>
+                <li> Numărul comenzii</li>
+            </ul>
+        </li>
+    </ul>
+    <p><span class="badge bg-primary rounded-pill">!</span> Dacă nu completaţi aceste câmpuri, va apărea un mesaj de eroare.</p>
     <p><span class="badge bg-primary rounded-pill">!</span> Dacă nu vedeţi formularul, vă rugăm să derulaţi pagina mai jos.</p>
     <p><span class="badge bg-primary rounded-pill">!</span> Dacă apăsaţi a doua oară pe butonul <span class="badge bg-info">Am terminat o comandă</span>, formularul de va închide.</p>
     <p>Câmpul <strong>Observaţie</strong> este opţional. Acesta se va folosi în cazul în care apar defecţiuni, sau apare o situaţie neprevazută.</p>
     <p><span class="badge bg-danger rounded-pill">!</span> O observaţie pate avea maxim 200 de caractere. Vă rugăm să <strong>nu scrieţi observaţii de dimensiuni mari</strong>.</p>
     <hr class="dropdown-divider mt-4 mb-4">
-    <p>Butonul <span class="badge" style="background-color: sandybrown">Am terminat un lucru</span> deschide un formular în partea de jos a paginii.<br>Singurul câmp obligaroriu din formular este <strong> Denumirea</strong>.</p>
+    <h3>Butonul <span class="badge" style="background-color: sandybrown">Am terminat un lucru</span></h3>
+    <ul class="mt-4">
+        <li>Deschide un formular în partea de jos a paginii</li>
+        <li>Singurul câmp obligaroriu din formular este <strong> Denumirea</strong></li>
+    </ul>
     <p><span class="badge bg-primary rounded-pill">!</span> Dacă nu completaţi acest câmp, va apărea un mesaj de eroare.</p>
     <p><span class="badge bg-primary rounded-pill">!</span> Dacă nu vedeţi formularul, vă rugăm să derulaţi pagina mai jos.</p>
-    <p><span class="badge bg-primary rounded-pill">!</span> Dacă apăsaţi a doua oară pe butonul <span class="badge bg-info">Am terminat o comandă</span>, formularul de va închide.</p>
+    <p><span class="badge bg-primary rounded-pill">!</span> Dacă apăsaţi a doua oară pe butonul <span class="badge" style="background-color: sandybrown">Am terminat un lucru</span>, formularul de va închide.</p>
     <p>Câmpul <strong>Observaţie</strong> este opţional, dar acesta ajută la descrierea lucrului dumneavoastră.</p>
     <p><span class="badge bg-danger rounded-pill">!</span> O observaţie pate avea maxim 200 de caractere. Vă rugăm să <strong>nu scrieţi observaţii de dimensiuni mari</strong>.</p>
-{#    <p><span class="badge bg-primary rounded-pill">!</span> Chiar dacă folosiţi linii separate, observaţiile vor fi stocate pe un singur rând, separate prin <strong>;</strong>(punct şi virgulă)</p>#}
-    <p> <span class="badge bg-danger fs-3 mt-3 me-1">Atenţie!</span> Nu puteţi raporta nici o activitate dacă nu aţi înregistrat intrarea/sosirea/venirea!</p>
 
     <h2 id="activitati"> Pagina Activităţi</h2>
     <h3> Activitatea pe o singură zi: Azi, Ieri, Alaltaieri, Alege Perioada</h3>
     <p> Activitatea pe o zi conţine următoarele informaţii:</p>
     <ul>
-        <li> Ora intrării </li>
-        <li> Ora ieşirii </li>
-        <li> Locaţia intrării</li>
-        <li> Locaţia ieşirii</li>
+        <li> Ora ajungerilor </li>
+        <li> Ora venirilor </li>
+        <li> Locaţia ajungerilor</li>
+        <li> Locaţia venirilor</li>
         <li> *Observaţia la ajungere </li>
-        <li> *Observaţia la plecare </li>
+        <li> *Observaţia la venire </li>
         <li> Comenzile finalizate<br>
-        <li> Lucrările finalizate<br>
             <ul>
                 <li>Denumirea</li>
                 <li>Numărul</li>
                 <li>Ora</li>
+                <li>Locaţia</li>
+                <li>*Observaţia</li>
+            </ul>
+        </li>
+        <li> Lucrările finalizate<br>
+            <ul>
+                <li>Denumirea</li>
+                <li>Ora</li>
+                <li>Locaţia</li>
                 <li>*Observaţia</li>
             </ul>
         </li>
@@ -242,7 +265,7 @@ window.addEventListener('load', ()=>{
     <p>Acţiunile posibile pe această pagină:</p>
     <ul>
         <li>Vizualizarea locaţiilor înregistrate </li>
-        <li >Relocarea intrării sau a ieşirii</li>
+        <li>Relocarea ajungerii sau a venirii</li>
         <li>Afişarea/ascunderea comenzilor</li>
         <li>Editarea comenzilor</li>
         <li>Anularea comenzilor</li>
@@ -251,39 +274,41 @@ window.addEventListener('load', ()=>{
         <li>Anularea lucrărilor</li>
     </ul>
     <h4 id="relocare" class="fs-2">Relocarea</h4>
-    <p> Dacă consideraţi că localizarea initiala a avut o eroare prea mare, puteti sa folositi butonul <span class="badge bg-light text-dark"> Relocare</span> de pe pagina activităţi fără a fi modificată ora.</p>
-    <p><span class="badge bg-danger rounded-pill">!</span> Acest buton este disponibil doar de <strong>{{ setare.nrrecalcpoz }}</strong> ori şi cel mult <strong>{{ setare.secafterrecalc }}</strong> secunde după înregistrarea intrării/ieşirii!</p>
+    <p> Dacă consideraţi că localizarea initiala a avut o eroare prea mare, puteti sa folositi butonul <span class="badge bg-light text-dark"> Relocare</span> de pe pagina activităţi, din dreapta butonului de deschidere a hărţilor fără a fi modificată ora.</p>
+    <p><span class="badge bg-danger rounded-pill">!</span> Acest buton este disponibil doar de <strong>{{ setare.nrrecalcpoz }}</strong> ori şi cel mult <strong>{{ setare.secafterrecalc }}</strong> secunde după înregistrarea ajungerii/plecării!</p>
     <h4 id="editare" class="fs-2">Editarea comenzilor/lucrărilor</h4>
-    <p>La adăugarea/editarea unei comenzi sau a unei lucrări pot fi schimbate:</p>
+    <p>La adăugarea/editarea unei comenzi sau a unui lucru pot fi schimbate:</p>
     <ul>
         <li>Denumirea</li>
-        <li>Numărul de comandă</li>
+        <li>*Numărul de comandă</li>
         <li>Observaţia</li>
     </ul>
-    <p><span class="badge bg-danger rounded-pill">!</span> La schimbarea comenzii sau a lucrării, ora și locația se actualizează automat!</p>
+    <p><span class="badge bg-danger rounded-pill">!</span> La schimbarea comenzii sau a lucrului, ora și locația se actualizează automat!</p>
 
     <h3 class="mb-3"> Activitatea pe mai multe zile</h3>
     <h4 class="fs-2" style="margin-top: 2px !important;"><i class="fa-solid fa-minus fs-5"></i>Ultimele 3 zile</h4>
     <h4 class="fs-2 mb-4" style="margin-top: 2px !important;"><i class="fa-solid fa-minus fs-5"></i>Ultima săptămână</h4>
+    <p><span class="badge bg-danger rounded-pill">!</span> Recomandăm vizualizarea acestor activităţi folosind orientarea <strong>Landscape</strong>!
     <p> Aceste date sunt încărcate într-un tabel, care conţine: </p>
     <ul>
         <li> Ziua săptămânii </li>
-        <li> Ora intrării </li>
-        <li> Ora ieşirii </li>
-        <li> Locaţia intrării</li>
-        <li> Locaţia ieşirii</li>
-        <li> *Observaţia la ajungere </li>
-        <li> *Observaţia la plecare </li>
+{#        <li> Ora intrării </li>#}
+{#        <li> Ora ieşirii </li>#}
+{#        <li> Locaţia intrării</li>#}
+{#        <li> Locaţia ieşirii</li>#}
+{#        <li> *Observaţia la ajungere </li>#}
+{#        <li> *Observaţia la plecare </li>#}
+        <li> Numărul ajungerilor</li>
+        <li> Numărul plecărilor</li>
         <li> Numărul comenzilor finalizate</li>
-        <li> Numele lucrărilor finalizate</li>
+        <li> Numărul lucrărilor finalizate</li>
+        <li> Link către activitatea din ziua respectivă</li>
     </ul>
     <p>Semnificaţia culorilor din tabel</p>
     <ul>
-        <li> <div class="rounded bg-secondary p-3 float-start mb-0 me-3"></div> Date incomplete: ajungerea sau plecarea lipseşte </li>
-        <li> <div class="rounded bg-info p-3 float-start mb-0 me-3"></div> Diferenţa de timp nu este de 8 ore </li>
-        <li> <div class="rounded bg-warning p-3 float-start mb-0 me-3"></div> Locaţia intrării nu este <strong>În firmă</strong> </li>
-        <li> <div class="rounded bg-success p-3 float-start mb-0 me-3"></div> Totul este în regulă </li>
-        <li> <div class="rounded bg-light p-3 float-start mb-0 me-3 border border-dark"></div> Se aşteaptă şi alte date pentru stabilirea unei decizii </li>
+        <li> <div class="rounded bg-warning p-3 float-start mb-0 me-3"></div> Absent </li>
+        <li> <div class="rounded bg-success p-3 float-start mb-0 me-3"></div> Aţi înregistrat atât ajungeri, plecări, comenzi, cât şi lucrări </li>
+        <li> <div class="rounded bg-light p-3 float-start mb-0 me-3 border border-dark"></div> Prezenţă </li>
     </ul>
     <p><span class="badge bg-primary rounded-pill">!</span> Datele sunt calculate în funcţie de programul de lucru. De exemplu, dacă acesta se rezumă la <strong>Luni Marţi Miercuri Joi Vineri</strong> şi ziua curentă este <strong>Luni</strong>, <strong>Ieri</strong> va însemna <strong>Vineri</strong>, nu <strong>Duminică</strong>.</p>
     <h2 id="cont">Pagina Cont</h2>
@@ -307,10 +332,11 @@ window.addEventListener('load', ()=>{
     </ul>
     <h3>Secţiunea Logout </h3>
     <p> Deloghează utilizatorul curent de pe site.</p>
-    <p><span class="badge bg-warning rounded-pill">!</span> Nu recomandăm delogarea, din cauza riscului de vă uita parola!</p>
+    <p><span class="badge bg-danger rounded-pill">!</span> Recomandăm delogarea, pentru a nu supraîncărca serverul!</p>
+    <p><span class="badge bg-warning rounded-pill">!</span> Se recomandă salvarea parolei, din cauza riscului de a o uita!</p>
     <p class="mt-5"><span class="badge bg-danger fs-2">Atenţie!</span></p>
     <p>Acest site nu dispune de o modalitate de resetare a parolei.</p>
-    <p>În cazul în care nu vă mai amintiţi parola, puteţi să o cereţi direct de la manager/administrator.</p>
+    <p>În cazul în care nu vă mai amintiţi parola, puteţi să o cereţi direct de la manager sau de la administrator.</p>
 
 
     {# MANAGER #}
@@ -320,24 +346,48 @@ window.addEventListener('load', ()=>{
     <h3 id="actView">Vizualizarea activităților</h3>
     <p>Activitățile angajaților pot fi vizualizate din meniul <strong>Activități</strong>, selectând perioada de timp dorită. Aceste date se vor afișa într-un tabel.</p>
     <p><span class="badge bg-primary rounded-pill">!</span> Dacă observați că tabelul este greu de vizualizat, vă rugăm folosiți opțiunile <i class="fa-solid fa-magnifying-glass-plus text-primary"></i>Zoom in, respectiv <i class="fa-solid fa-magnifying-glass-minus text-primary"></i>Zoom out ale browser-ului.</p>
+    <p><span class="badge bg-primary rounded-pill">!</span> Dacă folosiţi un dispozitiv mobil, vă rugăm folosiți opțiunea <strong>Landscape</strong>.</p>
     <p>Tabelul este alcătuit din următoarele coloane:</p>
     <ul>
-        <li><span class="text-decoration-underline"> Nume</span>: un link către profilul angajat care a efectuat activitatea respectivă</li>
-        <li><span class="text-decoration-underline">Data</span>: data la care a efectuat activitatea respectivă</li>
-        <li><span class="text-decoration-underline">Ora, Locația, Observația Intrării</span>: datele intrării</li>
-        <li><span class="text-decoration-underline">Ora, Locația, Observația Ieșirii</span>: datele ieșirii</li>
-        <li><span class="text-decoration-underline">Număr comenzi</span>: numărul de comenzi efectuate de angajat in data respectivă</li>
-        <li><span class="text-decoration-underline">Număr lucrări</span>: numărul de lucrări efectuate de angajat in data respectivă</li>
-        <li><span class="text-decoration-underline">Linkuri</span>: link pentru vizualizarea detaliată a comenzilor, respectiv a lucrărilor</li>
+        <li>
+            Date cont
+            <ul>
+                <li><span class="text-decoration-underline"> Nume</span>: un link către profilul angajat care a efectuat activitatea respectivă</li>
+                <li><span class="text-decoration-underline">Data</span>: data la care a efectuat activitatea respectivă</li>
+            </ul>
+        </li>
+        <li>
+            Ultima ajungere
+            <ul>
+                <li>Ora</li>
+                <li>Locaţia</li>
+                <li>Observaţia</li>
+            </ul>
+        </li>
+        <li>
+            Ultima plecare
+            <ul>
+                <li>Ora</li>
+                <li>Locaţia</li>
+                <li>Observaţia</li>
+            </ul>
+        </li>
+        <li>
+            Linkuri
+            <ul>
+                <li>Ajungeri: link către ajungerile utilizatorului din data afişată</li>
+                <li>Plecări: link către plecările utilizatorului din data afişată</li>
+                <li>Comenzi: link către comenzile finalizate ale utilizatorului din data afişată</li>
+                <li>Lucrări: link către lucrările finalizate ale utilizatorului din data afişată</li>
+            </ul>
+        </li>
         <li><span class="text-decoration-underline text-primary">Modificare</span>: Editarea/Ștergerea datelor activității respective</li>
     </ul>
     <p>Semnificaţia culorilor din tabel</p>
     <ul>
-        <li> <div class="rounded bg-secondary p-3 float-start mb-0 me-3"></div> Date incomplete: ajungerea sau plecarea lipseşte </li>
-        <li> <div class="rounded bg-info p-3 float-start mb-0 me-3"></div> Diferenţa de timp nu este de 8 ore, fiind incluse și numărul de minute tolerate </li>
-        <li> <div class="rounded bg-warning p-3 float-start mb-0 me-3"></div> Locaţia intrării nu este <strong>În firmă</strong> </li>
-        <li> <div class="rounded bg-success p-3 float-start mb-0 me-3"></div> Totul este în regulă </li>
-        <li> <div class="rounded bg-light p-3 float-start mb-0 me-3 border border-dark"></div> Se aşteaptă şi alte date pentru stabilirea unei decizii </li>
+        <li> <div class="rounded bg-warning p-3 float-start mb-0 me-3"></div> Absent </li>
+        <li> <div class="rounded bg-success p-3 float-start mb-0 me-3"></div> Utilizatorul a înregistrat atât ajungeri, plecări, comenzi, cât şi lucrări </li>
+        <li> <div class="rounded bg-light p-3 float-start mb-0 me-3 border border-dark"></div> Prezenţă </li>
     </ul>
     <p><span class="badge bg-primary rounded-pill">!</span> Datele sunt calculate în funcţie de programul de lucru. De exemplu, dacă acesta se rezumă la <strong>Luni Marţi Miercuri Joi Vineri</strong> şi ziua curentă este <strong>Luni</strong>, <strong>Ieri</strong> va însemna <strong>Vineri</strong>, nu <strong>Duminică</strong>.</p>
     <h3 id="actFilter">Filtrarea activităților</h3>
@@ -348,6 +398,8 @@ window.addEventListener('load', ()=>{
                 <li>Nume Prenume: selectează toți angajații care au textul introdus în numele complet</li>
                 <li>Telefon: selectează toți angajații al căror număr de telefon începe cu cifrele introduse</li>
                 <li>Email: selectează toți angajații care au textul introdus în email</li>
+                <li>Denumire comandă: selectează toți angajații care au textul introdus în numele comenzilor terminate</li>
+                <li>Număr comandă: selectează toți angajații care au un număr de comandă finalizat textul introdus</li>
             </ul>
         </li>
         <li>Prezență: se poate selecta una dintre opțiunile următoare:
@@ -374,11 +426,10 @@ window.addEventListener('load', ()=>{
         <li> Criteriul de ordonare:
             <ul>
                 <li>Nume Prenume: sortează în primul rând după nume, iar apoi după dată</li>
-                <li>Data și ora intrării: sortează după momentrul intrării, în primul rând după dată, iar apoi, în caz de egalitate, după timp</li>
-                <li>Data și ora ieșirii: sortează după momentrul ieșirii, în primul rând după dată, iar apoi, în caz de egalitate, după timp</li>
-                <li>Ora intrării: sortează dupa timpul intrării, iar apoi după nume</li>
-                <li>Ora ieșirii: sortează dupa timpul ieșirii, iar apoi după nume</li>
+                <li>Număr de ajungeri: sortează după numărul de ajungeri, iar apoi după nume</li>
+                <li>Număr de plecări: sortează după numărul de plecări, iar apoi după nume</li>
                 <li>Număr de comenzi: sortează după numărul de comenzi, iar apoi după nume</li>
+                <li>Număr de lucrări: sortează după numărul de lucrări, iar apoi după nume</li>
             </ul>
         </li>
         <li> Modalitatea de ordonare:
@@ -398,9 +449,10 @@ window.addEventListener('load', ()=>{
         <li>Lucrare</li>
     </ul>
     <p><span class="badge bg-primary rounded-pill">!</span> Aceste acțiuni sunt permanente, ele nu pot fi anulate!</p>
-    <h4 class="fs-2">Ajuns/Plecare</h4>
-{#    <p>Activitatea unui angajat dintr-o anumită dată poate fi ștearsă folosind butoanele <span class="badge bg-danger">Șterge venire</span>, <span class="badge bg-danger">Șterge plecare</span>, și <span class="badge bg-danger">Șterge intrare și ieșire</span>. În mod alternativ, puteți șterge câmpurile care trebuie completate pentru ca datele să fie șterse. </p>#}
-    <p>Modificarea datelor de venire sau de plecare se face prin editarea câmpurilor, urmată de apăsarea butonului <span class="badge bg-primary">Salvează modificările</span>.</p>
+    <h4 class="fs-2">Ajungere/Plecare</h4>
+    <p><span class="badge bg-danger rounded-pill">!</span>Activitatea unui angajat dintr-o anumită dată poate fi ștearsă prin ștergea câmpurilor care conţin datele ce trebuie să fie șterse. </p>
+    <p>Modificarea datelor de ajungere sau de plecare se face prin editarea câmpurilor, urmată de apăsarea butonului <span class="badge bg-primary">Salvează modificările</span>.</p>
+    <p><span class="badge bg-primary rounded-pill">!</span> Sub ajungerile/plecările afişate, se va afişa un formular <strong>fără date</strong>, pentru a putea adăuga o <strong>noua</strong> ajungere/plecare.</p>
     <p>Butonul <span class="badge bg-danger">Anulează</span> va recompleta valorile câmpurilor cu datele inițiale, înainte să fie modificate, dacă nu ați confirmat salvarea modificărilor sau a ștergerii.</p>
     <p><span class="badge bg-warning rounded-pill">!</span> Sugestie pentru modificarea locației: dați click pe Google Maps în locația dorită, iar apoi copiați coordonatele în câmpul dorit.</p>
     <p>Alte butoane:</p>
@@ -409,9 +461,9 @@ window.addEventListener('load', ()=>{
         <li> Butonul <div class="btn btn-light fs-5"><i class="fa-solid fa-magnifying-glass-location"></i></div>: Setează locația ca fiind locația curentă</li>
     </ul>
     <h4 class="fs-2">Comenzi</h4>
-    <p><span class="badge bg-danger rounded-pill">!</span> Modificarea/ștergerea intrării/ieșirii este total separată de cea a comenzilor!</p>
+    <p><span class="badge bg-danger rounded-pill">!</span> Modificarea/ștergerea ajungerii/plecării este total separată de cea a comenzilor!</p>
     <p>Ștergerea unei comenzi se face prin apăsarea butonului <span class="badge bg-danger">Anulează</span>, din cadrul unei comenzi, urmată de confirmare prin apăsarea butonului <span class="badge bg-warning">Continuă</span>. </p>
-    <p>Modificarea unei comeni se face apăsând butonul <span class="badge bg-primary">Editează</span> din cadrul unei comenzi. Astfel, în partea de jos a pagini, după restul comenzilor, va apărea un formular conținând datele comenzii. </p>
+    <p>Modificarea unei comenzi se face apăsând butonul <span class="badge bg-primary">Editează</span> din cadrul unei comenzi. Astfel, în partea de jos a pagini, după restul comenzilor, va apărea un formular conținând datele comenzii. </p>
     <p>Adăugarea unei comenzi se face apăsând butonul <span class="badge bg-success">Adaugă</span>, de la începutul listei de comenzi. Acesta va deschide un formular similar celui de editare, dar fără date. </p>
     <p><span class="badge bg-primary rounded-pill">!</span> În caz că formularul deschis nu poate fi observat, vă rugăm să derulaţi înspre finalul paginii! </p>
     <p><span class="badge bg-danger rounded-pill">!</span> Dacă schimbați data activității, după salvare pagina va afișa o activitate inexistentă! Vă rugăm să reselectați data activitații de pe o altă pagină! </p>
@@ -424,7 +476,7 @@ window.addEventListener('load', ()=>{
     <p><span class="badge bg-danger rounded-pill">!</span> Dacă schimbați data activității, după salvare pagina va afișa o activitate inexistentă! Vă rugăm să reselectați data activitații de pe o altă pagină! </p>
     <h3 id="actAdd">Adăugarea unei activități</h3>
     <p> Adăugarea unei activități se realizează din meniul <strong>Activități <i class="fa-solid fa-arrow-right"></i> Adaugă o activitate</strong>. Această opțiune din meniul derulant va deschide o pagină în care va trebui să selectați user-ul și data asociate activității respective. Ulterior completării acestor date, se va deschide o pagină similară celei de editare a unei activități, fără date completate.</p>
-    <p> În acest context, editare înseamnă salvare. </p>
+    <p> <span class="badge bg-primary rounded-pill">!</span> În acest context, editare-modificare înseamnă salvare. </p>
     <p> Anularea acestei acțiuni presupune pur și simplu părăsirea paginii, dacă nu ați apăsat butonul <span class="badge bg-primary">Salvează modificările</span>. Astfel datele nu vor fi salvate. </p>
     <p> Anularea poate fi efectuată apăsând butonul <i class="fa-solid fa-angle-left"></i> al browser-ului sau accesând o altă opțiune din meniul de opțiuni. </p>
     <h3 id="actCmd">Informaţii importante despre comenzi</h3>
@@ -433,7 +485,7 @@ window.addEventListener('load', ()=>{
     {# RAPORT #}
     <h2 id="raport">Raport</h2>
     <h3 id="rapView">Vizualizare</h3>
-    <p> Raporturile reprezintă vizualizarea extinsă a activităților, împărțită pe categorii. Cele trei categorii de raporturi sunt:</p>
+    <p> Raporturile reprezintă vizualizarea extinsă a activităților, împărțită pe categorii. Cele patru categorii de raporturi sunt:</p>
     <ul>
         <li>Intrări</li>
         <li>Ieșiri</li>
@@ -457,7 +509,9 @@ window.addEventListener('load', ()=>{
                 <li title="Apare doar la lucrări">Denumire lucrare: lucrările ale căror denumire conțin textul căutat</li>
             </ul>
         </li>
-        <li>Interval de timp, selectând activitățile care au avut loc în intervalul dată-timp precizat</li>
+        <li>Interval de timp, selectând activitățile care au avut loc în intervalul dată-timp precizat
+             <p><span class="badge bg-primary rounded-pill">!</span> <strong>Primul</strong> moment reprezintă data <strong>iniţială</strong>, iar <strong>al doilea</strong> reprezintă data <strong>finală</strong>!</p>
+        </li>
         <li>Ordonare, după următoarele criterii:
             <ul>
                 <li>Nume: numele complet al angajatului, iar apoi după moment</li>
@@ -537,7 +591,7 @@ window.addEventListener('load', ()=>{
         <li>Poziţie centru: coordonatele centrului cercului care descrie o arie</li>
         <li>Poziţie punct de pe cerc: coordonatele unui punct de pe cercul descris de arie</li>
     </ul>
-    <p><strong>Observaţie!</strong> Distanţa dinre poziţia centrului şi poziţia punctului de pe cerc reprezintă raza cercului.</p>
+    <p><strong>Observaţie!</strong> Distanţa dintre poziţia centrului şi poziţia punctului de pe cerc reprezintă raza cercului.</p>
     <p>Poziţiile vor fi introduse în formatul <strong class="text-decoration-underline">latitudine, longitudine</strong> <strong class="text-danger">fără să conţină alte caractere în afară de spaţii!</strong></p>
     <p><span class="badge bg-danger rounded-pill">!</span> Aria adăugată cu butonul <button class="btn btn-outline-success fs-5"> Adaugă</button> va apărea în partea de jos a paginii, vă rugăm să derulaţi pagina în jos pentru a o completa!</p>
 
