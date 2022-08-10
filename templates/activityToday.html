@@ -303,7 +303,7 @@
             <div class="m-5 fs-3" id="filter">
             <div class="fs-3 mt-5 mx-5 mb-3">
             <form method="get">
-                <div class="d-flex flex-row mb-3">
+                <div class="d-flex flex-column flex-xxl-row mb-3">
                     <p class="me-3 form-label">Cauta</p>
                     <input type="search" class="form-control fs-2" name="stext" value="{{ stext }}" placeholder="Caută">
                     <p class="me-3 form-label ms-3">dupa</p>
@@ -324,9 +324,9 @@
 {#                      <option {% if tiora == "out" %}selected{% endif %} value="out">Plecare</option>#}
 {#                    </select>#}
 {#                </div>#}
-                <div class="d-flex flex-row mb-3">
+                <div class="d-flex flex-column flex-xxl-row mb-3">
                     <p class="me-3 form-label ms-3">Ordoneaza dupa</p>
-                    <select class="form-select flex-shrink-1 fs-3 me-5 w-25" aria-label="Default select example" name="ocrit">
+                    <select class="form-select flex-shrink-1 fs-3 me-5 mb-3 w-25" aria-label="Default select example" name="ocrit">
                       <option {% if ocrit == "nume" %}selected{% endif %} value="nume">Nume Prenume</option>
 {#                      <option {% if ocrit == "datetimein" %}selected{% endif %} value="datetimein">Data si ora venirii</option>#}
 {#                      <option {% if ocrit == "datetimeout" %}selected{% endif %} value="datetimeout">Data si ora plecarii</option>#}
@@ -337,7 +337,7 @@
                       <option {% if ocrit == "nrcom" %}selected{% endif %} value="nrcom">Numar de comenzi</option>
                       <option {% if ocrit == "nrlucr" %}selected{% endif %} value="nrlucr">Numar de lucrari</option>
                     </select>
-                    <select class="form-select flex-shrink-1 fs-3 me-5 w-25" aria-label="Default select example" name="oord" required>
+                    <select class="form-select flex-shrink-1 fs-3 me-5 mb-3 w-25" aria-label="Default select example" name="oord" required>
                       <option {% if oord == "cresc" %}selected{% endif %} value="cresc">Crescator</option>
                       <option {% if oord == "desc" %}selected{% endif %} value="desc">Descrescator</option>
                     </select>
