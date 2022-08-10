@@ -297,7 +297,7 @@
 
 
     {% else %} <!-- Table View -->
-        <div class="mt-5">
+        <div class="mt-5 vw-100">
             {% if request.user|role_at_least:"Manager" %}
             <button id='btnSHS' data-bs-toggle="tooltip" data-bs-placement="bottom" title="Arata / Ascunde filtrarea" onclick="arataascunde('filter', 'btnSHS')" class="btn btn-outline-secondary btn-square-md font-weight-bold fs-3 align-self-center my-0 px-4 ms-5">Ascunde</button>
             <div class="m-5 fs-3" id="filter">
