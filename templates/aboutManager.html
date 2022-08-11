@@ -163,6 +163,9 @@ window.addEventListener('load', ()=>{
     </div>
     <p class="mt-4"><span class="badge bg-danger fs-2 me-3">Atenţie!</span> Dacă permisiunea la locaţie nu este acordată, datele nu vor fi înregistrate, apăsarea butoanelor neavând <strong>nici un efect</strong>! </p>
     <p><span class="badge bg-danger rounded-pill">!</span> Dacă aţi refuzat Accesarea Locaţiei, va trebui să o activaţi din <a href="https://docs.buddypunch.com/en/articles/919258-how-to-enable-location-services-for-chrome-safari-edge-and-android-ios-devices-gps-setting">setările browser-ului</a>.</p>
+    <p><span class="badge bg-danger rounded-pill">!</span> Dacă aţi refuzat Accesarea Locaţiei, va trebui să o activaţi din <a href="https://docs.buddypunch.com/en/articles/919258-how-to-enable-location-services-for-chrome-safari-edge-and-android-ios-devices-gps-setting">setările browser-ului</a>.</p>
+    <p><span class="badge bg-danger rounded-pill">!</span> Dacă primiţi o eroare <strong>Permisiune refuzată</strong> deşi nu aţi primit o solicitare la locaţie, probabil foloşiţi <strong>Safari</strong> ca browser. Vă rugăm să instalaţi <strong>Google Chrome</strong>, altfel nu veţi putea salva activităţi!</p>
+    <p class="mt-4"><span class="badge bg-info fs-2 me-3">Sugestie</span> Vă recomandăm să salvaţi o scurtătură către acest site pe unul din ecranele dumneavoastră, pentru a-l face mai accesibil. Pe Chrome, această opţiune apare în meniul <strong><i class="fa-solid fa-ellipsis-vertical"></i> &nbsp;<i class="fa-solid fa-arrow-right"></i>&nbsp; Adaugă pe ecran pornire</strong>. Pe iPhone sau iPad, această opţiune apare în meniul <strong>Patrajează <i class="fa-solid fa-arrow-right"></i> Adaugă la ecranul de pornire</strong>.</p>
 
     <h1>Instrucţiuni Angajat</h1>
     <h2 id="login"> Login-ul </h2>
@@ -276,18 +279,19 @@ window.addEventListener('load', ()=>{
     <h4 id="relocare" class="fs-2">Relocarea</h4>
     <p> Dacă consideraţi că localizarea initiala a avut o eroare prea mare, puteti sa folositi butonul <span class="badge bg-light text-dark"> Relocare</span> de pe pagina activităţi, din dreapta butonului de deschidere a hărţilor fără a fi modificată ora.</p>
     <p><span class="badge bg-danger rounded-pill">!</span> Acest buton este disponibil doar de <strong>{{ setare.nrrecalcpoz }}</strong> ori şi cel mult <strong>{{ setare.secafterrecalc }}</strong> secunde după înregistrarea ajungerii/plecării!</p>
+    <p><span class="badge bg-danger rounded-pill">!</span> Relocarea se poate aplica doar <strong class="text-decoration-underline">ultimei</strong> ajungeri sau plecări! </p>
     <h4 id="editare" class="fs-2">Editarea comenzilor/lucrărilor</h4>
     <p>La adăugarea/editarea unei comenzi sau a unui lucru pot fi schimbate:</p>
     <ul>
         <li>Denumirea</li>
-        <li>*Numărul de comandă</li>
-        <li>Observaţia</li>
+        <li>Numărul de comandă</li>
+        <li>*Observaţia</li>
     </ul>
     <p><span class="badge bg-danger rounded-pill">!</span> La schimbarea comenzii sau a lucrului, ora și locația se actualizează automat!</p>
 
     <h3 class="mb-3"> Activitatea pe mai multe zile</h3>
-    <h4 class="fs-2" style="margin-top: 2px !important;"><i class="fa-solid fa-minus fs-5"></i>Ultimele 3 zile</h4>
-    <h4 class="fs-2 mb-4" style="margin-top: 2px !important;"><i class="fa-solid fa-minus fs-5"></i>Ultima săptămână</h4>
+    <h4 class="fs-2" style="margin-top: 2px !important;"><i class="fa-solid fa-minus fs-5"></i> Ultimele 3 zile</h4>
+    <h4 class="fs-2 mb-4" style="margin-top: 2px !important;"><i class="fa-solid fa-minus fs-5"></i> Ultima săptămână</h4>
     <p><span class="badge bg-danger rounded-pill">!</span> Recomandăm vizualizarea acestor activităţi folosind orientarea <strong>Landscape</strong>!
     <p> Aceste date sunt încărcate într-un tabel, care conţine: </p>
     <ul>

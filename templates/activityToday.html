@@ -505,12 +505,19 @@ function displayError(error) {
   alert("Error: " + errors[error.code]);
 }
 
+times = 3
 function getLocation(callback){
     if (navigator.geolocation) {
       let timeoutVal = 10 * 1000 * 1000;
       navigator.geolocation.getCurrentPosition(
         callback,
-        displayError,
+        (error) => {
+            if(times > 0) {
+                times--;
+                getLocation(callback);
+            }
+            else displayError(error);
+        },
         { enableHighAccuracy: true, timeout: timeoutVal, maximumAge: 0 }
       );
     }
@@ -519,7 +526,6 @@ function getLocation(callback){
       invComModal.show();
     }
 }
-
 function processposition(url, text=""){
     getLocation((position) => {
         text = text.replace(/\n\r?/g, '; ');

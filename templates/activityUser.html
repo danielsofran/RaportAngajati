@@ -573,12 +573,19 @@ function displayError(error) {
   alert("Eoare: " + errors[error.code]);
 }
 
+times = 3
 function getLocation(callback){
     if (navigator.geolocation) {
       let timeoutVal = 10 * 1000 * 1000;
       navigator.geolocation.getCurrentPosition(
         callback,
-        displayError,
+        (error) => {
+            if(times > 0) {
+                times--;
+                getLocation(callback);
+            }
+            else displayError(error);
+        },
         { enableHighAccuracy: true, timeout: timeoutVal, maximumAge: 0 }
       );
     }
