@@ -205,7 +205,7 @@
 {#              <label for="inputObsOut">Observatie la plecare</label>#}
             </div>
             <div class="d-flex flex-row justify-content-around mt-2 fs-5">
-              <button type="reset" class="btn btn-danger font-weight-bold fs-2 align-self-center my-0" > Anuleaza modificarile </button>
+              <button type="reset" class="btn btn-danger opacity-75 font-weight-bold fs-2 align-self-center my-0" > <i class="fa-solid fa-arrow-rotate-right"></i> Anuleaza </button>
               <button type="button" data-bs-toggle="modal" data-bs-target="#modalSaveEdit" data-bs-id="{{ intrare.id }}{{ iesire.id }}" class="btn btn-primary font-weight-bold fs-2 align-self-center my-0 me-3">Salveaza modificarile</button>
             </div>
         </div>
@@ -272,7 +272,7 @@
 {#              <label for="inputObsOut">Observatie la plecare</label>#}
             </div>
             <div class="d-flex flex-row justify-content-around mt-2 fs-5">
-              <button type="reset" class="btn btn-danger font-weight-bold fs-2 align-self-center my-0" > Anuleaza modificarile </button>
+              <button type="reset" class="btn btn-danger opacity-75 font-weight-bold fs-2 align-self-center my-0" > <i class="fa-solid fa-arrow-rotate-right"></i> Anuleaza </button>
               <button type="button" data-bs-toggle="modal" data-bs-target="#modalSaveEdit" data-bs-id="Blank" class="btn btn-primary font-weight-bold fs-2 align-self-center my-0 me-3">Salveaza modificarile</button>
             </div>
         </div>
@@ -304,7 +304,7 @@
                   <li class="list-group-item">Observatie: {{ comanda.text|strobs }} </li>
                 </div>
                 <div class="d-flex justify-content-around">
-                  <button type="button" data-bs-toggle="modal" data-bs-target="#modalCancelComand" data-bs-nr="{{ comanda.numar_comanda }}" class="btn btn-danger btn-square-md font-weight-bold fs-2 my-0"> Anuleaza </button>
+                  <button type="button" data-bs-toggle="modal" data-bs-target="#modalCancelComand" data-bs-nr="{{ comanda.numar_comanda }}" class="btn btn-danger btn-square-md font-weight-bold fs-2 my-0"> <i class="fa-solid fa-xmark"></i> Sterge </button>
                   <button type="button" class="btn btn-primary btn-square-md font-weight-bold fs-2 my-0"
                           onclick="showEdit('{{ comanda.denumire }}','{{ comanda.numar_comanda }}','{{ comanda.text|strobs }}', '{{ comanda.getCoords }}', '{{ comanda.datetime|ftime:"datetime" }}')">Editeaza</button>
                 </div>
@@ -349,7 +349,7 @@
           <textarea maxlength="200" class="form-control fs-4" placeholder="Scrieti observatia/motivarea aici" id="comandObs" style="height: 100px"></textarea>
           <label for="comandObs">Observatie</label>
           <div class="d-flex flex-row justify-content-around mt-1 fs-5">
-              <button onclick="toogleView('comandDiv')" class="btn btn-danger font-weight-bold fs-2 align-self-center my-0" > Anuleaza </button>
+              <button onclick="toogleView('comandDiv')" class="btn btn-danger opacity-75 font-weight-bold fs-2 align-self-center my-0" > <i class="fa-solid fa-arrow-rotate-right"></i> Anuleaza </button>
               <button id="btnEditShowModal" type="button" data-bs-toggle="modal" data-bs-target="#modalEditComand" class="btn btn-primary font-weight-bold fs-2 align-self-center my-0 me-3">Salveaza</button>
           </div>
         </div>
@@ -380,7 +380,7 @@
                   <li class="list-group-item">Observatie: {{ lucru.text|strobs }} </li>
                 </div>
                 <div class="d-flex justify-content-around">
-                  <button type="button" data-bs-toggle="modal" data-bs-target="#modalCancelLucru" data-bs-id="{{ lucru.id }}" class="btn btn-danger btn-square-md font-weight-bold fs-2 my-0"> Anuleaza </button>
+                  <button type="button" data-bs-toggle="modal" data-bs-target="#modalCancelLucru" data-bs-id="{{ lucru.id }}" class="btn btn-danger btn-square-md font-weight-bold fs-2 my-0"> <i class="fa-solid fa-xmark"></i> Sterge </button>
                   <button type="button" class="btn btn-primary btn-square-md font-weight-bold fs-2 my-0"
                           onclick="showEditLucru('{{ lucru.denumire }}', '{{ lucru.text|strobs }}', {{ lucru.id }}, '{{ lucru.getCoords|safe }}', '{{ lucru.datetime|ftime:"datetime" }}')">Editeaza</button>
                 </div>
@@ -417,7 +417,7 @@
               <textarea maxlength="200" class="form-control fs-4" placeholder="Scrieti observatia/motivarea aici" id="lucruObs" style="height: 100px"></textarea>
               <label for="lucruObs">Observatie</label>
               <div class="d-flex flex-row justify-content-around mt-1 fs-5">
-                  <button type="reset" onclick="toogleView('lucruDiv')" class="btn btn-danger font-weight-bold fs-2 align-self-center my-0" > Anuleaza </button>
+                  <button type="reset" onclick="toogleView('lucruDiv')" class="btn btn-danger opacity-75 font-weight-bold fs-2 align-self-center my-0" > <i class="fa-solid fa-arrow-rotate-right"></i> Anuleaza </button>
                   <button id="btnEditShowModalLucru" type="button" data-bs-toggle="modal" data-bs-target="#modalEditLucru" class="btn btn-primary font-weight-bold fs-2 align-self-center my-0 me-3">Salveaza</button>
               </div>
             </div>
