@@ -21,6 +21,10 @@ class RowDataActivity:
         self.iesiri = models.Iesire.objects.filter(user=user, datetime__date=data.date(), **filtersout)
         self.first_iesire = self.iesiri.order_by("-datetime").first()
         if self.iesiri.count() == 0: self.__activities -= 1
+        dif = self.intrari.count() - self.iesiri.count()
+        if dif == 1: self.first_iesire = models.Iesire.objects.none()
+        elif dif == -1: self.first_intrare = models.Intrare.objects.none()
+
         self.comenzi = models.Comanda.objects.filter(user=user, datetime__date=data.date(), **filterscmd)
         self.nrcomenzi = self.comenzi.__len__()
         if self.nrcomenzi == 0: self.__activities -= 1

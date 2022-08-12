@@ -143,7 +143,7 @@ def recalc_come(request):
             data.nrcalcloc = data.nrcalcloc + 1
             data.latitude = request.GET['lat']
             data.longitude = request.GET['long']
-            data.save(update_fields=['latitude', 'longitude', 'nrcalcloc'])
+            data.save(force_update=True, update_fields=['latitude', 'longitude', 'nrcalcloc'])
             messages.success(request,
                              (f"Locatie actualizata! Mai aveti {NR_RECALC_POZ + 1 - data.nrcalcloc} relocari."))
         else:
@@ -205,7 +205,7 @@ def recalc_left(request):
             data.nrcalcloc = data.nrcalcloc + 1
             data.latitude = request.GET['lat']
             data.longitude = request.GET['long']
-            data.save(update_fields=['latitude', 'longitude', 'nrcalcloc'])
+            data.save(force_update=True, update_fields=['latitude', 'longitude', 'nrcalcloc'])
             messages.success(request,
                              (f"Locatie actualizata! Mai aveti {NR_RECALC_POZ + 1 - data.nrcalcloc} relocari."))
         else:
@@ -223,6 +223,9 @@ def comandaFinish(request):
     if request.method == "GET":
         if 'nrcom' not in request.GET or len(request.GET['nrcom'])==0:
             messages.success(request, ("Numar comanda invalid!"))
+            return redirect('home')
+        if 'den' not in request.GET or len(request.GET['den'])==0:
+            messages.success(request, ("Denumire invalida!"))
             return redirect('home')
         now = utils.getTime()
         # try:
@@ -255,7 +258,7 @@ def comandaEdit(request):
         if 'user' in request.GET:
             user = models.User.objects.get(username=request.GET['user'])
             now = datetime.datetime.fromisoformat(request.GET['datetime'])
-            if request.GET['nr'] == "":
+            if request.GET['nr'] == "" or len(request.GET['nr']) == 0:
                 messages.success(request, ("Numar comanda invalid!"))
                 return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
             if str(request.GET['loc']).split(',').__len__() < 2:
@@ -281,6 +284,12 @@ def comandaEdit(request):
             except:
                 messages.success(request, ("Comanda veche nu a fost gasita!"))
                 return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+            if 'nr' not in request.GET or len(request.GET['nr']) == 0:
+                messages.success(request, ("Numar comanda invalid!"))
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+            if 'den' not in request.GET or len(request.GET['den']) == 0:
+                messages.success(request, ("Denumire invalida!"))
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
             old.numar_comanda = request.GET['nr']
             old.denumire = request.GET['den']
             old.text = request.GET['obs']
@@ -294,6 +303,12 @@ def comandaEdit(request):
                 old = models.Comanda.objects.get(datetime__date=now.date(), numar_comanda=oldnr)
             except:
                 messages.success(request, ("Comanda veche nu a fost gasita!"))
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+            if 'nr' not in request.GET or len(request.GET['nr']) == 0:
+                messages.success(request, ("Numar comanda invalid!"))
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+            if 'den' not in request.GET or len(request.GET['den']) == 0:
+                messages.success(request, ("Denumire invalida!"))
                 return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
             old.numar_comanda = request.GET['nr']
             old.denumire = request.GET['den']
@@ -362,12 +377,14 @@ def lucruFinish(request):
 
 def lucruEdit(request):
     if request.method == "GET":
-        print(request.GET)
         if 'user' in request.GET:
             user = models.User.objects.get(username=request.GET['user'])
             now = datetime.datetime.fromisoformat(request.GET['datetime'])
             if str(request.GET['loc']).split(',').__len__() < 2:
                 messages.success(request, ("Locatie invalida!"))
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+            if len(request.GET['den']) == 0:
+                messages.success(request, ("Nu ati introdus denumirea!"))
                 return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
             coord = str(request.GET['loc']).split(',')
             models.Lucru.objects.create(user=user, latitude=coord[0], longitude=coord[1],
@@ -382,6 +399,9 @@ def lucruEdit(request):
             except:
                 messages.success(request, ("Lucrul nu a fost gasit!"))
                 return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+            if len(request.GET['den']) == 0:
+                messages.success(request, ("Nu ati introdus denumirea!"))
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
             old.denumire = request.GET['den']
             old.text = request.GET['obs']
             old.datetime = now
@@ -393,6 +413,9 @@ def lucruEdit(request):
                 old = models.Lucru.objects.get(pk=oldid)
             except:
                 messages.success(request, ("Lucrul nu a fost gasit!"))
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+            if len(request.GET['den']) == 0:
+                messages.success(request, ("Nu ati introdus denumirea!"))
                 return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
             old.denumire = request.GET['den']
             old.text = request.GET['obs']
