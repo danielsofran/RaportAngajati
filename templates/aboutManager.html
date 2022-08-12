@@ -165,6 +165,7 @@ window.addEventListener('load', ()=>{
     <p><span class="badge bg-danger rounded-pill">!</span> Dacă aţi refuzat Accesarea Locaţiei, va trebui să o activaţi din <a href="https://docs.buddypunch.com/en/articles/919258-how-to-enable-location-services-for-chrome-safari-edge-and-android-ios-devices-gps-setting">setările browser-ului</a>.</p>
     <p><span class="badge bg-danger rounded-pill">!</span> Dacă primiţi o eroare <strong>Permisiune refuzată</strong> deşi nu aţi primit o solicitare la locaţie, probabil folosiţi <strong>Safari</strong> ca browser. Vă recomandăm să instalaţi <strong>Google Chrome</strong>, altfel nu veţi putea salva activităţi!</p>
     <p class="mt-4"><span class="badge bg-info fs-2 me-3">Sugestie</span> Vă recomandăm să salvaţi o scurtătură către acest site pe unul din ecranele dumneavoastră, pentru a-l face mai accesibil. Pe Chrome, această opţiune apare în meniul <strong><i class="fa-solid fa-ellipsis-vertical"></i> &nbsp;<i class="fa-solid fa-arrow-right"></i>&nbsp; Adaugă pe ecran pornire</strong>. Pe iPhone sau iPad, această opţiune apare în meniul <strong>Patrajează <i class="fa-solid fa-arrow-right"></i> Adaugă la ecranul de pornire</strong>.</p>
+    <p class="mt-4"><span class="badge bg-info fs-2 me-3">Sugestie</span> Dacă sunteţi pe un calculator şi bara de navigare apare în modul restrâns, vă rugăm daţi Zoom Out.</p>
 
     <h1>Instrucţiuni Angajat</h1>
     <h2 id="login"> Login-ul </h2>
@@ -350,6 +351,7 @@ window.addEventListener('load', ()=>{
     <p>Activitățile angajaților pot fi vizualizate din meniul <strong>Activități</strong>, selectând perioada de timp dorită. Aceste date se vor afișa într-un tabel.</p>
     <p><span class="badge bg-primary rounded-pill">!</span> Dacă observați că tabelul este greu de vizualizat, vă rugăm folosiți opțiunile <i class="fa-solid fa-magnifying-glass-plus text-primary"></i>Zoom in, respectiv <i class="fa-solid fa-magnifying-glass-minus text-primary"></i>Zoom out ale browser-ului.</p>
     <p><span class="badge bg-primary rounded-pill">!</span> Dacă folosiţi un dispozitiv mobil, vă rugăm folosiți opțiunea <strong>Landscape</strong>.</p>
+    <p><span class="badge bg-danger rounded-pill">!</span> Pentru a vă asigrua că sunteţi la curent cu datele provenite de la utilizatori, vă reconandăm să apăsaţi butonul <strong>Reîncarcă <i class="fa-solid fa-rotate-left"></i></strong> al browser-ului!.</p>
     <p>Tabelul este alcătuit din următoarele coloane:</p>
     <ul>
         <li>
@@ -453,7 +455,7 @@ window.addEventListener('load', ()=>{
     </ul>
     <p><span class="badge bg-primary rounded-pill">!</span> Aceste acțiuni sunt permanente, ele nu pot fi anulate!</p>
     <h4 class="fs-2">Ajungere/Plecare</h4>
-    <p><span class="badge bg-danger rounded-pill">!</span>Activitatea unui angajat dintr-o anumită dată poate fi ștearsă prin ștergea câmpurilor care conţin datele ce trebuie să fie șterse. </p>
+    <p><span class="badge bg-danger rounded-pill">!</span>Activitatea unui angajat dintr-o anumită dată poate fi ștearsă prin ștergea câmpurilor care conţin datele ce trebuie să fie eliminate. </p>
     <p>Modificarea datelor de ajungere sau de plecare se face prin editarea câmpurilor, urmată de apăsarea butonului <span class="badge bg-primary">Salvează modificările</span>.</p>
     <p><span class="badge bg-primary rounded-pill">!</span> Sub ajungerile/plecările afişate, se va afişa un formular <strong>fără date</strong>, pentru a putea adăuga o <strong>noua</strong> ajungere/plecare.</p>
     <p>Butonul <span class="badge bg-danger opacity-75"> <i class="fa-solid fa-arrow-rotate-right"></i> Anulează</span> va recompleta valorile câmpurilor cu datele inițiale, înainte să fie modificate, dacă nu ați confirmat salvarea modificărilor sau a ștergerii.</p>
@@ -463,6 +465,9 @@ window.addEventListener('load', ()=>{
         <li> Butonul <div class="btn btn-light fs-5"><i class="fa-solid fa-location-crosshairs"></i></div>: Arată <strong>vechea</strong> locație pe hartă</li>
         <li> Butonul <div class="btn btn-light fs-5"><i class="fa-solid fa-magnifying-glass-location"></i></div>: Setează locația ca fiind locația curentă</li>
     </ul>
+    <p class="mt-4"><span class="badge bg-danger fs-2 me-3">Atenţie!</span> Diferenţa maximă dintre plecări şi ajungeri trebuie să fie de <strong>1</strong>! În caz contrar, datele vor fi afişate haotic!</p>
+    <p> Vă rugăm să modificaţi aceste date astfel încât <strong>diferenţa de 1 să fie respectată!</strong></p>
+
     <h4 class="fs-2">Comenzi</h4>
     <p><span class="badge bg-danger rounded-pill">!</span> Modificarea/ștergerea ajungerii/plecării este total separată de cea a comenzilor!</p>
     <p>Ștergerea unei comenzi se face prin apăsarea butonului <span class="badge bg-danger"><i class="fa-solid fa-xmark"></i> Şterge</span>, din cadrul unei comenzi, urmată de confirmare prin apăsarea butonului <span class="badge bg-warning">Continuă</span>. </p>
@@ -573,7 +578,7 @@ window.addEventListener('load', ()=>{
         <li>Butonul <button class="btn btn-info"><i class="fa-solid fa-file-circle-question"></i></button>: testează harta, încărcând într-o pagină nouă coordonatele <strong>47.15, 24.5</strong>, sau <strong>Str. Simion Mândrescu 21-19, Bistrița</strong></li>
         <li>Butonul <button class="btn btn-outline-success fs-4">Adaugă</button>: creează un rând nou, în care puteţi completa datele unei noi hărţi, <strong>salvarea</strong> ei reprezentând apăsarea butonului <button class="btn btn-success"><i class="fa-solid fa-check"></i></button>. Dacă nu observaţi acest rând, vă rugăm să derulaţi pagina în jos! </li>
     </ul>
-    <p><span class="badge bg-danger rounded-pill">!</span> În cazul în care butonul <button class="btn btn-info"><i class="fa-solid fa-file-circle-question"></i></button> încarcă altă adresă, vă rugăm să apăsaţi butonul Refresh <i class="fa-solid fa-rotate-left"></i> al browser-ului!
+    <p><span class="badge bg-danger rounded-pill">!</span> În cazul în care butonul <button class="btn btn-info"><i class="fa-solid fa-file-circle-question"></i></button> încarcă altă adresă, vă rugăm să apăsaţi butonul Refresh <i class="fa-solid fa-rotate-left"></i> al browser-ului!</p>
     <p><span class="badge bg-primary rounded-pill">!</span> Salvarea unei noi hărţi trebuie finalizată prin apăsarea butonului <button class="btn btn-success"><i class="fa-solid fa-check"></i></button></p>
     <p>Câtă vreme Numele hărţii este unul orientativ, <strong>linkul</strong> este foarte important. Logica acestuia este urmatoarea: </p>
     <ul>
